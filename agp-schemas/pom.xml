@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <parent>
+    <artifactId>agp-parent</artifactId>
+    <groupId>se.skltp.agp</groupId>
+    <version>0.0.1-SNAPSHOT</version>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
+
+  <artifactId>agp-schemas</artifactId>
+
+  <properties>
+    <!-- Properties for generating code from XML Schemas (JAXB) -->
+    <schema.path>${basedir}/src/main/resources/schemas</schema.path>
+    <schema.gen.src.dir>${project.build.directory}/generated-sources/cxf</schema.gen.src.dir>
+  </properties>
+
+  <build>
+
+    <plugins>
+
+      <plugin>
+        <groupId>org.apache.cxf</groupId>
+        <artifactId>cxf-xjc-plugin</artifactId>
+        <version>${cxf.xjc.version}</version>
+        <configuration>
+          <extensions>
+            <extension>org.apache.cxf.xjcplugins:cxf-xjc-dv:${cxf.xjc.version}</extension>
+          </extensions>
+        </configuration>
+        <executions>
+          <execution>
+            <id>generate-sources</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>xsdtojava</goal>
+            </goals>
+            <configuration>
+              <sourceRoot>${schema.gen.src.dir}</sourceRoot>
+              <xsdOptions>
+                <xsdOption>
+                  <xsd>${schema.path}/interoperability/headers/core_components/interoperability_headers_1.0.xsd</xsd>
+                  <packagename>se.skltp.agp.riv.interoperability.headers.v1</packagename>
+                </xsdOption>
+              </xsdOptions>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.cxf</groupId>
+        <artifactId>cxf-codegen-plugin</artifactId>
+        <version>${apache-cfx.version}</version>
+        <executions>
+          <execution>
+            <id>generate-sources</id>
+            <phase>generate-sources</phase>
+            <configuration>
+              <sourceRoot>${schema.gen.src.dir}</sourceRoot>
+              <wsdlOptions>
+
+                <wsdloption>
+                  <wsdl>${schema.path}/TD_ENGAGEMENTINDEX_1_0_R/interactions/FindContentInteraction/FindContentInteraction_1.0_RIVTABP21.wsdl</wsdl>
+                  <extraargs>
+                    <extraarg>-p</extraarg>
+                    <extraarg>urn:riv:itintegration:engagementindex:1=se.skltp.aggregatingservices.riv.itintegration.engagementindex.v1</extraarg>
+                    <extraarg>-p</extraarg>
+                    <extraarg>urn:riv:itintegration:engagementindex:FindContentResponder:1=se.skltp.aggregatingservices.riv.itintegration.engagementindex.findcontentresponder.v1</extraarg>
+                    <extraarg>-p</extraarg>
+                    <extraarg>urn:riv:itintegration:engagementindex:FindContentInitiator:1=se.skltp.aggregatingservices.riv.itintegration.engagementindex.findcontentinitiator.v1</extraarg>
+                    <extraarg>-p</extraarg>
+                    <extraarg>urn:riv:itintegration:engagementindex:FindContent:1:rivtabp21=se.skltp.aggregatingservices.riv.itintegration.engagementindex.findcontent.v1.rivtabp21</extraarg>
+                    <extraarg>-p</extraarg>
+                    <extraarg>urn:riv:itintegration:registry:1=se.skltp.aggregatingservices.riv.itintegration.registry.v1</extraarg>
+                  </extraargs>
+                </wsdloption>
+
+                <wsdloption>
+                  <wsdl>${schema.path}/TD_SOKVAGVAL_2/sokvagval-info-v2.wsdl</wsdl>
+                  <wsdlLocation>classpath:schemas/TD_SOKVAGVAL_2/sokvagval-info-v2.wsdl</wsdlLocation>
+                  <extraargs>
+                    <extraarg>-p</extraarg>
+                    <extraarg>urn:skl:tp:vagvalsinfo:v2=se.skltp.agp.riv.vagvalsinfo.v2</extraarg>
+                  </extraargs>
+                </wsdloption>
+
+              </wsdlOptions>
+
+            </configuration>
+            <goals>
+              <goal>wsdl2java</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+</project>

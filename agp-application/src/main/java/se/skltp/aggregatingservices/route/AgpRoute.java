@@ -1,6 +1,6 @@
 package se.skltp.aggregatingservices.route;
 
-import static se.skltp.aggregatingservices.constants.AgpProperties.AGP_ORIGINAL_QUERY;
+import static se.skltp.aggregatingservices.constants.AgpProperties.*;
 
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.component.cxf.common.message.CxfConstants;
@@ -47,12 +47,17 @@ public class AgpRoute extends RouteBuilder {
 
   @Override
   public void configure() throws Exception {
-    from("direct:agproute").id("agp-service-route").streamCaching()
+
+	from("direct:agproute").id("agp-service-route").streamCaching()
         .log("req-in")
         .setProperty(AGP_ORIGINAL_QUERY, body())
         .removeHeader(CxfConstants.OPERATION_NAME)
         .removeHeader(CxfConstants.OPERATION_NAMESPACE)
         .removeHeader("SoapAction")
+        .setHeader(AGP_VP_SENDER_ID, simple("{{vp.senderId}}") )
+        .setHeader(AGP_VP_INSTANCE_ID, simple("{{vp.instanceId}}") )
+        .setHeader(AGP_RIVTA_ORIGINAL_CONSUMER_ID, simple("${header." + AGP_RIVTA_ORIGINAL_CONSUMER_ID + "}") )
+        .setHeader(AGP_SKLTP_CORRELATION_ID, simple("${header." + AGP_SKLTP_CORRELATION_ID + "}") )
         .process(createFindContentProcessor)
         .choice().when(body().isNotNull())
             .to(EI_FINDCONTENT_URI).id("to.findcontent")

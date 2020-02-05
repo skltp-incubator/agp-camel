@@ -12,6 +12,7 @@ import se.skltp.aggregatingservices.processors.CreateFindContentProcessor;
 import se.skltp.aggregatingservices.processors.CreateRequestListFromEIProcessor;
 import se.skltp.aggregatingservices.processors.CreateRequestListFromTAKProcessor;
 import se.skltp.aggregatingservices.processors.CreateResponseProcessor;
+import se.skltp.aggregatingservices.processors.HandleHttpHeadersProcessor;
 import se.skltp.aggregatingservices.processors.PrepareServiceRequestProcessor;
 import se.skltp.aggregatingservices.processors.UnmarshalQueryProcessor;
 
@@ -44,20 +45,16 @@ public class AgpRoute extends RouteBuilder {
   @Autowired
   AgpAggregationStrategy agpAggregationStrategy;
 
-
+  @Autowired
+  HandleHttpHeadersProcessor handleHttpHeadersProcessor;
+  
   @Override
   public void configure() throws Exception {
 
 	from("direct:agproute").id("agp-service-route").streamCaching()
         .log("req-in")
         .setProperty(AGP_ORIGINAL_QUERY, body())
-        .removeHeader(CxfConstants.OPERATION_NAME)
-        .removeHeader(CxfConstants.OPERATION_NAMESPACE)
-        .removeHeader("SoapAction")
-        .setHeader(AGP_VP_SENDER_ID, simple("{{vp.senderId}}") )
-        .setHeader(AGP_VP_INSTANCE_ID, simple("{{vp.instanceId}}") )
-        .setHeader(AGP_RIVTA_ORIGINAL_CONSUMER_ID, simple("${header." + AGP_RIVTA_ORIGINAL_CONSUMER_ID + "}") )
-        .setHeader(AGP_SKLTP_CORRELATION_ID, simple("${header." + AGP_SKLTP_CORRELATION_ID + "}") )
+        .process(handleHttpHeadersProcessor)        
         .process(createFindContentProcessor)
         .choice().when(body().isNotNull())
             .to(EI_FINDCONTENT_URI).id("to.findcontent")

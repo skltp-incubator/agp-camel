@@ -2,6 +2,17 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+  <parent>
+    <artifactId>agp-parent</artifactId>
+    <groupId>se.skltp.agp</groupId>
+    <version>0.0.1-SNAPSHOT</version>
+  </parent>
+
+  <modelVersion>4.0.0</modelVersion>
+
+  <artifactId>agp-application</artifactId>
+
   <dependencies>
     <!--Modules-->
     <dependency>
@@ -79,24 +90,12 @@
         </exclusion>
       </exclusions>
     </dependency>
-    
     <dependency>
 	    <groupId>org.apache.camel</groupId>
 	    <artifactId>camel-test-spring</artifactId>
-	    <version>${camel.version}</version>
-	    <scope>test</scope>    
-    </dependency>
-	
+	    <scope>test</scope>
+    </dependency>	
   </dependencies>
-  <parent>
-    <artifactId>agp-parent</artifactId>
-    <groupId>se.skltp.agp</groupId>
-    <version>0.0.1-SNAPSHOT</version>
-  </parent>
-
-  <modelVersion>4.0.0</modelVersion>
-
-  <artifactId>agp-application</artifactId>
 
   <build>
     <plugins>

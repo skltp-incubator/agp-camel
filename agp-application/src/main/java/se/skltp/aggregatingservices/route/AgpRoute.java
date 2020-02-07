@@ -1,6 +1,6 @@
 package se.skltp.aggregatingservices.route;
 
-import static se.skltp.aggregatingservices.constants.AgpProperties.AGP_ORIGINAL_QUERY;
+import static se.skltp.aggregatingservices.constants.AgpProperties.*;
 
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.component.cxf.common.message.CxfConstants;
@@ -12,6 +12,7 @@ import se.skltp.aggregatingservices.processors.CreateFindContentProcessor;
 import se.skltp.aggregatingservices.processors.CreateRequestListFromEIProcessor;
 import se.skltp.aggregatingservices.processors.CreateRequestListFromTAKProcessor;
 import se.skltp.aggregatingservices.processors.CreateResponseProcessor;
+import se.skltp.aggregatingservices.processors.HandleHttpHeadersProcessor;
 import se.skltp.aggregatingservices.processors.PrepareServiceRequestProcessor;
 import se.skltp.aggregatingservices.processors.UnmarshalQueryProcessor;
 
@@ -44,15 +45,16 @@ public class AgpRoute extends RouteBuilder {
   @Autowired
   AgpAggregationStrategy agpAggregationStrategy;
 
-
+  @Autowired
+  HandleHttpHeadersProcessor handleHttpHeadersProcessor;
+  
   @Override
   public void configure() throws Exception {
-    from("direct:agproute").id("agp-service-route").streamCaching()
+
+	from("direct:agproute").id("agp-service-route").streamCaching()
         .log("req-in")
         .setProperty(AGP_ORIGINAL_QUERY, body())
-        .removeHeader(CxfConstants.OPERATION_NAME)
-        .removeHeader(CxfConstants.OPERATION_NAMESPACE)
-        .removeHeader("SoapAction")
+        .process(handleHttpHeadersProcessor)        
         .process(createFindContentProcessor)
         .choice().when(body().isNotNull())
             .to(EI_FINDCONTENT_URI).id("to.findcontent")

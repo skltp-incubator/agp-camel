@@ -18,7 +18,7 @@ import se.skltp.aggregatingservices.service.TakCacheService;
 
 @Service
 @Log4j2
-public class CreateRequestListFromEIProcessor implements Processor {
+public class CreateRequestListProcessor implements Processor {
 
   @Autowired
   TakCacheService takCacheService;

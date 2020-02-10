@@ -17,9 +17,10 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package se.skltp.aggregatingservices.producer;
+package se.skltp.aggregatingservices;
 
 import lombok.extern.log4j.Log4j2;
+import org.apache.cxf.message.MessageContentsList;
 import org.springframework.stereotype.Service;
 import riv.clinicalprocess.healthcond.actoutcome._4.AccessControlHeaderType;
 import riv.clinicalprocess.healthcond.actoutcome._4.HeaderType;
@@ -32,12 +33,19 @@ import riv.clinicalprocess.healthcond.actoutcome._4.PatientType;
 import riv.clinicalprocess.healthcond.actoutcome._4.PatientinformationType;
 import riv.clinicalprocess.healthcond.actoutcome._4.SourceType;
 import riv.clinicalprocess.healthcond.actoutcome.getlaboratoryorderoutcomeresponder.v4.GetLaboratoryOrderOutcomeResponseType;
-import se.skltp.aggregatingservices.data.TestProducerDb;
+import riv.clinicalprocess.healthcond.actoutcome.getlaboratoryorderoutcomeresponder.v4.GetLaboratoryOrderOutcomeType;
+import se.skltp.aggregatingservices.data.ProducerTestDataGenerator;
 
 
 @Log4j2
 @Service
-public class GetAggregatedLaboratoryOrderOutcomeTestProducerDb extends TestProducerDb {
+public class GLOOTestDataGenerator extends ProducerTestDataGenerator {
+
+	@Override
+	public String getPatientId(MessageContentsList messageContentsList) {
+		GetLaboratoryOrderOutcomeType request = (GetLaboratoryOrderOutcomeType) messageContentsList.get(1);
+		return request.getPatientId().getId();
+	}
 
 	@Override
 	public Object createResponse(Object... responseItems) {

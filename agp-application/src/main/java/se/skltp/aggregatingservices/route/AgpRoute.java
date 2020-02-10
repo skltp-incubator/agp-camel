@@ -1,20 +1,17 @@
 package se.skltp.aggregatingservices.route;
 
-import static se.skltp.aggregatingservices.constants.AgpProperties.*;
+import static se.skltp.aggregatingservices.constants.AgpProperties.AGP_ORIGINAL_QUERY;
 
 import org.apache.camel.builder.RouteBuilder;
-import org.apache.camel.component.cxf.common.message.CxfConstants;
 import org.apache.cxf.message.MessageContentsList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import se.skltp.aggregatingservices.aggregate.AgpAggregationStrategy;
 import se.skltp.aggregatingservices.processors.CreateFindContentProcessor;
-import se.skltp.aggregatingservices.processors.CreateRequestListFromEIProcessor;
-import se.skltp.aggregatingservices.processors.CreateRequestListFromTAKProcessor;
+import se.skltp.aggregatingservices.processors.CreateRequestListProcessor;
 import se.skltp.aggregatingservices.processors.CreateResponseProcessor;
 import se.skltp.aggregatingservices.processors.HandleHttpHeadersProcessor;
 import se.skltp.aggregatingservices.processors.PrepareServiceRequestProcessor;
-import se.skltp.aggregatingservices.processors.UnmarshalQueryProcessor;
 
 @Component
 public class AgpRoute extends RouteBuilder {
@@ -25,19 +22,13 @@ public class AgpRoute extends RouteBuilder {
       + "&dataFormat=POJO";
 
   @Autowired
-  CreateRequestListFromEIProcessor createRequestListFromEIProcessor;
-
-  @Autowired
-  CreateRequestListFromTAKProcessor createRequestListFromTAKProcessor;
+  CreateRequestListProcessor createRequestListProcessor;
 
   @Autowired
   PrepareServiceRequestProcessor prepareRequestProcessor;
 
   @Autowired
   CreateFindContentProcessor createFindContentProcessor;
-
-  @Autowired
-  UnmarshalQueryProcessor unmarshalQueryProcessor;
 
   @Autowired
   CreateResponseProcessor createResponseProcessor;
@@ -56,13 +47,9 @@ public class AgpRoute extends RouteBuilder {
         .setProperty(AGP_ORIGINAL_QUERY, body())
         .process(handleHttpHeadersProcessor)        
         .process(createFindContentProcessor)
-        .choice().when(body().isNotNull())
-            .to(EI_FINDCONTENT_URI).id("to.findcontent")
-            .process(createRequestListFromEIProcessor)
-            .removeHeader("SoapAction")
-        .otherwise()
-            .process(createRequestListFromTAKProcessor)
-        .end()
+        .to(EI_FINDCONTENT_URI).id("to.findcontent")
+        .process(createRequestListProcessor)
+        .removeHeader("SoapAction")
         .split(body()).parallelProcessing(true).aggregationStrategy(agpAggregationStrategy)
             .setProperty("LogicalAddress").exchange(ex -> ex.getIn().getBody(MessageContentsList.class).get(0))
             .log("req-out")

@@ -8,7 +8,6 @@ public class AgpTestStubApplication {
 
   public static void main(String[] args) {
     SpringApplication.run(AgpTestStubApplication.class, args);
-    System.out.println("Started!!");
   }
 
 }

@@ -43,8 +43,7 @@ public abstract class ProducerTestDataGenerator {
     doSomeProcessingForSomeTime(logicalAddress);
 
     // Lookup the response
-    Object object = retrieveFromDb(logicalAddress, registeredResidentId);
-    return object;
+    return retrieveFromDb(logicalAddress, registeredResidentId);
   }
 
   private void doSomeProcessingForSomeTime(String logicalAddress) {
@@ -58,7 +57,7 @@ public abstract class ProducerTestDataGenerator {
   }
 
   public long getProcessingTime(String logicalAddress) {
-    long processingTime = 0;
+    long processingTime;
 		if (TestDataDefines.TEST_LOGICAL_ADDRESS_1.equals(logicalAddress)) {
 			processingTime = 1000;                    // Normal 1 sec response time on system #1
 		} else if (TestDataDefines.TEST_LOGICAL_ADDRESS_2.equals(logicalAddress)) {

@@ -16,7 +16,13 @@ public class AgpServiceConfiguration {
   String outboundServiceWsdl;
   String outboundServiceClass;
 
+  String takContract;
+
   String eiServiceDomain;
   String eiCategorization;
+
+  String serviceFactoryClass;
+
+  int messageContentListQueryIndex = 1;
 
 }

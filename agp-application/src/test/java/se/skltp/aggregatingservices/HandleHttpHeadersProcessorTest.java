@@ -26,7 +26,7 @@ import se.skltp.aggregatingservices.processors.HandleHttpHeadersProcessor;
 
 @RunWith(CamelSpringRunner.class)
 @ContextConfiguration(classes = {HandleHttpHeadersProcessor.class, VpConfig.class})
-@TestPropertySource("classpath:application-test.properties")
+@TestPropertySource("classpath:application.properties")
 @MockEndpoints("direct:end")
 public class HandleHttpHeadersProcessorTest extends CamelTestSupport {
 	

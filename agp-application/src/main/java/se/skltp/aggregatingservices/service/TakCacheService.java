@@ -1,7 +1,6 @@
 package se.skltp.aggregatingservices.service;
 
 import java.util.Date;
-import java.util.List;
 import se.skltp.takcache.TakCacheLog;
 
 public interface TakCacheService {
@@ -16,8 +15,5 @@ public interface TakCacheService {
 
   TakCacheLog getLastRefreshLog();
 
-  List<String> getReceivers(String senderId, String originalServiceConsumerId, String servicecontractNamespace);
-
-  boolean isAuthorizedConsumer(String senderId, String originalServiceConsumerId, String receiverId,
-      String servicecontractNamespace);
+  boolean isAuthorizedConsumer(Authority authority);
 }

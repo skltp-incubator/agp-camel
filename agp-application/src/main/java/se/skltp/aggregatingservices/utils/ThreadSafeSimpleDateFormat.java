@@ -8,12 +8,12 @@ import java.util.Date;
 
 public class ThreadSafeSimpleDateFormat {
   private final ThreadLocal<SoftReference<DateFormat>> tl = new ThreadLocal();
-  private String pattern = null;
+  private String pattern;
 
   private DateFormat getDateFormat() {
-    SoftReference<DateFormat> ref = (SoftReference)this.tl.get();
+    SoftReference<DateFormat> ref = this.tl.get();
     if (ref != null) {
-      DateFormat result = (DateFormat)ref.get();
+      DateFormat result = ref.get();
       if (result != null) {
         return result;
       }

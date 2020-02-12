@@ -181,7 +181,7 @@ public class JaxbUtil implements ServiceMarshaller {
           unmarshaller.setProperty(entry.getKey(), entry.getValue());
         }
       }
-      Object jaxbObject = null;
+      Object jaxbObject;
 
       // Unmarshal depending on the type of source
       if (payload instanceof String) {
@@ -195,9 +195,6 @@ public class JaxbUtil implements ServiceMarshaller {
         // Rely on standard JAXB unmarshaller
       } else if (payload instanceof File) {
         jaxbObject = unmarshaller.unmarshal((File) payload);
-
-      } else if (payload instanceof InputSource) {
-        jaxbObject = unmarshaller.unmarshal((InputSource) payload);
 
       } else if (payload instanceof InputStream) {
         jaxbObject = unmarshaller.unmarshal((InputStream) payload);

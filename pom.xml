@@ -37,7 +37,7 @@
     <lombok.version>1.18.10</lombok.version>
     <apache-cfx.version>3.2.7</apache-cfx.version>
     <cxf.xjc.version>3.2.3</cxf.xjc.version>
-    <takdatahandler.version>1.0.2</takdatahandler.version>
+    <takdatahandler.version>1.1.0</takdatahandler.version>
   </properties>
 
 

@@ -17,28 +17,25 @@ import se.skltp.aggregatingservices.config.VpConfig;
 @Log4j2
 public class HandleHttpHeadersProcessor implements Processor {
 
-	@Autowired
-	VpConfig vpConfig;
-	
-	@Override
-	public void process(Exchange exchange) throws Exception {
-		Message in = exchange.getIn();
-		
-		in.removeHeader(CxfConstants.OPERATION_NAME);
-        in.removeHeader(CxfConstants.OPERATION_NAMESPACE);
-        in.removeHeader("SoapAction");
-        in.setHeader(AGP_VP_SENDER_ID, vpConfig.getSenderId() );
-        in.setHeader(AGP_VP_INSTANCE_ID, vpConfig.getInstanceId());
-        
-        /*
-         * AGP_RIVTA_ORIGINAL_CONSUMER_ID and AGP_SKLTP_CORRELATION_ID
-         * should already be on the incoming header.
-         * We do nothing.
-         */
-        
-        
+  @Autowired
+  VpConfig vpConfig;
 
-		
-	}
+  @Override
+  public void process(Exchange exchange) throws Exception {
+    Message in = exchange.getIn();
+
+    in.removeHeader(CxfConstants.OPERATION_NAME);
+    in.removeHeader(CxfConstants.OPERATION_NAMESPACE);
+    in.removeHeader("SoapAction");
+    in.setHeader(AGP_VP_SENDER_ID, vpConfig.getSenderId());
+    in.setHeader(AGP_VP_INSTANCE_ID, vpConfig.getInstanceId());
+
+    /*
+     * AGP_RIVTA_ORIGINAL_CONSUMER_ID and AGP_SKLTP_CORRELATION_ID
+     * should already be on the incoming header.
+     * We do nothing.
+     */
+
+  }
 
 }

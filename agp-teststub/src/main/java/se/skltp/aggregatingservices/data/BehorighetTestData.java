@@ -1,5 +1,9 @@
 package se.skltp.aggregatingservices.data;
 
+import static se.skltp.aggregatingservices.data.TestDataDefines.SAMPLE_ORIGINAL_CONSUMER_HSAID;
+import static se.skltp.aggregatingservices.data.TestDataDefines.SAMPLE_SENDER_ID;
+
+import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.UUID;
 import javax.xml.datatype.DatatypeFactory;
@@ -14,8 +18,7 @@ import se.skltp.agp.riv.vagvalsinfo.v2.HamtaAllaAnropsBehorigheterResponseType;
 @Log4j2
 @Service
 public class BehorighetTestData {
-  public static final String SAMPLE_SENDER_ID               = "sample-sender-id";
-  public static final String SAMPLE_ORIGINAL_CONSUMER_HSAID = "sample-original-consumer-hsaid";
+
 
   private static final String[] receivers = {TestDataDefines.TEST_LOGICAL_ADDRESS_1, TestDataDefines.TEST_LOGICAL_ADDRESS_2,
       TestDataDefines.TEST_LOGICAL_ADDRESS_3, TestDataDefines.TEST_LOGICAL_ADDRESS_4, TestDataDefines.TEST_LOGICAL_ADDRESS_5,
@@ -76,7 +79,7 @@ public class BehorighetTestData {
     type.setReceiverId(rId);
     type.setSenderId(sId);
     type.setFromTidpunkt(xmlDate());
-    type.setTomTidpunkt(type.getFromTidpunkt());
+    type.setTomTidpunkt(xmlDateAddHours(type.getFromTidpunkt(), 1));
     return type;
   }
 
@@ -88,8 +91,18 @@ public class BehorighetTestData {
     }
   }
 
+  private XMLGregorianCalendar xmlDateAddHours(XMLGregorianCalendar orgDate, int hours) {
+    try {
+      GregorianCalendar calendar = orgDate.toGregorianCalendar();
+      calendar.add(Calendar.HOUR, hours);
+      return (DatatypeFactory.newInstance().newXMLGregorianCalendar(calendar));
+    } catch (Exception err) {
+      return null;
+    }
+  }
+
   @Data
-  class TargetNamespace {
+  static class TargetNamespace {
 
     private String targetNamespace;
     private String majorVersionOne;

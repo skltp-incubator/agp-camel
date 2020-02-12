@@ -33,7 +33,7 @@ public class AgpAggregationStrategy implements AggregationStrategy {
   private void updateAggregatedResponse(Exchange newExchange, AggregatedResponseResults aggregatedResponseResults) {
     final ProcessingStatusRecordType statusRecord;
     final String logicalAddress = newExchange.getProperty("LogicalAddress", String.class);
-    if(newExchange.isFailed()){
+    if(newExchange.isFailed() || newExchange.getException() != null){
       final Exception exception = newExchange.getException();
       // TODO log nice message here
       log.warn("Failed!!!!!", exception);

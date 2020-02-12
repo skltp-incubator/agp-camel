@@ -1,6 +1,8 @@
 package se.skltp.aggregatingservices.route;
 
 import static se.skltp.aggregatingservices.constants.AgpProperties.AGP_ORIGINAL_QUERY;
+import static se.skltp.aggregatingservices.constants.AgpProperties.AGP_RIVTA_ORIGINAL_CONSUMER_ID;
+import static se.skltp.aggregatingservices.constants.AgpProperties.AGP_VP_SENDER_ID;
 
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.cxf.message.MessageContentsList;
@@ -45,7 +47,9 @@ public class AgpRoute extends RouteBuilder {
 	from("direct:agproute").id("agp-service-route").streamCaching()
         .log("req-in")
         .setProperty(AGP_ORIGINAL_QUERY, body())
-        .process(handleHttpHeadersProcessor)        
+        .setProperty(AGP_VP_SENDER_ID, header(AGP_VP_SENDER_ID))
+        .setProperty(AGP_RIVTA_ORIGINAL_CONSUMER_ID, header(AGP_RIVTA_ORIGINAL_CONSUMER_ID))
+        .process(handleHttpHeadersProcessor)
         .process(createFindContentProcessor)
         .to(EI_FINDCONTENT_URI).id("to.findcontent")
         .process(createRequestListProcessor)

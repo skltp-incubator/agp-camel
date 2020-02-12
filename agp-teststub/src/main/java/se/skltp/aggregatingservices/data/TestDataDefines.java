@@ -4,6 +4,8 @@ public class TestDataDefines {
   // Test cases are documented at
   // https://skl-tp.atlassian.net/wiki/pages/viewpage.action?pageId=30015599
   // "Aggregerande tjänst - Funktionella tester"
+  public static final String SAMPLE_SENDER_ID               = "sample-sender-id";
+  public static final String SAMPLE_ORIGINAL_CONSUMER_HSAID = "sample-original-consumer-hsaid";
 
   public static final String TEST_LOGICAL_ADDRESS_1 = "HSA-ID-1";
   public static final String TEST_LOGICAL_ADDRESS_2 = "HSA-ID-2";

@@ -108,6 +108,13 @@
       <scope>Test</scope>
     </dependency>
 
+    <dependency>
+      <groupId>se.skltp.takdatahandler</groupId>
+      <artifactId>behorighethandler</artifactId>
+      <version>${takdatahandler.version}</version>
+    </dependency>
+
+
   </dependencies>
 
   <build>

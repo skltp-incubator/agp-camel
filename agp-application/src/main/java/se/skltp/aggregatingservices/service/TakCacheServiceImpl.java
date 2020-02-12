@@ -1,10 +1,13 @@
 package se.skltp.aggregatingservices.service;
 
 import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import se.skl.tp.behorighet.BehorighetHandler;
 import se.skl.tp.behorighet.BehorighetHandlerImpl;
+import se.skltp.aggregatingservices.configuration.AgpServiceConfiguration;
 import se.skltp.takcache.TakCache;
 import se.skltp.takcache.TakCacheLog;
 import se.skltp.takcache.TakCacheLog.RefreshStatus;
@@ -16,22 +19,27 @@ public class TakCacheServiceImpl implements TakCacheService {
 
   BehorighetHandler behorighetHandler;
 
-
   TakCacheLog takCacheLog = null;
 
   Date lastResetDate;
 
+  List<String> takContracts;
+
+
   @Autowired
-  public TakCacheServiceImpl(TakCache takCache) {
+  public TakCacheServiceImpl(TakCache takCache, List<AgpServiceConfiguration> serviceConfigurationList) {
+    this.takContracts = serviceConfigurationList.stream().map(conf -> conf.getTakContract()).collect(Collectors.toList());
     this.takCache = takCache;
-    behorighetHandler = new BehorighetHandlerImpl(takCache);
+    this.behorighetHandler = new BehorighetHandlerImpl(takCache);
   }
 
   @Override
   public TakCacheLog refresh() {
-    // TODO call refresh with filter on targetNamespaces
-    // Update takcache to handle multiple targetNS
-    takCacheLog = takCache.refresh();
+    if (takContracts != null && !takContracts.isEmpty()) {
+      takCacheLog = takCache.refresh(takContracts);
+    } else {
+      takCacheLog = takCache.refresh();
+    }
     lastResetDate = new Date();
     return takCacheLog;
   }
@@ -52,14 +60,16 @@ public class TakCacheServiceImpl implements TakCacheService {
   }
 
   @Override
-  public TakCacheLog getLastRefreshLog(){
+  public TakCacheLog getLastRefreshLog() {
     return takCacheLog;
   }
 
   @Override
   public boolean isAuthorizedConsumer(Authority authority) {
-    return behorighetHandler.isAuthorized(authority.getSenderId(), authority.getServicecontractNamespace(), authority.receiverId) ||
-        behorighetHandler.isAuthorized(authority.getOriginalSenderId(), authority.getServicecontractNamespace(), authority.receiverId);
+    return behorighetHandler.isAuthorized(authority.getSenderId(), authority.getServicecontractNamespace(), authority.receiverId)
+        ||
+        behorighetHandler
+            .isAuthorized(authority.getOriginalSenderId(), authority.getServicecontractNamespace(), authority.receiverId);
   }
 
 

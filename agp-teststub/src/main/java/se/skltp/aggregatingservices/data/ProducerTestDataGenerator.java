@@ -2,6 +2,7 @@ package se.skltp.aggregatingservices.data;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import lombok.extern.log4j.Log4j2;
 import org.apache.cxf.message.MessageContentsList;
 
@@ -50,9 +51,10 @@ public abstract class ProducerTestDataGenerator {
     long processingTime = getProcessingTime(logicalAddress);
     try {
       log.debug("## SLEEP FOR " + processingTime + " ms.");
-      Thread.sleep(processingTime);
+      TimeUnit.MILLISECONDS.sleep(processingTime);
       log.debug("## SLEEP DONE.");
     } catch (InterruptedException e) {
+      Thread.currentThread().interrupt();
     }
   }
 

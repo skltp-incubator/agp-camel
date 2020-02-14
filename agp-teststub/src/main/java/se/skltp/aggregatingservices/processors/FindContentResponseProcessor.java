@@ -3,6 +3,7 @@ package se.skltp.aggregatingservices.processors;
 import static se.skltp.aggregatingservices.data.TestDataDefines.TEST_ID_FAULT_INVALID_ID_IN_EI;
 import static se.skltp.aggregatingservices.data.TestDataDefines.TEST_ID_FAULT_TIMEOUT_IN_EI;
 
+import java.util.concurrent.TimeUnit;
 import lombok.extern.log4j.Log4j2;
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
@@ -44,8 +45,9 @@ public class FindContentResponseProcessor implements Processor {
     // Force a timeout if zero Id
     if (TEST_ID_FAULT_TIMEOUT_IN_EI.equals(id)) {
       try {
-        Thread.sleep(35 * 1000);
+        TimeUnit.SECONDS.sleep(35);
       } catch (InterruptedException e) {
+        Thread.currentThread().interrupt();
       }
     }
 

@@ -15,8 +15,8 @@ import org.apache.camel.Processor;
 import org.apache.camel.Route;
 import org.apache.camel.ServiceStatus;
 import org.apache.camel.impl.EventDrivenConsumerRoute;
+import org.apache.camel.json.simple.JsonObject;
 import org.json.JSONException;
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.info.BuildProperties;
 import org.springframework.stereotype.Service;
@@ -64,9 +64,11 @@ public class GetStatusProcessor implements Processor {
   public void process(Exchange exchange) {
     boolean showMemory = exchange.getIn().getHeaders().containsKey("memory");
     Map<String, Object> map = registerInfo(showMemory);
-    JSONObject obj = new JSONObject(map);
+    JsonObject obj = new JsonObject(map);
+    String s = obj.toString();
+    s = s.replace(",", ",\n").replace("[", "[\n ").replace("]", "]\n");
     try {
-      exchange.getIn().setBody(obj.toString(2).replace("\\/", "/"));
+      exchange.getIn().setBody(s.replace("\\/", "/"));
     } catch (JSONException e) {
       exchange.getIn().setBody(obj.toString());
     }
@@ -131,7 +133,11 @@ public class GetStatusProcessor implements Processor {
     for (Route route : routes) {
       String endpoint = route.getEndpoint().getEndpointKey();
       if (endpoint.contains("http://") && ((EventDrivenConsumerRoute) route).getStatus() == ServiceStatus.Started) {
-        endPoints.add(route.getEndpoint().getEndpointKey());
+        String key = route.getEndpoint().getEndpointKey();
+        if (key.indexOf("?") > 0) {
+          key = key.substring(0, key.indexOf("?"));
+        }
+        endPoints.add(key);
       }
     }
     return endPoints;

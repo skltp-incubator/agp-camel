@@ -2,21 +2,25 @@ package se.skltp.aggregatingservices.processors;
 
 import static se.skltp.aggregatingservices.constants.AgpProperties.HEADER_CONTENT_TYPE;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.util.DefaultIndenter;
+import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.lang.management.MemoryUsage;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import lombok.extern.log4j.Log4j2;
 import org.apache.camel.CamelContext;
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
 import org.apache.camel.Route;
 import org.apache.camel.ServiceStatus;
 import org.apache.camel.impl.EventDrivenConsumerRoute;
-import org.apache.camel.json.simple.JsonObject;
-import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.info.BuildProperties;
 import org.springframework.stereotype.Service;
@@ -24,6 +28,7 @@ import se.skltp.aggregatingservices.service.TakCacheService;
 import se.skltp.aggregatingservices.utils.MemoryUtil;
 import se.skltp.takcache.TakCacheLog;
 
+@Log4j2
 @Service
 public class GetStatusProcessor implements Processor {
 
@@ -64,14 +69,19 @@ public class GetStatusProcessor implements Processor {
   public void process(Exchange exchange) {
     boolean showMemory = exchange.getIn().getHeaders().containsKey("memory");
     Map<String, Object> map = registerInfo(showMemory);
-    JsonObject obj = new JsonObject(map);
-    String s = obj.toString();
-    s = s.replace(",", ",\n").replace("[", "[\n ").replace("]", "]\n");
+
+    String json = null;
     try {
-      exchange.getIn().setBody(s.replace("\\/", "/"));
-    } catch (JSONException e) {
-      exchange.getIn().setBody(obj.toString());
+      ObjectMapper mapper = new ObjectMapper();
+      DefaultPrettyPrinter p = new DefaultPrettyPrinter();
+      p.indentArraysWith(new DefaultIndenter().withLinefeed(System.lineSeparator()));
+      mapper.setDefaultPrettyPrinter(p);
+      json = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(map);
+    } catch (JsonProcessingException e) {
+      log.error("Error parsing Map to Json in GetStatusProcessor. Sending orinary string.");
+      json = map.toString();
     }
+    exchange.getIn().setBody(json.replace("\\/", "/"));
     exchange.getIn().getHeaders().put(HEADER_CONTENT_TYPE, "application/json");
   }
 
@@ -80,7 +90,7 @@ public class GetStatusProcessor implements Processor {
 
     map.put(KEY_APP_NAME, buildProperties.getName());
     map.put(KEY_APP_VERSION, buildProperties.getVersion());
-    map.put(KEY_APP_BUILD_TIME, buildProperties.getTime());
+    map.put(KEY_APP_BUILD_TIME, parseTimeValues(buildProperties.getTime()));
 
     ServiceStatus serviceStatus = camelContext.getStatus();
     map.put(KEY_SERVICE_STATUS, "" + serviceStatus);
@@ -109,6 +119,12 @@ public class GetStatusProcessor implements Processor {
     map.put(KEY_ENDPOINTS, getEndpointInfo());
     return map;
   }
+
+  private String parseTimeValues(Instant time) {
+    Date date = new Date(time.toEpochMilli());
+    return getFormattedDate(date);
+  }
+
 
   private String getNonHeapMemory() {
     MemoryUsage nonHeapMemoryUsage = MemoryUtil.getNonHeapMemoryUsage();

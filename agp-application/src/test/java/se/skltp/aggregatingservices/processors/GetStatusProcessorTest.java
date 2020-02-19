@@ -44,8 +44,8 @@ public class GetStatusProcessorTest extends CamelTestSupport {
     template.send(resultEndpoint, getStatusProcessor);
     Exchange exchange;
     exchange = resultEndpoint.getExchanges().get(0);
-    assert (exchange.getIn().getBody().toString().contains("Name\": \"" + name));
-    assert (exchange.getIn().getBody().toString().contains("Version\": \"" + version));
-    assert (exchange.getIn().getBody().toString().contains("ServiceStatus\": \"Started"));
+    assert (exchange.getIn().getBody().toString().contains("Name\" : \"" + name));
+    assert (exchange.getIn().getBody().toString().contains("Version\" : \"" + version));
+    assert (exchange.getIn().getBody().toString().contains("ServiceStatus\" : \"Started"));
   }
 }

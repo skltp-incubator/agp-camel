@@ -31,9 +31,9 @@ public class GetStatusIT {
 
     String statusResponse = producerTemplate.requestBody("jetty://{{agp.status.url}}", "body", String.class);
     assertTrue (statusResponse .startsWith("{") && statusResponse .endsWith("}"));
-    assertTrue (statusResponse.contains("Name\": \"" + name));
-    assertTrue (statusResponse.contains("Version\": \"" + version));
-    assertTrue (statusResponse.contains("ServiceStatus\": \"Started"));
+    assertTrue (statusResponse.contains("Name\" : \"" + name));
+    assertTrue (statusResponse.contains("Version\" : \"" + version));
+    assertTrue (statusResponse.contains("ServiceStatus\" : \"Started"));
   }
 
 }

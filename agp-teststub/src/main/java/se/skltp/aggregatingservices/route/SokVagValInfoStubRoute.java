@@ -1,6 +1,8 @@
 package se.skltp.aggregatingservices.route;
 
+import org.apache.camel.EndpointInject;
 import org.apache.camel.builder.RouteBuilder;
+import org.apache.camel.component.mock.MockEndpoint;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import se.skltp.aggregatingservices.config.TestStubConfiguration;
@@ -19,6 +21,9 @@ public class SokVagValInfoStubRoute extends RouteBuilder {
 
   protected String serviceAddress;
 
+  @EndpointInject(uri="mock:sokvagval:input")
+  MockEndpoint mock;
+
   @Autowired
   BehorighetResponseProcessor behorighetResponseProcessor;
 
@@ -31,6 +36,7 @@ public class SokVagValInfoStubRoute extends RouteBuilder {
   public void configure() throws Exception {
     from(serviceAddress).id("SokVagval.route")
         .log(">> SokVagval")
+        .to("mock:sokvagval:input")
         .choice()
             .when(header("operationName").isEqualTo("hamtaAllaAnropsBehorigheter"))
                 .process(behorighetResponseProcessor)
@@ -40,4 +46,7 @@ public class SokVagValInfoStubRoute extends RouteBuilder {
         .log("<< SokVagval");
   }
 
+  public MockEndpoint getMock() {
+    return mock;
+  }
 }

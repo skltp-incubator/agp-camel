@@ -6,7 +6,7 @@ import se.skltp.aggregatingservices.configuration.AgpServiceConfiguration;
 import se.skltp.aggregatingservices.riv.itintegration.engagementindex.findcontentresponder.v1.FindContentResponseType;
 import se.skltp.aggregatingservices.riv.itintegration.engagementindex.findcontentresponder.v1.FindContentType;
 
-public interface AgpServiceFactory<E, T> {
+public interface AgpServiceFactory<T> {
 
   void setAgpServiceConfiguration(AgpServiceConfiguration agpServiceConfiguration);
   FindContentType createFindContent(MessageContentsList queryObject);

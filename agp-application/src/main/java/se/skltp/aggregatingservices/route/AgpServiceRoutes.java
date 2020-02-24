@@ -14,11 +14,11 @@ import se.skltp.aggregatingservices.configuration.AgpServiceConfiguration;
 @Component
 public class AgpServiceRoutes extends RouteBuilder {
 
-  private static String INBOUND_SERVICE_CONFIGURATION = "cxf:%s"
+  public static final String INBOUND_SERVICE_CONFIGURATION = "cxf:%s"
       + "?wsdlURL=%s"
       + "&serviceClass=%s";
 
-  private static String OUTBOUND_SERVICE_CONFIGURATION = "cxf:%s"
+  public static final String OUTBOUND_SERVICE_CONFIGURATION = "cxf:%s"
       + "?wsdlURL=%s"
       + "&serviceClass=%s";
 

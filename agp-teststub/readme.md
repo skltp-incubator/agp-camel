@@ -26,12 +26,12 @@ Följande behörigheter genereras:
 | HSA-ID-5  | * |sample-sender-id|
 | HSA-ID-6  | * |sample-sender-id|
 | HSA-ID-1  | * |sample-original-consumer-hsaid|
-| HSA-ID-1  | * + "1" |sample-original-consumer-hsaid|
-| HSA-ID-77 | * + "1" |sample-original-consumer-hsaid|
-| HSA-ID-11 | * + "1" |sample-original-consumer-hsaid|
-| HSA-ID-12 | * + "1" |sample-original-consumer-hsaid|
-| HSA-ID-31 | * + "1" |sample-original-consumer-hsaid|
-| HSA-ID-32 | * + "1" |sample-original-consumer-hsaid|
+| HSA-ID-1  | * |sample-original-consumer-hsaid|
+| HSA-ID-77 | * |sample-original-consumer-hsaid|
+| HSA-ID-11 | * |sample-original-consumer-hsaid|
+| HSA-ID-12 | * |sample-original-consumer-hsaid|
+| HSA-ID-31 | * |sample-original-consumer-hsaid|
+| HSA-ID-32 | * |sample-original-consumer-hsaid|
 | HSA-ID-FEL | random num | TK_HSA-ID-FEL |
 | HSA-ID-FEL | random num | TK_HSA-ID-FEL |
 

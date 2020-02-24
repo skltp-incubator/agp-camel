@@ -9,4 +9,6 @@ public class AgpProperties {
   public static final String AGP_VP_INSTANCE_ID = "x-vp-instance-id";
   public static final String AGP_RIVTA_ORIGINAL_CONSUMER_ID = "x-rivta-original-serviceconsumer-hsaid";
   public static final String AGP_SKLTP_CORRELATION_ID = "x-skltp-correlation-id";
+  //Move to HttpHeaders, if more items show up...
+  public static final String HEADER_CONTENT_TYPE = "Content-type";
 }

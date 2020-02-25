@@ -1,6 +1,7 @@
 package se.skltp.aggregatingservices.integrationtests;
 
 import static org.junit.Assert.assertTrue;
+
 import org.apache.camel.Produce;
 import org.apache.camel.ProducerTemplate;
 import org.apache.camel.test.spring.CamelSpringBootRunner;
@@ -9,12 +10,10 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.info.BuildProperties;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.TestPropertySource;
 import se.skltp.aggregatingservices.AgpApplication;
 
 @RunWith(CamelSpringBootRunner.class)
 @SpringBootTest(classes = AgpApplication.class)
-@TestPropertySource("classpath:application.properties")
 public class GetStatusIT {
 
   @Produce

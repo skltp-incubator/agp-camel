@@ -12,7 +12,7 @@ import se.skltp.aggregatingservices.utility.FindContentUtil;
 import se.skltp.aggregatingservices.utility.RequestListUtil;
 
 @Log4j2
-public abstract class AgServiceFactoryBase<E, T> implements AgpServiceFactory<E, T> {
+public abstract class AgServiceFactoryBase<E, T> implements AgpServiceFactory<T> {
 
   AgpServiceConfiguration agpServiceConfiguration;
 

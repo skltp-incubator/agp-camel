@@ -54,6 +54,7 @@ public class AgpRoute extends RouteBuilder {
         .to(EI_FINDCONTENT_URI).id("to.findcontent")
         .process(createRequestListProcessor)
         .removeHeader("SoapAction")
+        .setHeader(AGP_VP_SENDER_ID, exchangeProperty(AGP_VP_SENDER_ID))
         .split(body()).parallelProcessing(true).aggregationStrategy(agpAggregationStrategy)
             .setProperty("LogicalAddress").exchange(ex -> ex.getIn().getBody(MessageContentsList.class).get(0))
             .log("req-out")

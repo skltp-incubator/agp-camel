@@ -25,12 +25,25 @@ public class TakCacheServiceImpl implements TakCacheService {
 
   List<String> takContracts;
 
+  List<AgpServiceConfiguration> serviceConfigurationList;
+
 
   @Autowired
   public TakCacheServiceImpl(TakCache takCache, List<AgpServiceConfiguration> serviceConfigurationList) {
-    this.takContracts = serviceConfigurationList.stream().map(conf -> conf.getTakContract()).collect(Collectors.toList());
+    this.serviceConfigurationList = serviceConfigurationList;
     this.takCache = takCache;
     this.behorighetHandler = new BehorighetHandlerImpl(takCache);
+    resetTakContracts();
+  }
+
+  @Override
+  public void setTakContracts(List<String> takContracts) {
+    this.takContracts = takContracts;
+  }
+
+  @Override
+  public void resetTakContracts() {
+    this.takContracts = serviceConfigurationList.stream().map(conf -> conf.getTakContract()).collect(Collectors.toList());
   }
 
   @Override

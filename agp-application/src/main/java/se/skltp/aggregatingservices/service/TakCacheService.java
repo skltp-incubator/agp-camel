@@ -1,9 +1,14 @@
 package se.skltp.aggregatingservices.service;
 
 import java.util.Date;
+import java.util.List;
 import se.skltp.takcache.TakCacheLog;
 
 public interface TakCacheService {
+
+  void setTakContracts(List<String> takContracts);
+
+  void resetTakContracts();
 
   TakCacheLog refresh();
 

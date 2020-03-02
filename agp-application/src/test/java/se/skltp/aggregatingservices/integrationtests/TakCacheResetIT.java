@@ -7,14 +7,17 @@ import static org.junit.Assert.assertTrue;
 import static se.skltp.aggregatingservices.data.TestDataDefines.SAMPLE_SENDER_ID;
 import static se.skltp.aggregatingservices.data.TestDataDefines.TEST_LOGICAL_ADDRESS_1;
 
+import java.util.Arrays;
 import org.apache.camel.Produce;
 import org.apache.camel.ProducerTemplate;
 import org.apache.camel.test.spring.CamelSpringBootRunner;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 import se.skltp.aggregatingservices.AgpApplication;
 import se.skltp.aggregatingservices.data.BehorighetTestData;
 import se.skltp.aggregatingservices.service.TakCacheService;
@@ -39,6 +42,13 @@ public class TakCacheResetIT {
     behorighetTestData.resetAnropsBehorigheterResponse();
     behorighetTestData.generateBehorighetDefaultStubData("test.namespace.1");
     behorighetTestData.generateBehorighetDefaultStubData("test.namespace.2");
+    takCacheService.setTakContracts(Arrays.asList("test.namespace.1", "test.namespace.2"));
+  }
+
+  @After
+  public void tearDown(){
+    takCacheService.resetTakContracts();
+    takCacheService.refresh();
   }
 
   @Test
@@ -51,7 +61,7 @@ public class TakCacheResetIT {
     assertEquals( true, takCacheService.isInitalized() );
 
     TakCacheLog takCacheLog = takCacheService.getLastRefreshLog();
-    assertEquals( 30, takCacheLog.getNumberBehorigheter());
+    assertEquals( 26, takCacheLog.getNumberBehorigheter());
   }
 
   @Test
@@ -61,6 +71,7 @@ public class TakCacheResetIT {
     String result =   template.requestBody("jetty://{{reset.cache.url}}", "body", String.class);
 
     // See agp-teststub/readme.md for information about the TAK data generated.
+    assertTrue(takCacheService.isAuthorized(SAMPLE_SENDER_ID, "test.namespace.1", TEST_LOGICAL_ADDRESS_1));
     assertTrue(takCacheService.isAuthorized(SAMPLE_SENDER_ID, "test.namespace.2", TEST_LOGICAL_ADDRESS_1));
     assertFalse(takCacheService.isAuthorized(SAMPLE_SENDER_ID, "test.namespace.3", TEST_LOGICAL_ADDRESS_1));
  }

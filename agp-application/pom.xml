@@ -97,6 +97,12 @@
     </dependency>
     <dependency>
       <groupId>se.skltp.agp</groupId>
+      <artifactId>GetLaboratoryOrderOutcome</artifactId>
+      <version>${project.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>se.skltp.agp</groupId>
       <artifactId>agp-teststub</artifactId>
       <version>${project.version}</version>
       <scope>test</scope>
@@ -105,8 +111,22 @@
       <groupId>se.skltp.agp</groupId>
       <artifactId>GetLaboratoryOrderOutcome-schemas</artifactId>
       <version>${project.version}</version>
-      <scope>Test</scope>
+      <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>se.skltp.agp</groupId>
+      <artifactId>GetLaboratoryOrderOutcome-teststub</artifactId>
+      <version>${project.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>pl.pragmatists</groupId>
+      <artifactId>JUnitParams</artifactId>
+      <version>1.1.0</version>
+      <scope>test</scope>
+    </dependency>
+
+
 
     <dependency>
       <groupId>se.skltp.takdatahandler</groupId>

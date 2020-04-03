@@ -3,6 +3,8 @@ package se.skltp.aggregatingservices.constants;
 public class AgpProperties {
   public static final String AGP_SERVICE_HANDLER = "AgpServiceFactory";
   public static final String AGP_ORIGINAL_QUERY = "QueryObject";
+  public static final String AGP_LOG_EXTRA_INFO = "LogExtraInfo";
+
   public static final String AGP_PRODUCER_ROUTE_NAME = "ProducerRouteName";
   public static final String AGP_TAK_CONTRACT_NAME = "TakContractName";
   public static final String AGP_VP_SENDER_ID = "x-vp-sender-id";

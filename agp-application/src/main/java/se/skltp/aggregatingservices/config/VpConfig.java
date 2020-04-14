@@ -21,8 +21,5 @@ public class VpConfig {
 	// boolean disconnect=false;
 	// boolean keepAlive=true;
 	// int connect.timeout=2000
-	
-	String senderId;
-	
 	String instanceId;
 }

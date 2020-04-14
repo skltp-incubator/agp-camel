@@ -35,15 +35,13 @@ public class SokVagValInfoStubRoute extends RouteBuilder {
   @Override
   public void configure() throws Exception {
     from(serviceAddress).id("SokVagval.route")
-        .log(">> SokVagval")
         .to("mock:sokvagval:input")
         .choice()
             .when(header("operationName").isEqualTo("hamtaAllaAnropsBehorigheter"))
                 .process(behorighetResponseProcessor)
             .when(header("operationName").isEqualTo("hamtaAllaVirtualiseringar"))
                 .log("Not implemented!")
-        .end()
-        .log("<< SokVagval");
+        .end();
   }
 
   public MockEndpoint getMock() {

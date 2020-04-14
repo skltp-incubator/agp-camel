@@ -1,10 +1,8 @@
 package se.skltp.aggregatingservices.processors;
 
 import static se.skltp.aggregatingservices.constants.AgpProperties.AGP_ORIGINAL_QUERY;
-import static se.skltp.aggregatingservices.constants.AgpProperties.AGP_RIVTA_ORIGINAL_CONSUMER_ID;
 import static se.skltp.aggregatingservices.constants.AgpProperties.AGP_SERVICE_HANDLER;
 import static se.skltp.aggregatingservices.constants.AgpProperties.AGP_TAK_CONTRACT_NAME;
-import static se.skltp.aggregatingservices.constants.AgpProperties.AGP_VP_SENDER_ID;
 
 import java.util.Iterator;
 import java.util.List;
@@ -15,6 +13,7 @@ import org.apache.cxf.message.MessageContentsList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import se.skltp.aggregatingservices.api.AgpServiceFactory;
+import se.skltp.aggregatingservices.constants.AgpHeaders;
 import se.skltp.aggregatingservices.riv.itintegration.engagementindex.findcontentresponder.v1.FindContentResponseType;
 import se.skltp.aggregatingservices.riv.itintegration.engagementindex.v1.EngagementType;
 import se.skltp.aggregatingservices.service.Authority;
@@ -61,8 +60,8 @@ public class CreateRequestListProcessor implements Processor {
 
   protected Authority createAuthorityFromExcange(Exchange exchange){
     Authority authority = new Authority();
-    authority.setSenderId(exchange.getProperty(AGP_VP_SENDER_ID, String.class));
-    authority.setOriginalSenderId(exchange.getProperty(AGP_RIVTA_ORIGINAL_CONSUMER_ID, String.class));
+    authority.setSenderId(exchange.getProperty(AgpHeaders.X_VP_SENDER_ID, String.class));
+    authority.setOriginalSenderId(exchange.getProperty(AgpHeaders.X_RIVTA_ORIGINAL_SERVICE_CONSUMER_HSA_ID, String.class));
     authority.setServicecontractNamespace(exchange.getProperty(AGP_TAK_CONTRACT_NAME, String.class));
     return authority;
   }

@@ -4,51 +4,34 @@ import java.util.Map;
 import lombok.Data;
 
 @Data
-public class LogData {
+public class LogEntry {
+  public static final String LOG_EVENT_INFO = "logEvent-info";
+  public static final String LOG_EVENT_ERROR = "logEvent-error";
+  public static final String LOG_EVENT_DEBUG = "logEvent-debug";
 
-  String logMessage;
-  String serviceImpl;
-  String host;
-  String componentId;
-  String endpoint;
-  String messageId;
-  String businessCorrelationId;
-  String payload;
-  Map<String, Object> extrainfo;
+  public static final String MSG_TYPE_LOG_REQ_IN = "req-in";
+  public static final String MSG_TYPE_LOG_REQ_OUT = "req-out";
+  public static final String MSG_TYPE_LOG_RESP_IN = "resp-in";
+  public static final String MSG_TYPE_LOG_RESP_OUT = "resp-out";
+  public static final String MSG_TYPE_ERROR = "error";
+
+  private String logLevel;
+  private String logMessage;
+  private String serviceImpl;
+  private String host;
+  private String componentId;
+  private String endpoint;
+  private String messageId;
+  private String businessCorrelationId;
+  private String payload;
+  private Map<String, String> extrainfo;
 
   @Override
   public String toString() {
-    return String.format(
-        "LogMessage=%s\n"
-            + "ServiceImpl=%s\n"
-            + "Host=%s\n"
-            + "ComponentId=%s\n"
-            + "Endpoint=%s\n"
-            + "MessageId=%s\n"
-            + "BusinessCorrelationId=%s\n"
-            + "ExtraInfo=\n%s\n"
-            + "payload=%s"
-        , logMessage
-        , serviceImpl
-        , host
-        , componentId
-        , endpoint
-        , messageId
-        , businessCorrelationId
-        , getExtrainfoAsString()
-        , payload
-    );
+    return LogEntryFormatter.format(this);
   }
 
-  private String getExtrainfoAsString() {
-    StringBuilder stringBuilder = new StringBuilder();
-    for (Map.Entry<String, Object> entry : extrainfo.entrySet()) {
-      stringBuilder.append(String.format("-%s=%s\n",
-          entry.getKey(),
-          entry.getValue()));
-    }
-    return stringBuilder.toString();
-  }
+
 }
 
 

@@ -1,5 +1,6 @@
 package se.skltp.aggregatingservices.aggregate;
 
+import static se.skltp.aggregatingservices.constants.AgpProperties.LOGICAL_ADDRESS;
 import static se.skltp.agp.riv.interoperability.headers.v1.StatusCodeEnum.DATA_FROM_SOURCE;
 import static se.skltp.agp.riv.interoperability.headers.v1.StatusCodeEnum.NO_DATA_SYNCH_FAILED;
 
@@ -32,7 +33,7 @@ public class AgpAggregationStrategy implements AggregationStrategy {
 
   private void updateAggregatedResponse(Exchange newExchange, AggregatedResponseResults aggregatedResponseResults) {
     final ProcessingStatusRecordType statusRecord;
-    final String logicalAddress = newExchange.getProperty("LogicalAddress", String.class);
+    final String logicalAddress = newExchange.getProperty(LOGICAL_ADDRESS, String.class);
     if(newExchange.isFailed() || newExchange.getException() != null){
       final Exception exception = newExchange.getException();
       // TODO log nice message here

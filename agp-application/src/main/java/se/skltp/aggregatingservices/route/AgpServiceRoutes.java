@@ -1,6 +1,6 @@
 package se.skltp.aggregatingservices.route;
 
-import static se.skltp.aggregatingservices.constants.AgpProperties.AGP_PRODUCER_ROUTE_NAME;
+import static se.skltp.aggregatingservices.constants.AgpProperties.AGP_SERVICE_COMPONENT_ID;
 import static se.skltp.aggregatingservices.constants.AgpProperties.AGP_SERVICE_HANDLER;
 import static se.skltp.aggregatingservices.constants.AgpProperties.AGP_TAK_CONTRACT_NAME;
 
@@ -16,11 +16,13 @@ public class AgpServiceRoutes extends RouteBuilder {
 
   public static final String INBOUND_SERVICE_CONFIGURATION = "cxf:%s"
       + "?wsdlURL=%s"
-      + "&serviceClass=%s";
+      + "&serviceClass=%s"
+      + "&cxfBinding=#messageLogger";
 
   public static final String OUTBOUND_SERVICE_CONFIGURATION = "cxf:%s"
       + "?wsdlURL=%s"
-      + "&serviceClass=%s";
+      + "&serviceClass=%s"
+      + "&cxfBinding=#messageLogger";
 
   List<AgpServiceConfiguration> serviceConfigurations;
 
@@ -37,6 +39,7 @@ public class AgpServiceRoutes extends RouteBuilder {
   }
 
   private void createServiceRoute(AgpServiceConfiguration serviceConfiguration) throws Exception {
+
     // Set inbound props
     String inboundServiceAddress = String.format(INBOUND_SERVICE_CONFIGURATION
         , serviceConfiguration.getInboundServiceURL()
@@ -56,9 +59,10 @@ public class AgpServiceRoutes extends RouteBuilder {
 
     from(inboundServiceAddress).id(inRouteName).streamCaching()
         .setProperty(AGP_SERVICE_HANDLER).exchange(ex -> agpServiceFactory)
-        .setProperty(AGP_PRODUCER_ROUTE_NAME, simple(directRouteToProducer))
+        .setProperty(AGP_SERVICE_COMPONENT_ID, simple(directRouteToProducer))
         .setProperty(AGP_TAK_CONTRACT_NAME, simple(serviceConfiguration.getTakContract()))
         .to("direct:agproute");
+
 
     from("direct:" + directRouteToProducer).id(outRouteName)
         .to(outboundServiceAddress);

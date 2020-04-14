@@ -6,7 +6,7 @@ import org.slf4j.helpers.MessageFormatter;
 
 
 @Log4j2
-public class LogMessageFormatter {
+public class LogEntryFormatter {
 
   private static final String MSG_ID = "skltp-messages";
   private static final String LOG_STRING = MSG_ID +
@@ -16,14 +16,15 @@ public class LogMessageFormatter {
       "\n** {}.end *************************************************************";
 
 
-  private LogMessageFormatter() {
+  private LogEntryFormatter() {
     // Static utility class
   }
 
 
 
-  protected static String format(String logEventName, LogEntry logEntry) {
+  protected static String format(LogEntry logEntry) {
 
+    String logLevel                 = logEntry.getLogLevel();
     String logMessage              = logEntry.getLogMessage();
     String serviceImplementation   = logEntry.getServiceImpl();
     String host                    = logEntry.getHost();
@@ -41,8 +42,8 @@ public class LogMessageFormatter {
 //      stackTrace.append('\n').append("Stacktrace=").append(lmeException.getStackTrace());
 //    }
     return MessageFormatter
-        .arrayFormat(LOG_STRING, new String[] {logEventName, logMessage, serviceImplementation,
-           host, componentId, endpoint, messageId, businessCorrelationId, extraInfoString, payload, stackTrace.toString(), logEventName}).getMessage();
+        .arrayFormat(LOG_STRING, new String[] {logLevel, logMessage, serviceImplementation,
+           host, componentId, endpoint, messageId, businessCorrelationId, extraInfoString, payload, stackTrace.toString(), logLevel}).getMessage();
   }
 
 

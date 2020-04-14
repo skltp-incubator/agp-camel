@@ -24,7 +24,7 @@
     <AsyncLogger name="se.skltp.aggregatingservices.AgpApplication" level="INFO"/>
 
     <!--Apache camel-->
-    <AsyncLogger name="org.apache.camel" level="INFO"/>
+    <AsyncLogger name="org.apache.camel" level="WARN"/>
 
     <!-- Message logging -->
 <!--    <AsyncLogger name="se.skltp.aggregatingservices.message.logging" level="DEBUG"/>-->

@@ -36,10 +36,8 @@ public class FindContentStubRoute extends RouteBuilder {
   @Override
   public void configure() throws Exception {
     from(serviceAddress).id("FindContent.route")
-        .log(">> FindContent")
         .to("mock:findcontent:input")
-        .process(findContentResponseProcessor)
-        .log("<< FindContent");
+        .process(findContentResponseProcessor);
   }
 
   public MockEndpoint getMock() {

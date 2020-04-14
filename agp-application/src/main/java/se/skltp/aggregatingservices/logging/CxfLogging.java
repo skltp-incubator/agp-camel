@@ -1,14 +1,13 @@
-package se.skltp.aggregatingservices.camel;
+package se.skltp.aggregatingservices.logging;
 
 import java.util.Map;
 import lombok.extern.log4j.Log4j2;
 import org.apache.camel.Exchange;
 import org.apache.camel.component.cxf.DefaultCxfBinding;
-import se.skltp.aggregatingservices.logging.MessageInfoLogger;
 
 
 @Log4j2
-public class AgpCxfBinding extends DefaultCxfBinding {
+public class CxfLogging extends DefaultCxfBinding {
 
   @Override
   public void populateExchangeFromCxfResponse(Exchange camelExchange,

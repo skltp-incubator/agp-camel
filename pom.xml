@@ -34,10 +34,12 @@
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <camel.version>2.24.0</camel.version>
     <spring.boot-version>2.1.1.RELEASE</spring.boot-version>
+    <hawtio.spring.boot-version>2.6.0</hawtio.spring.boot-version>
     <lombok.version>1.18.10</lombok.version>
     <apache-cfx.version>3.2.7</apache-cfx.version>
     <cxf.xjc.version>3.2.3</cxf.xjc.version>
     <takdatahandler.version>1.1.0</takdatahandler.version>
+    <lmax_disruptor-version>3.3.6</lmax_disruptor-version>
 
     <maven.javadoc.skip>true</maven.javadoc.skip>
 
@@ -66,11 +68,45 @@
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter</artifactId>
         <version>${spring.boot-version}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-tomcat</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-logging</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-undertow</artifactId>
+        <version>${spring.boot-version}</version>
       </dependency>
       <dependency>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-autoconfigure</artifactId>
         <version>${spring.boot-version}</version>
+      </dependency>
+
+      <!-- logging -->
+      <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-log4j2</artifactId>
+        <version>${spring.boot-version}</version>
+      </dependency>
+      <!-- for async logging -->
+      <dependency>
+        <groupId>com.lmax</groupId>
+        <artifactId>disruptor</artifactId>
+        <version>${lmax_disruptor-version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>io.hawt</groupId>
+        <artifactId>hawtio-springboot</artifactId>
+        <version>${hawtio.spring.boot-version}</version>
       </dependency>
 
       <dependency>

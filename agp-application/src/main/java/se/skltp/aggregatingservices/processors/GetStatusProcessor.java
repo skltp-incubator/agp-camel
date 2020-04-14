@@ -1,7 +1,5 @@
 package se.skltp.aggregatingservices.processors;
 
-import static se.skltp.aggregatingservices.constants.AgpProperties.HEADER_CONTENT_TYPE;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.util.DefaultIndenter;
 import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
@@ -24,6 +22,7 @@ import org.apache.camel.impl.EventDrivenConsumerRoute;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.info.BuildProperties;
 import org.springframework.stereotype.Service;
+import se.skltp.aggregatingservices.constants.AgpHeaders;
 import se.skltp.aggregatingservices.service.TakCacheService;
 import se.skltp.aggregatingservices.utils.MemoryUtil;
 import se.skltp.takcache.TakCacheLog;
@@ -82,7 +81,7 @@ public class GetStatusProcessor implements Processor {
       json = map.toString();
     }
     exchange.getIn().setBody(json.replace("\\/", "/"));
-    exchange.getIn().getHeaders().put(HEADER_CONTENT_TYPE, "application/json");
+    exchange.getIn().getHeaders().put(AgpHeaders.HEADER_CONTENT_TYPE, "application/json");
   }
 
   private Map<String, Object> registerInfo(boolean showMemory) {

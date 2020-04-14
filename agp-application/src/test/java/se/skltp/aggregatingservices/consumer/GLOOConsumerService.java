@@ -1,11 +1,7 @@
 package se.skltp.aggregatingservices.consumer;
 
-import static se.skltp.aggregatingservices.constants.AgpProperties.AGP_RIVTA_ORIGINAL_CONSUMER_ID;
-import static se.skltp.aggregatingservices.constants.AgpProperties.AGP_SKLTP_CORRELATION_ID;
-import static se.skltp.aggregatingservices.constants.AgpProperties.AGP_VP_SENDER_ID;
 import static se.skltp.aggregatingservices.data.TestDataDefines.SAMPLE_SENDER_ID;
 import static se.skltp.aggregatingservices.data.TestDataDefines.TEST_LOGICAL_ADDRESS_1;
-import static se.skltp.aggregatingservices.route.AgpServiceRoutes.OUTBOUND_SERVICE_CONFIGURATION;
 
 import java.util.HashMap;
 import java.util.List;
@@ -21,6 +17,7 @@ import org.apache.cxf.headers.Header;
 import org.apache.cxf.message.MessageContentsList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import se.skltp.aggregatingservices.constants.AgpHeaders;
 import se.skltp.aggregatingservices.riv.clinicalprocess.healthcond.actoutcome.getaggregatedlaboratoryorderoutcome.AgpServiceConfiguration;
 import se.skltp.aggregatingservices.utils.JaxbUtil;
 import se.skltp.aggregatingservices.utils.RequestUtil;
@@ -29,6 +26,10 @@ import se.skltp.agp.riv.interoperability.headers.v1.ProcessingStatusType;
 
 @Service
 public class GLOOConsumerService implements ConsumerService {
+
+  public static final String GLOO_SERVICE_ADDRESS = "cxf:%s"
+      + "?wsdlURL=%s"
+      + "&serviceClass=%s";
 
   @Produce
   protected ProducerTemplate template;
@@ -50,9 +51,9 @@ public class GLOOConsumerService implements ConsumerService {
   public ServiceResponse callService(String senderId, String originalId,  String logicalAddress, String patientId  ) {
     Map<String, Object> headers = new HashMap();
 
-    headers.put(AGP_RIVTA_ORIGINAL_CONSUMER_ID, originalId);
-    headers.put(AGP_VP_SENDER_ID, senderId);
-    headers.put(AGP_SKLTP_CORRELATION_ID, "corr-id");
+    headers.put(AgpHeaders.X_RIVTA_ORIGINAL_SERVICE_CONSUMER_HSA_ID, originalId);
+    headers.put(AgpHeaders.X_VP_SENDER_ID, senderId);
+    headers.put(AgpHeaders.X_SKLTP_CORRELATION_ID, "corr-id");
 
     final MessageContentsList testRequest = RequestUtil.createTestMessageContentsList(logicalAddress, patientId);
 
@@ -81,7 +82,7 @@ public class GLOOConsumerService implements ConsumerService {
   }
 
   protected String getAddress() {
-    return String.format(OUTBOUND_SERVICE_CONFIGURATION
+    return String.format(GLOO_SERVICE_ADDRESS
         , serviceConfiguration.getInboundServiceURL()
         , serviceConfiguration.getInboundServiceWsdl()
         , serviceConfiguration.getInboundServiceClass());

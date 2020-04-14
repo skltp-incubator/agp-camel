@@ -1,15 +1,11 @@
-package se.skltp.aggregatingservices;
+package se.skltp.aggregatingservices.processors;
 
 import org.apache.camel.test.junit4.CamelTestSupport;
-import org.apache.camel.test.spring.CamelSpringRunner;
-import org.apache.camel.test.spring.MockEndpoints;
-import org.junit.runner.RunWith;
-import org.springframework.test.context.TestPropertySource;
 
-@RunWith(CamelSpringRunner.class)
+//@RunWith(CamelSpringRunner.class)
 //@ContextConfiguration(classes = {HandleHttpHeadersProcessor.class, VpConfig.class})
-@TestPropertySource("classpath:application.properties")
-@MockEndpoints("direct:end")
+//@TestPropertySource("classpath:application.properties")
+//@MockEndpoints("direct:end")
 public class HandleHttpHeadersProcessorTest extends CamelTestSupport {
 	
 //	@Autowired

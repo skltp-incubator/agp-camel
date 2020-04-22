@@ -75,7 +75,7 @@ public class GLOOConsumerService implements ConsumerService {
 
   private ProcessingStatusType getProcessingStatus(Message response) {
     List<SoapHeader> soapHeaders = (List<SoapHeader>) response.getHeader(Header.HEADER_LIST);
-    if(!soapHeaders.isEmpty()){
+    if(soapHeaders != null && !soapHeaders.isEmpty()){
       return (ProcessingStatusType) jaxbUtil.unmarshal(soapHeaders.get(0).getObject());
     }
     return null;

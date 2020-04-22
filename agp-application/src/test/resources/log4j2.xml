@@ -4,11 +4,19 @@
     <Property name="LOG_PATTERN">
       %d %-5p [%t] %-30c - %X{corr.id} %m%n
     </Property>
+    <Property name="PAYLOAD_LOG_PATTERN">
+      %d %-5p [%t] %-30c - %X{corr.id} skltp-payload - %m%n
+    </Property>
   </Properties>
 
   <Appenders>
     <Console name="Console" target="SYSTEM_OUT">
       <PatternLayout pattern="${LOG_PATTERN}"/>
+    </Console>
+
+    <Console name="Payload" target="SYSTEM_OUT">
+      <MarkerFilter marker="PAYLOAD" onMatch="ACCEPT" onMismatch="DENY"/>
+      <PatternLayout pattern="${PAYLOAD_LOG_PATTERN}"/>
     </Console>
   </Appenders>
 
@@ -26,17 +34,27 @@
     <!--Apache camel-->
     <AsyncLogger name="org.apache.camel" level="WARN"/>
 
+
+    <!--    Cxf payload logging - on if INFO level-->
+    <AsyncLogger name="org.apache.cxf.services" level="INFO" additivity="false">
+        <AppenderRef ref="Payload"/>
+    </AsyncLogger>
+
+
     <!-- Message logging -->
-<!--    <AsyncLogger name="se.skltp.aggregatingservices.message.logging" level="DEBUG"/>-->
-    <AsyncLogger name="se.skltp.aggregatingservices.logging.req.in" level="DEBUG"/>
-    <AsyncLogger name="se.skltp.aggregatingservices.logging.req.out" level="DEBUG"/>
-    <AsyncLogger name="se.skltp.aggregatingservices.logging.resp.in" level="DEBUG"/>
-    <AsyncLogger name="se.skltp.aggregatingservices.logging.resp.out" level="DEBUG"/>
+    <AsyncLogger name="se.skltp.aggregatingservices.logging.req.in" level="INFO"/>
+    <AsyncLogger name="se.skltp.aggregatingservices.logging.req.out" level="INFO"/>
+    <AsyncLogger name="se.skltp.aggregatingservices.logging.resp.in" level="INFO"/>
+    <AsyncLogger name="se.skltp.aggregatingservices.logging.resp.out" level="INFO"/>
+
+    <!-- Message Payload logging -->
+    <AsyncLogger name="se.skltp.aggregatingservices.logging.payload" level="INFO"/>
 
 
     <AsyncRoot level="WARN">
       <!--<AppenderRef ref="RollingRandomAccessFile"/>-->
       <AppenderRef ref="Console"/>
+<!--      <AppenderRef ref="Payload"/>-->
     </AsyncRoot>
 
   </Loggers>

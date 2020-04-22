@@ -11,7 +11,7 @@ import java.net.InetAddress;
 import lombok.extern.log4j.Log4j2;
 import org.apache.camel.Exchange;
 import org.apache.camel.component.cxf.CxfEndpoint;
-import org.apache.logging.log4j.ThreadContext;
+import se.skltp.aggregatingservices.constants.AgpProperties;
 
 @Log4j2
 public class LogEntryBuilder {
@@ -40,8 +40,7 @@ public class LogEntryBuilder {
     LogEntry logEntry = new LogEntry();
 
     String businessCorrelationId = exchange.getIn().getHeader(X_SKLTP_CORRELATION_ID, "", String.class);
-    ThreadContext.put("corr.id", String.format("[%s]", businessCorrelationId));
-    String messageId = exchange.getMessage().getMessageId();
+    String messageId = exchange.getProperty(AgpProperties.MESSAGE_EXCHANGE_ID, String.class);
     String componentId = exchange.getProperty(AGP_SERVICE_COMPONENT_ID, String.class);
 
     logEntry.setLogLevel(logLevel);

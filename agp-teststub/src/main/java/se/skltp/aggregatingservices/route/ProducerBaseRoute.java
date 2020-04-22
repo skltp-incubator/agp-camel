@@ -14,8 +14,7 @@ import se.skltp.aggregatingservices.processors.ProducerResponseProcessor;
 public class ProducerBaseRoute extends RouteBuilder {
    private static String SERVICE_CONFIGURATION="cxf:%s"
       + "?wsdlURL=%s"
-      + "&serviceClass=%s"
-      + "&loggingFeatureEnabled=true";
+      + "&serviceClass=%s";
 
   List<TestProducerConfiguration> testProducerConfigurations;
 

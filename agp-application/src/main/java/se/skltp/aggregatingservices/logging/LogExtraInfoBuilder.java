@@ -56,7 +56,8 @@ public class LogExtraInfoBuilder {
 
   private static Long getElapsedTime(Exchange exchange) {
     Date created = exchange.getProperty(Exchange.CREATED_TIMESTAMP, Date.class);
-    return new Date().getTime() - created.getTime();
+
+    return created==null ?  0 : new Date().getTime() - created.getTime();
   }
 
   private static String nullValue2Blank(String s) {

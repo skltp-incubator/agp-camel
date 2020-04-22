@@ -27,9 +27,6 @@ public class MessageInfoLogger {
   private static final Logger LOGGER_RESP_OUT = LogManager.getLogger(RESP_OUT);
   private static final Logger LOGGER_ERROR = LogManager.getLogger(REQ_ERROR);
 
-
-
-
   public static void logReqIn(Exchange exchange) {
     log(LOGGER_REQ_IN, exchange, MSG_TYPE_LOG_REQ_IN);
   }

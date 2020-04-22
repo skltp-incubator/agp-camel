@@ -8,6 +8,7 @@ import java.util.Iterator;
 import java.util.List;
 import lombok.extern.log4j.Log4j2;
 import org.apache.camel.Exchange;
+import org.apache.camel.Message;
 import org.apache.camel.Processor;
 import org.apache.cxf.message.MessageContentsList;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,8 +61,9 @@ public class CreateRequestListProcessor implements Processor {
 
   protected Authority createAuthorityFromExcange(Exchange exchange){
     Authority authority = new Authority();
-    authority.setSenderId(exchange.getProperty(AgpHeaders.X_VP_SENDER_ID, String.class));
-    authority.setOriginalSenderId(exchange.getProperty(AgpHeaders.X_RIVTA_ORIGINAL_SERVICE_CONSUMER_HSA_ID, String.class));
+    final Message in = exchange.getIn();
+    authority.setSenderId(in.getHeader(AgpHeaders.X_VP_SENDER_ID, String.class));
+    authority.setOriginalSenderId(in.getHeader(AgpHeaders.X_RIVTA_ORIGINAL_SERVICE_CONSUMER_HSA_ID, String.class));
     authority.setServicecontractNamespace(exchange.getProperty(AGP_TAK_CONTRACT_NAME, String.class));
     return authority;
   }

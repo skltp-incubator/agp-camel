@@ -108,8 +108,8 @@ public class CreateRequestListProcessorTest {
 
     ex.setProperty(AGP_ORIGINAL_QUERY, RequestUtil.createTestMessageContentsList());
     ex.setProperty(AGP_SERVICE_HANDLER, AgpServiceFactoryImpl.createInstance("domain1", "cat1"));
-    ex.setProperty(AgpHeaders.X_VP_SENDER_ID, "sender1");
-    ex.setProperty(AgpHeaders.X_RIVTA_ORIGINAL_SERVICE_CONSUMER_HSA_ID, "org_sender1");
+    ex.getIn().setHeader(AgpHeaders.X_VP_SENDER_ID, "sender1");
+    ex.getIn().setHeader(AgpHeaders.X_RIVTA_ORIGINAL_SERVICE_CONSUMER_HSA_ID, "org_sender1");
     ex.setProperty(AGP_TAK_CONTRACT_NAME, "ns:1");
     ex.getIn().setBody(FindContentUtil.createMessageContentsList(TEST_RR_ID_MANY_HITS_NO_ERRORS));
 

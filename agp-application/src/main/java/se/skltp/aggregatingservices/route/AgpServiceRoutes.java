@@ -17,12 +17,17 @@ public class AgpServiceRoutes extends RouteBuilder {
   public static final String INBOUND_SERVICE_CONFIGURATION = "cxf:%s"
       + "?wsdlURL=%s"
       + "&serviceClass=%s"
-      + "&cxfBinding=#messageLogger";
+      + "&beanId=%s"
+      + "&cxfBinding=#messageLogger"
+      + "&features=#loggingFeatures";
 
   public static final String OUTBOUND_SERVICE_CONFIGURATION = "cxf:%s"
       + "?wsdlURL=%s"
       + "&serviceClass=%s"
-      + "&cxfBinding=#messageLogger";
+      + "&beanId=%s"
+      + "&cxfBinding=#messageLogger"
+      + "&features=#loggingFeatures";
+
 
   List<AgpServiceConfiguration> serviceConfigurations;
 
@@ -44,16 +49,20 @@ public class AgpServiceRoutes extends RouteBuilder {
     String inboundServiceAddress = String.format(INBOUND_SERVICE_CONFIGURATION
         , serviceConfiguration.getInboundServiceURL()
         , serviceConfiguration.getInboundServiceWsdl()
-        , serviceConfiguration.getInboundServiceClass());
+        , serviceConfiguration.getInboundServiceClass()
+        , serviceConfiguration.getServiceName());
     String inRouteName = String.format("%s.in.route", serviceConfiguration.getServiceName());
+
 
     // Set outbound props
     String outboundServiceAddress = String.format(OUTBOUND_SERVICE_CONFIGURATION
         , serviceConfiguration.getOutboundServiceURL()
         , serviceConfiguration.getOutboundServiceWsdl()
-        , serviceConfiguration.getOutboundServiceClass());
+        , serviceConfiguration.getOutboundServiceClass()
+        , serviceConfiguration.getServiceName());
     String outRouteName = String.format("%s.out.route", serviceConfiguration.getServiceName());
     String directRouteToProducer = serviceConfiguration.getServiceName();
+
 
     AgpServiceFactory agpServiceFactory = getServiceFactory(serviceConfiguration);
 
@@ -62,7 +71,6 @@ public class AgpServiceRoutes extends RouteBuilder {
         .setProperty(AGP_SERVICE_COMPONENT_ID, simple(directRouteToProducer))
         .setProperty(AGP_TAK_CONTRACT_NAME, simple(serviceConfiguration.getTakContract()))
         .to("direct:agproute");
-
 
     from("direct:" + directRouteToProducer).id(outRouteName)
         .to(outboundServiceAddress);
@@ -75,4 +83,6 @@ public class AgpServiceRoutes extends RouteBuilder {
     agpServiceFactory.setAgpServiceConfiguration(configuration);
     return agpServiceFactory;
   }
+
+
 }

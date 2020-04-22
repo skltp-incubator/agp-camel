@@ -27,7 +27,6 @@
     <AsyncLogger name="org.apache.camel" level="INFO"/>
 
     <!-- Message logging -->
-<!--    <AsyncLogger name="se.skltp.aggregatingservices.message.logging" level="DEBUG"/>-->
     <AsyncLogger name="se.skltp.aggregatingservices.logging.req.in" level="DEBUG"/>
     <AsyncLogger name="se.skltp.aggregatingservices.logging.req.out" level="DEBUG"/>
     <AsyncLogger name="se.skltp.aggregatingservices.logging.resp.in" level="DEBUG"/>

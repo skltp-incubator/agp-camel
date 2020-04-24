@@ -43,6 +43,8 @@ public class ProducerBaseRoute extends RouteBuilder {
       ProducerResponseProcessor producerResponseProcessor = new ProducerResponseProcessor(testDataGenerator);
 
       from(serviceAddress)
+          .errorHandler(noErrorHandler())
+
           .to("mock:producer:input")
           .process(producerResponseProcessor);
 

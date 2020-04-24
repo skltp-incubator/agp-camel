@@ -12,5 +12,6 @@ public class AgpProperties {
   public static final String INCOMMING_VP_SENDER_ID = "org-vp-sender-id";
   public static final String CORRELATION_ID = "CorrelationId";
   public static final String MESSAGE_EXCHANGE_ID = "exchangeId";
+  public static final String ENGAGEMENT_PROCESSING_RESULT = "EngagementProcessingResult";
 
 }

@@ -38,6 +38,7 @@ public class AgpServiceRoutes extends RouteBuilder {
 
   @Override
   public void configure() throws Exception {
+
     for (AgpServiceConfiguration serviceConfiguration : serviceConfigurations) {
       createServiceRoute(serviceConfiguration);
     }
@@ -53,7 +54,6 @@ public class AgpServiceRoutes extends RouteBuilder {
         , serviceConfiguration.getServiceName());
     String inRouteName = String.format("%s.in.route", serviceConfiguration.getServiceName());
 
-
     // Set outbound props
     String outboundServiceAddress = String.format(OUTBOUND_SERVICE_CONFIGURATION
         , serviceConfiguration.getOutboundServiceURL()
@@ -63,16 +63,18 @@ public class AgpServiceRoutes extends RouteBuilder {
     String outRouteName = String.format("%s.out.route", serviceConfiguration.getServiceName());
     String directRouteToProducer = serviceConfiguration.getServiceName();
 
-
     AgpServiceFactory agpServiceFactory = getServiceFactory(serviceConfiguration);
 
     from(inboundServiceAddress).id(inRouteName).streamCaching()
+        .errorHandler(noErrorHandler())
         .setProperty(AGP_SERVICE_HANDLER).exchange(ex -> agpServiceFactory)
         .setProperty(AGP_SERVICE_COMPONENT_ID, simple(directRouteToProducer))
         .setProperty(AGP_TAK_CONTRACT_NAME, simple(serviceConfiguration.getTakContract()))
+        .setProperty("serviceAddress", simple(outboundServiceAddress))
         .to("direct:agproute");
 
     from("direct:" + directRouteToProducer).id(outRouteName)
+        .errorHandler(noErrorHandler())
         .to(outboundServiceAddress);
   }
 

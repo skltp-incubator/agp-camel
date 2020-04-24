@@ -19,6 +19,7 @@ import se.skltp.aggregatingservices.riv.itintegration.engagementindex.findconten
 import se.skltp.aggregatingservices.riv.itintegration.engagementindex.v1.EngagementType;
 import se.skltp.aggregatingservices.service.Authority;
 import se.skltp.aggregatingservices.service.TakCacheService;
+import se.skltp.aggregatingservices.utils.EngagementProcessingStatusUtil;
 
 @Service
 @Log4j2
@@ -36,12 +37,21 @@ public class CreateRequestListProcessor implements Processor {
     MessageContentsList findContentMessageList = exchange.getIn().getBody(MessageContentsList.class);
     final FindContentResponseType findContentResponse = (FindContentResponseType) findContentMessageList.get(0);
 
+    EngagementProcessingStatusUtil.initAllAsFiltered(findContentResponse, exchange);
     filterFindContentResponseBasedOnAuthority(findContentResponse, createAuthorityFromExcange(exchange));
+    EngagementProcessingStatusUtil.updateWithNotFilteredByTak(findContentResponse, exchange);
 
     List<MessageContentsList> queryObjects = agpServiceProcessor.createRequestList(originalQuery, findContentResponse);
+
+    EngagementProcessingStatusUtil.updateWithNotFilteredByService(queryObjects, exchange);
+
     exchange.getIn().setBody(queryObjects);
 
   }
+
+
+
+
 
 
   protected void filterFindContentResponseBasedOnAuthority(FindContentResponseType eiResp, Authority authority) {

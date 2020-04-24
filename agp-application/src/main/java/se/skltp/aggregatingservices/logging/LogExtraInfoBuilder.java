@@ -2,22 +2,24 @@ package se.skltp.aggregatingservices.logging;
 
 import static se.skltp.aggregatingservices.constants.AgpHeaders.X_RIVTA_ORIGINAL_SERVICE_CONSUMER_HSA_ID;
 import static se.skltp.aggregatingservices.constants.AgpHeaders.X_VP_SENDER_ID;
+import static se.skltp.aggregatingservices.logging.LogEntry.MSG_TYPE_LOG_RESP_OUT;
 
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import org.apache.camel.Exchange;
 import se.skltp.aggregatingservices.constants.AgpProperties;
+import se.skltp.aggregatingservices.utils.EngagementProcessingStatusUtil;
 
 public class LogExtraInfoBuilder {
 
   public static final String SENDER_ID ="senderid";
   public static final String RECEIVER_ID = "receiverid";
+  public static final String ENGAGEMENT_PROCESSING_RESULT = "processingStatus";
   public static final String SERVICECONTRACT_NAMESPACE = "servicecontract_namespace";
 //  public static final String WSDL_NAMESPACE = "wsdl_namespace";
   public static final String ORIGINAL_SERVICE_CONSUMER_HSA_ID = "originalServiceconsumerHsaid";
   public static final String TIME_ELAPSED = "time.elapsed";
-  public static final String TIME_PRODUCER = "time.producer";
   public static final String MESSAGE_LENGTH = "message.length";
 
 
@@ -25,7 +27,7 @@ public class LogExtraInfoBuilder {
     // Static utility class
   }
 
-  public static Map<String, String> createExtraInfo(Exchange exchange) {
+  public static Map<String, String> createExtraInfo(Exchange exchange, String messageType) {
     ExtraInfoMap<String, String> extraInfo = new ExtraInfoMap<>();
 
     extraInfo.put(SENDER_ID, exchange.getIn().getHeader(X_VP_SENDER_ID, String.class));
@@ -35,6 +37,9 @@ public class LogExtraInfoBuilder {
 //    String serviceContractNS = exchange.getProperty(VPExchangeProperties.SERVICECONTRACT_NAMESPACE, String.class);
 //    extraInfo.put(SERVICECONTRACT_NAMESPACE, serviceContractNS);
 //    extraInfo.put(WSDL_NAMESPACE, createWsdlNamespace(serviceContractNS, rivVersion));
+    if( messageType.equals(MSG_TYPE_LOG_RESP_OUT)){
+      extraInfo.put(ENGAGEMENT_PROCESSING_RESULT, EngagementProcessingStatusUtil.logFormat(exchange));
+    }
 
     extraInfo.put(TIME_ELAPSED, getElapsedTime(exchange).toString());
     return extraInfo;

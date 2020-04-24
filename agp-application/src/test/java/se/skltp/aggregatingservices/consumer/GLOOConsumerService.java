@@ -12,6 +12,7 @@ import org.apache.camel.Message;
 import org.apache.camel.Produce;
 import org.apache.camel.ProducerTemplate;
 import org.apache.camel.impl.DefaultExchange;
+import org.apache.cxf.binding.soap.SoapFault;
 import org.apache.cxf.binding.soap.SoapHeader;
 import org.apache.cxf.headers.Header;
 import org.apache.cxf.message.MessageContentsList;
@@ -48,7 +49,7 @@ public class GLOOConsumerService implements ConsumerService {
     return callService(SAMPLE_SENDER_ID, SAMPLE_SENDER_ID, logicalAddress, patientId);
   }
 
-  public ServiceResponse callService(String senderId, String originalId,  String logicalAddress, String patientId  ) {
+  public ServiceResponse callService(String senderId, String originalId, String logicalAddress, String patientId) {
     Map<String, Object> headers = new HashMap();
 
     headers.put(AgpHeaders.X_RIVTA_ORIGINAL_SERVICE_CONSUMER_HSA_ID, originalId);
@@ -68,14 +69,19 @@ public class GLOOConsumerService implements ConsumerService {
     ProcessingStatusType processingStatusType = getProcessingStatus(response);
     serviceResponse.setProcessingStatus(processingStatusType);
     serviceResponse.setHeaders(response.getHeaders());
-    serviceResponse.setObject(response.getBody(MessageContentsList.class).get(0));
+    MessageContentsList contentsList = response.getBody(MessageContentsList.class);
+    if (contentsList != null) {
+      serviceResponse.setObject(contentsList.get(0));
+    }else {
+      serviceResponse.setSoapFault(response.getExchange().getException(SoapFault.class));
+    }
 
     return serviceResponse;
   }
 
   private ProcessingStatusType getProcessingStatus(Message response) {
     List<SoapHeader> soapHeaders = (List<SoapHeader>) response.getHeader(Header.HEADER_LIST);
-    if(soapHeaders != null && !soapHeaders.isEmpty()){
+    if (soapHeaders != null && !soapHeaders.isEmpty()) {
       return (ProcessingStatusType) jaxbUtil.unmarshal(soapHeaders.get(0).getObject());
     }
     return null;

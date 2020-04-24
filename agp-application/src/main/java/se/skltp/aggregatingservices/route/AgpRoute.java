@@ -5,6 +5,7 @@ import static se.skltp.aggregatingservices.constants.AgpProperties.AGP_ORIGINAL_
 import static se.skltp.aggregatingservices.constants.AgpProperties.LOGICAL_ADDRESS;
 import static se.skltp.aggregatingservices.constants.AgpProperties.INCOMMING_VP_SENDER_ID;
 
+import org.apache.camel.LoggingLevel;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.cxf.message.MessageContentsList;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,7 +55,9 @@ public class AgpRoute extends RouteBuilder {
   @Override
   public void configure() throws Exception {
 
+
 	from("direct:agproute").id("agp-service-route").streamCaching()
+        .errorHandler(noErrorHandler())
         .process(checkInboundHeadersProcessor)
         .setProperty(AGP_ORIGINAL_QUERY, body())
         .setProperty(INCOMMING_VP_SENDER_ID, header(X_VP_SENDER_ID))
@@ -65,7 +68,8 @@ public class AgpRoute extends RouteBuilder {
         .setHeader(X_VP_SENDER_ID, exchangeProperty(INCOMMING_VP_SENDER_ID))
         .split(body()).parallelProcessing(true).aggregationStrategy(agpAggregationStrategy)
             .setProperty(LOGICAL_ADDRESS).exchange(ex -> ex.getIn().getBody(MessageContentsList.class).get(0))
-            .recipientList(simple("direct:${property.AgpServiceComponentId}")).end()
+            .toD("direct:${property.AgpServiceComponentId}")
+//            .toD("${property.serviceAddress}")
         .end()
         .process(createResponseProcessor)
         .removeProperty(LOGICAL_ADDRESS);

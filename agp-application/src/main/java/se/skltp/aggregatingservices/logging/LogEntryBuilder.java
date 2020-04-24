@@ -51,7 +51,7 @@ public class LogEntryBuilder {
     logEntry.setEndpoint(getEndpoint(messageType, exchange));
     logEntry.setMessageId(messageId);
     logEntry.setBusinessCorrelationId(businessCorrelationId);
-    logEntry.setExtrainfo(LogExtraInfoBuilder.createExtraInfo(exchange));
+    logEntry.setExtrainfo(LogExtraInfoBuilder.createExtraInfo(exchange, messageType));
     return logEntry;
   }
 

@@ -19,7 +19,7 @@ import org.apache.cxf.message.MessageContentsList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import se.skltp.aggregatingservices.constants.AgpHeaders;
-import se.skltp.aggregatingservices.riv.clinicalprocess.healthcond.actoutcome.getaggregatedlaboratoryorderoutcome.AgpServiceConfiguration;
+import se.skltp.aggregatingservices.riv.clinicalprocess.healthcond.actoutcome.getaggregatedlaboratoryorderoutcome.GLOOAgpServiceConfiguration;
 import se.skltp.aggregatingservices.utils.JaxbUtil;
 import se.skltp.aggregatingservices.utils.RequestUtil;
 import se.skltp.aggregatingservices.utils.ServiceResponse;
@@ -36,7 +36,7 @@ public class GLOOConsumerService implements ConsumerService {
   protected ProducerTemplate template;
 
   @Autowired
-  AgpServiceConfiguration serviceConfiguration;
+  GLOOAgpServiceConfiguration serviceConfiguration;
 
   private static final JaxbUtil jaxbUtil = new JaxbUtil(ProcessingStatusType.class);
 

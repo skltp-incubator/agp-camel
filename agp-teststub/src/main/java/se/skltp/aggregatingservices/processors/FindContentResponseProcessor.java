@@ -11,6 +11,7 @@ import org.apache.cxf.message.MessageContentsList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import se.skltp.aggregatingservices.data.FindContentTestData;
+import se.skltp.aggregatingservices.data.ProducerTestDataGenerator.TestProducerException;
 import se.skltp.aggregatingservices.riv.itintegration.engagementindex.findcontentresponder.v1.FindContentResponseType;
 import se.skltp.aggregatingservices.riv.itintegration.engagementindex.findcontentresponder.v1.FindContentType;
 import se.skltp.aggregatingservices.riv.itintegration.engagementindex.v1.EngagementType;
@@ -39,7 +40,7 @@ public class FindContentResponseProcessor implements Processor {
 
     // Return an error-message if invalid id
     if (TEST_ID_FAULT_INVALID_ID_IN_EI.equals(id)) {
-      throw new RuntimeException("Invalid Id: " + id);
+      throw new TestProducerException("Invalid Id: " + id);
     }
 
     // Force a timeout if zero Id

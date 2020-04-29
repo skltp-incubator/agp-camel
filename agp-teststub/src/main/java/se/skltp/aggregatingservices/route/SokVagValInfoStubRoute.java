@@ -15,7 +15,7 @@ public class SokVagValInfoStubRoute extends RouteBuilder {
   public static final String SOKVAGVAL_WSDL_PATH = "/schemas/TD_SOKVAGVAL_2/sokvagval-info-v2.wsdl";
   public static final String SOKVAGVAL_SERVICECLASS = SokVagvalsInfoInterface.class.getName();
 
-  private static String SERVICE_CONFIGURATION = "cxf:%s"
+  private static final String SERVICE_CONFIGURATION = "cxf:%s"
       + "?wsdlURL=%s"
       + "&serviceClass=%s";
 

@@ -112,10 +112,6 @@ public class GLOOTestDataGenerator extends ProducerTestDataGenerator {
 
 		//Body end
 
-		//response.setCareUnit(logicalAddress);
-		//response.setSubjectOfCareId(registeredResidentId);
-		//response.setSenderRequestId(businessObjectId);
-
 		return labOrderOutcome;
 	}
 }

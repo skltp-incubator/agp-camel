@@ -6,7 +6,6 @@
   <packaging>pom</packaging>
   <modules>
     <module>agp-schemas</module>
-    <module>agp-test-common</module>
     <module>agp-core</module>
     <module>agp-teststub</module>
     <module>agp-application</module>

@@ -8,11 +8,11 @@ import riv.clinicalprocess.healthcond.actoutcome.getlaboratoryorderoutcome.v4.ri
 @Configuration
 @EnableConfigurationProperties
 @ConfigurationProperties(prefix = "getaggregatedlaboratoryorderoutcome.v4")
-public class AgpServiceConfiguration extends se.skltp.aggregatingservices.configuration.AgpServiceConfiguration {
+public class GLOOAgpServiceConfiguration extends se.skltp.aggregatingservices.configuration.AgpServiceConfiguration {
 
   public static final String SCHEMA_PATH = "/schemas/clinicalprocess-healthcond-actoutcome/interactions/GetLaboratoryOrderOutcomeInteraction/GetLaboratoryOrderOutcomeInteraction_4.0_RIVTABP21.wsdl";
 
-  public AgpServiceConfiguration() {
+  public GLOOAgpServiceConfiguration() {
 
     setServiceName("GetLaboratoryOrderOutcome.V4");
     setTargetNamespace("urn:riv:clinicalprocess:healthcond:actoutcome:GetLaboratoryOrderOutcome:4:rivtabp21");

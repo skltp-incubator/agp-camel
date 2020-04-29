@@ -12,7 +12,7 @@ import se.skltp.aggregatingservices.processors.ProducerResponseProcessor;
 
 @Component
 public class ProducerBaseRoute extends RouteBuilder {
-   private static String SERVICE_CONFIGURATION="cxf:%s"
+   private static final String SERVICE_CONFIGURATION="cxf:%s"
       + "?wsdlURL=%s"
       + "&serviceClass=%s";
 
@@ -27,7 +27,7 @@ public class ProducerBaseRoute extends RouteBuilder {
   }
 
   @Override
-  public void configure() throws Exception {
+  public void configure() {
     for(TestProducerConfiguration testProducerConfiguration : testProducerConfigurations){
       createProducerRoute(testProducerConfiguration);
     }

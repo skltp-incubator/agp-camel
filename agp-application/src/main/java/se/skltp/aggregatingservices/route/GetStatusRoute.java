@@ -9,13 +9,13 @@ import se.skltp.aggregatingservices.processors.GetStatusProcessor;
 public class GetStatusRoute extends RouteBuilder {
 
   public static final String JETTY_HTTP_FROM_GET_STATUS = "jetty://{{agp.status.url}}";
-  public static final String GET_STATUS_ROUTE = "get-status"; //+ "?chunkedMaxContentLength={{vp.max.receive.length}}";
+  public static final String GET_STATUS_ROUTE = "get-status";
 
   @Autowired
   GetStatusProcessor getStatusProcessor;
 
   @Override
-  public void configure() throws Exception {
+  public void configure() {
     from(JETTY_HTTP_FROM_GET_STATUS).routeId(GET_STATUS_ROUTE)
         .process(getStatusProcessor);
   }

@@ -43,7 +43,7 @@ public class TakCacheServiceImpl implements TakCacheService {
 
   @Override
   public void resetTakContracts() {
-    this.takContracts = serviceConfigurationList.stream().map(conf -> conf.getTakContract()).collect(Collectors.toList());
+    this.takContracts = serviceConfigurationList.stream().map(AgpServiceConfiguration::getTakContract).collect(Collectors.toList());
   }
 
   @Override

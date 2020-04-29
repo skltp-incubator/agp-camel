@@ -32,12 +32,12 @@ public abstract class ProducerTestDataGenerator {
 
     // TC5 - Invalid id - return error-message
     if (TestDataDefines.TEST_RR_ID_FAULT_INVALID_ID.equals(registeredResidentId)) {
-      throw new RuntimeException("Invalid Id: " + registeredResidentId);
+      throw new TestProducerException("Invalid Id: " + registeredResidentId);
     }
 
     // TC6 - in EI, but not in TAK
     if (TestDataDefines.TEST_RR_ID_EJ_SAMVERKAN_I_TAK.equals(registeredResidentId)) {
-      throw new RuntimeException("VP007 Authorization missing");
+      throw new TestProducerException("VP007 Authorization missing");
     }
 
     // Simulate some processing
@@ -82,10 +82,10 @@ public abstract class ProducerTestDataGenerator {
   //
   // Simplest possible memory db for business object instances from test-stubs for a number of source systems
   //
-  private static Map<String, Object> DB = null;
+  private static Map<String, Object> db = null;
 
   void initDb() {
-    log.debug("### INIT-DB CALLED, DB == NULL? " + (DB == null));
+    log.debug("### INIT-DB CALLED, DB == NULL? " + (db == null));
 
     // Start with resetting the db from old values.
     resetDb();
@@ -155,8 +155,8 @@ public abstract class ProducerTestDataGenerator {
 
   }
 
-  public void resetDb() {
-    DB = new HashMap<String, Object>();
+  public static void resetDb() {
+    db = new HashMap<>();
   }
 
   public void refreshDb() {
@@ -164,10 +164,16 @@ public abstract class ProducerTestDataGenerator {
   }
 
   public void storeInDb(String logicalAddress, String registeredResidentId, Object value) {
-    DB.put(logicalAddress + "|" + registeredResidentId, value);
+    db.put(logicalAddress + "|" + registeredResidentId, value);
   }
 
   public Object retrieveFromDb(String logicalAddress, String registeredResidentId) {
-    return DB.get(logicalAddress + "|" + registeredResidentId);
+    return db.get(logicalAddress + "|" + registeredResidentId);
+  }
+
+  public static class TestProducerException extends RuntimeException {
+    public TestProducerException(String msg) {
+      super(msg);
+    }
   }
 }

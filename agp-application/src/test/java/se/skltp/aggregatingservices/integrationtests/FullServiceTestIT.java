@@ -42,7 +42,7 @@ public class FullServiceTestIT {
 
     final ServiceResponse<GetLaboratoryOrderOutcomeResponseType> response = consumerService.callService(TEST_RR_ID_MANY_HITS_NO_ERRORS);
 
-    assertExpectedResponse(response.getObject(), expectedResponse, TEST_RR_ID_MANY_HITS_NO_ERRORS);
+    assertExpectedResponse(response, expectedResponse, TEST_RR_ID_MANY_HITS_NO_ERRORS);
     assertExpectedProcessingStatus(response.getProcessingStatus(), expectedResponse);
   }
 
@@ -55,11 +55,14 @@ public class FullServiceTestIT {
 
     final ServiceResponse<GetLaboratoryOrderOutcomeResponseType> response = consumerService.callService(TEST_RR_ID_MANY_HITS);
 
-    assertExpectedResponse(response.getObject(), expectedResponse, TEST_RR_ID_MANY_HITS);
+    assertExpectedResponse(response, expectedResponse, TEST_RR_ID_MANY_HITS);
     assertExpectedProcessingStatus(response.getProcessingStatus(), expectedResponse);
   }
 
 
+  //
+  // TC5 - Patient that causes an exception in the source system
+  //
   @Test
   public void testOneProducerReturnsSoapFault() throws Exception {
     ExpectedResponse expectedResponse = new ExpectedResponse();
@@ -67,17 +70,19 @@ public class FullServiceTestIT {
 
     final ServiceResponse<GetLaboratoryOrderOutcomeResponseType> response = consumerService.callService(TEST_RR_ID_FAULT_INVALID_ID);
 
-    assertExpectedResponse(response.getObject(), expectedResponse, TEST_RR_ID_FAULT_INVALID_ID);
+    assertExpectedResponse(response, expectedResponse, TEST_RR_ID_FAULT_INVALID_ID);
     assertExpectedProcessingStatus(response.getProcessingStatus(), expectedResponse);
   }
 
-  private void assertExpectedResponse(GetLaboratoryOrderOutcomeResponseType response, ExpectedResponse expectedResponse,
+  private void assertExpectedResponse(ServiceResponse<GetLaboratoryOrderOutcomeResponseType> response, ExpectedResponse expectedResponse,
       String patientId) {
 
-    assertEquals("GetLaboratoryOrderOutcome does not have expected size", expectedResponse.numResponses(),
-        response.getLaboratoryOrderOutcome().size());
+    assertEquals("Not expected response code", expectedResponse.getResponseCode(), response.getResponseCode() );
 
-    for (LaboratoryOrderOutcomeType responseElement : response.getLaboratoryOrderOutcome()) {
+    assertEquals("GetLaboratoryOrderOutcome does not have expected size", expectedResponse.numResponses(),
+        response.getObject().getLaboratoryOrderOutcome().size());
+
+    for (LaboratoryOrderOutcomeType responseElement : response.getObject().getLaboratoryOrderOutcome()) {
       String systemId = responseElement.getLaboratoryOrderOutcomeHeader().getSource().getSystemId().getRoot();
       assertTrue(String.format("%s wasn't expected in response", systemId), expectedResponse.contains(systemId));
       assertEquals(patientId,

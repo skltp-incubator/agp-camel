@@ -69,6 +69,7 @@ public class GLOOConsumerService implements ConsumerService {
     ProcessingStatusType processingStatusType = getProcessingStatus(response);
     serviceResponse.setProcessingStatus(processingStatusType);
     serviceResponse.setHeaders(response.getHeaders());
+    serviceResponse.setResponseCode(response.getHeader(Exchange.HTTP_RESPONSE_CODE, Integer.class));
     MessageContentsList contentsList = response.getBody(MessageContentsList.class);
     if (contentsList != null) {
       serviceResponse.setObject(contentsList.get(0));

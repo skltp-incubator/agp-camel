@@ -5,13 +5,11 @@ import static se.skltp.aggregatingservices.constants.AgpProperties.AGP_ORIGINAL_
 import static se.skltp.aggregatingservices.constants.AgpProperties.LOGICAL_ADDRESS;
 import static se.skltp.aggregatingservices.constants.AgpProperties.INCOMMING_VP_SENDER_ID;
 
-import org.apache.camel.LoggingLevel;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.cxf.message.MessageContentsList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import se.skltp.aggregatingservices.aggregate.AgpAggregationStrategy;
-import se.skltp.aggregatingservices.logging.MessageInfoLogger;
 import se.skltp.aggregatingservices.processors.CheckInboundHeadersProcessor;
 import se.skltp.aggregatingservices.processors.CreateFindContentProcessor;
 import se.skltp.aggregatingservices.processors.CreateRequestListProcessor;
@@ -31,7 +29,6 @@ public class AgpRoute extends RouteBuilder {
       + "?wsdlURL=/schemas/TD_ENGAGEMENTINDEX_1_0_R/interactions/FindContentInteraction/FindContentInteraction_1.0_RIVTABP21.wsdl"
       + "&serviceClass=se.skltp.aggregatingservices.riv.itintegration.engagementindex.findcontent.v1.rivtabp21.FindContentResponderInterface"
       + "&dataFormat=POJO"
-      + "&cxfBinding=#messageLogger"
       + "&features=#loggingFeatures";
 
   @Autowired
@@ -57,7 +54,6 @@ public class AgpRoute extends RouteBuilder {
 
 
 	from("direct:agproute").id("agp-service-route").streamCaching()
-        .errorHandler(noErrorHandler())
         .process(checkInboundHeadersProcessor)
         .setProperty(AGP_ORIGINAL_QUERY, body())
         .setProperty(INCOMMING_VP_SENDER_ID, header(X_VP_SENDER_ID))

@@ -42,13 +42,8 @@
 
 
     <!-- Message logging -->
-    <AsyncLogger name="se.skltp.aggregatingservices.logging.req.in" level="INFO"/>
-    <AsyncLogger name="se.skltp.aggregatingservices.logging.req.out" level="INFO"/>
-    <AsyncLogger name="se.skltp.aggregatingservices.logging.resp.in" level="INFO"/>
-    <AsyncLogger name="se.skltp.aggregatingservices.logging.resp.out" level="INFO"/>
-
-    <!-- Message Payload logging -->
-    <AsyncLogger name="se.skltp.aggregatingservices.logging.payload" level="INFO"/>
+    <AsyncLogger name="se.skltp.aggregatingservices.logging" level="DEBUG"/>
+    <AsyncLogger name="se.skltp.aggregatingservices.logging.FindContentResponderInterface" level="DEBUG"/>
 
 
     <AsyncRoot level="WARN">

@@ -5,7 +5,6 @@ import static se.skltp.aggregatingservices.constants.AgpProperties.ENGAGEMENT_PR
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import org.apache.camel.Exchange;
 import org.apache.cxf.message.MessageContentsList;
 import se.skltp.aggregatingservices.riv.itintegration.engagementindex.findcontentresponder.v1.FindContentResponseType;
@@ -18,7 +17,7 @@ public class EngagementProcessingStatusUtil {
   public static final String RESULT_ERROR = "ERR";
 
   // Utility class
-  public EngagementProcessingStatusUtil() {
+  private EngagementProcessingStatusUtil() {
   }
 
 
@@ -35,7 +34,6 @@ public class EngagementProcessingStatusUtil {
 
   public static Map<String, String> updateWithNotFilteredByTak(FindContentResponseType findContentResponse, Exchange exchange) {
     Map <String, String> engagementProcessingResult = exchange.getProperty(ENGAGEMENT_PROCESSING_RESULT, Map.class);
-    final Set<String> keySet = engagementProcessingResult.keySet();
 
     for(EngagementType engagementType : findContentResponse.getEngagement()){
       if(engagementProcessingResult.containsKey(engagementType.getSourceSystem())) {

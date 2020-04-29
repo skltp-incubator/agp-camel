@@ -37,7 +37,7 @@ public class AgpAggregationStrategy implements AggregationStrategy {
     final String logicalAddress = newExchange.getProperty(LOGICAL_ADDRESS, String.class);
     if(newExchange.isFailed() || newExchange.getException() != null){
       final Exception exception = newExchange.getException();
-      log.warn("Failed get result from {} with exception:", logicalAddress, exception);
+      log.info("Failed get result from {} with exception:", logicalAddress, exception);
       statusRecord = ProcessingStatusUtil.createStatusRecord(logicalAddress, NO_DATA_SYNCH_FAILED, exception);
       aggregatedResponseResults.getProcessingStatus().getProcessingStatusList().add(statusRecord);
 

@@ -11,6 +11,8 @@ import se.skltp.aggregatingservices.constants.AgpHeaders;
 @Log4j2
 public class CheckInboundHeadersProcessor implements Processor {
 
+  private static final String HEADER_MISSING_MSG = "Mandatory HTTP header %s is missing\n";
+
   @Override
   public void process(Exchange exchange) {
 
@@ -26,13 +28,13 @@ public class CheckInboundHeadersProcessor implements Processor {
 
     String errMsg = "";
     if (senderId == null) {
-      errMsg = "Mandatory HTTP header " + AgpHeaders.X_VP_SENDER_ID + " is missing";
+      errMsg = String.format(HEADER_MISSING_MSG, AgpHeaders.X_VP_SENDER_ID);
     }
     if (originalConsumer == null) {
-      errMsg = errMsg + "\nMandatory HTTP header " + AgpHeaders.X_RIVTA_ORIGINAL_SERVICE_CONSUMER_HSA_ID + " is missing";
+      errMsg = errMsg + String.format(HEADER_MISSING_MSG, AgpHeaders.X_RIVTA_ORIGINAL_SERVICE_CONSUMER_HSA_ID);
     }
     if (correlationId == null) {
-      errMsg = errMsg + "\nMandatory HTTP header " + AgpHeaders.X_SKLTP_CORRELATION_ID + " is missing";
+      errMsg = errMsg + String.format(HEADER_MISSING_MSG, AgpHeaders.X_SKLTP_CORRELATION_ID);
     }
     if (StringUtils.isNotEmpty(errMsg)) {
       throw new IllegalArgumentException(errMsg);

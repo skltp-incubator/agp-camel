@@ -11,4 +11,5 @@ public class ServiceResponse <T> {
   SoapFault soapFault;
   ProcessingStatusType processingStatus;
   Map<String,Object> headers;
+  int responseCode;
 }

@@ -36,7 +36,7 @@ public class CreateFindContentProcessor implements Processor {
     exchange.getIn().setBody(findContent);
   }
 
-  private void prepareHeaders(Exchange exchange) throws Exception {
+  private void prepareHeaders(Exchange exchange) {
     Message in = exchange.getIn();
 
     in.removeHeader(CxfConstants.OPERATION_NAME);

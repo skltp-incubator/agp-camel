@@ -18,14 +18,13 @@ public class AgpServiceRoutes extends RouteBuilder {
       + "?wsdlURL=%s"
       + "&serviceClass=%s"
       + "&beanId=%s"
-      + "&cxfBinding=#messageLogger"
+      + "&properties.ComponentId=%s"
       + "&features=#loggingFeatures";
 
   public static final String OUTBOUND_SERVICE_CONFIGURATION = "cxf:%s"
       + "?wsdlURL=%s"
       + "&serviceClass=%s"
       + "&beanId=%s"
-      + "&cxfBinding=#messageLogger"
       + "&features=#loggingFeatures";
 
 
@@ -51,6 +50,7 @@ public class AgpServiceRoutes extends RouteBuilder {
         , serviceConfiguration.getInboundServiceURL()
         , serviceConfiguration.getInboundServiceWsdl()
         , serviceConfiguration.getInboundServiceClass()
+        , serviceConfiguration.getServiceName()
         , serviceConfiguration.getServiceName());
     String inRouteName = String.format("%s.in.route", serviceConfiguration.getServiceName());
 
@@ -66,7 +66,6 @@ public class AgpServiceRoutes extends RouteBuilder {
     AgpServiceFactory agpServiceFactory = getServiceFactory(serviceConfiguration);
 
     from(inboundServiceAddress).id(inRouteName).streamCaching()
-        .errorHandler(noErrorHandler())
         .setProperty(AGP_SERVICE_HANDLER).exchange(ex -> agpServiceFactory)
         .setProperty(AGP_SERVICE_COMPONENT_ID, simple(directRouteToProducer))
         .setProperty(AGP_TAK_CONTRACT_NAME, simple(serviceConfiguration.getTakContract()))
@@ -74,7 +73,6 @@ public class AgpServiceRoutes extends RouteBuilder {
         .to("direct:agproute");
 
     from("direct:" + directRouteToProducer).id(outRouteName)
-        .errorHandler(noErrorHandler())
         .to(outboundServiceAddress);
   }
 

@@ -15,6 +15,10 @@ public class ProcessingStatusUtil {
 
 	private static ThreadSafeSimpleDateFormat df = new ThreadSafeSimpleDateFormat("yyyyMMddHHmmss");
 
+	// Utility class
+	private ProcessingStatusUtil() {
+	}
+
 	public static ProcessingStatusRecordType createStatusRecord(String logicalAddress, StatusCodeEnum statusCode) {
 		return createStatusRecord(logicalAddress, statusCode, null);
 	}
@@ -43,7 +47,6 @@ public class ProcessingStatusUtil {
 		if (statusCode == DATA_FROM_SOURCE) {
 			status.setLastSuccessfulSynch(df.format(new Date()));
 		}
-		// TODO: DATA_FROM_CACHE/DATA_FROM_CACHE_SYNCH_FAILED: How to pickup time for last succ call from cache???
 
 		if (status.isIsResponseInSynch()) {
 			if (exception != null) {

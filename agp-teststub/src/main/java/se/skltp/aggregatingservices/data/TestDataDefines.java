@@ -4,6 +4,11 @@ public class TestDataDefines {
   // Test cases are documented at
   // https://skl-tp.atlassian.net/wiki/pages/viewpage.action?pageId=30015599
   // "Aggregerande tjänst - Funktionella tester"
+
+  // Class containing defines
+  private TestDataDefines() {
+  }
+
   public static final String SAMPLE_SENDER_ID               = "sample-sender-id";
   public static final String SAMPLE_ORIGINAL_CONSUMER_HSAID = "sample-original-consumer-hsaid";
 
@@ -45,6 +50,5 @@ public class TestDataDefines {
   public static final String TEST_DATE_FAULT_INVALID_ID = "20130101000000";
   public static final String TEST_DATE_EJ_SAMVERKAN_I_TAK = "20130106000000";
   public static final String TEST_DATE_TRADKLATTRING = "20130406000000";
-
 
 }

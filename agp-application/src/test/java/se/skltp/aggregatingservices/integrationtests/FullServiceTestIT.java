@@ -1,7 +1,9 @@
 package se.skltp.aggregatingservices.integrationtests;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static se.skltp.aggregatingservices.data.TestDataDefines.TEST_RR_ID_FAULT_INVALID_ID;
 import static se.skltp.aggregatingservices.data.TestDataDefines.TEST_RR_ID_MANY_HITS;
 import static se.skltp.aggregatingservices.data.TestDataDefines.TEST_RR_ID_MANY_HITS_NO_ERRORS;
 
@@ -40,7 +42,7 @@ public class FullServiceTestIT {
 
     final ServiceResponse<GetLaboratoryOrderOutcomeResponseType> response = consumerService.callService(TEST_RR_ID_MANY_HITS_NO_ERRORS);
 
-    assertExpectedResponse(response.getObject(), expectedResponse, TEST_RR_ID_MANY_HITS_NO_ERRORS);
+    assertExpectedResponse(response, expectedResponse, TEST_RR_ID_MANY_HITS_NO_ERRORS);
     assertExpectedProcessingStatus(response.getProcessingStatus(), expectedResponse);
   }
 
@@ -53,17 +55,34 @@ public class FullServiceTestIT {
 
     final ServiceResponse<GetLaboratoryOrderOutcomeResponseType> response = consumerService.callService(TEST_RR_ID_MANY_HITS);
 
-    assertExpectedResponse(response.getObject(), expectedResponse, TEST_RR_ID_MANY_HITS);
+    assertExpectedResponse(response, expectedResponse, TEST_RR_ID_MANY_HITS);
     assertExpectedProcessingStatus(response.getProcessingStatus(), expectedResponse);
   }
 
-  private void assertExpectedResponse(GetLaboratoryOrderOutcomeResponseType response, ExpectedResponse expectedResponse,
+
+  //
+  // TC5 - Patient that causes an exception in the source system
+  //
+  @Test
+  public void testOneProducerReturnsSoapFault() throws Exception {
+    ExpectedResponse expectedResponse = new ExpectedResponse();
+    expectedResponse.add("HSA-ID-1", 0, StatusCodeEnum.NO_DATA_SYNCH_FAILED, "Invalid Id: " + TEST_RR_ID_FAULT_INVALID_ID);
+
+    final ServiceResponse<GetLaboratoryOrderOutcomeResponseType> response = consumerService.callService(TEST_RR_ID_FAULT_INVALID_ID);
+
+    assertExpectedResponse(response, expectedResponse, TEST_RR_ID_FAULT_INVALID_ID);
+    assertExpectedProcessingStatus(response.getProcessingStatus(), expectedResponse);
+  }
+
+  private void assertExpectedResponse(ServiceResponse<GetLaboratoryOrderOutcomeResponseType> response, ExpectedResponse expectedResponse,
       String patientId) {
 
-    assertEquals("GetLaboratoryOrderOutcome does not have expected size", expectedResponse.numResponses(),
-        response.getLaboratoryOrderOutcome().size());
+    assertEquals("Not expected response code", expectedResponse.getResponseCode(), response.getResponseCode() );
 
-    for (LaboratoryOrderOutcomeType responseElement : response.getLaboratoryOrderOutcome()) {
+    assertEquals("GetLaboratoryOrderOutcome does not have expected size", expectedResponse.numResponses(),
+        response.getObject().getLaboratoryOrderOutcome().size());
+
+    for (LaboratoryOrderOutcomeType responseElement : response.getObject().getLaboratoryOrderOutcome()) {
       String systemId = responseElement.getLaboratoryOrderOutcomeHeader().getSource().getSystemId().getRoot();
       assertTrue(String.format("%s wasn't expected in response", systemId), expectedResponse.contains(systemId));
       assertEquals(patientId,
@@ -78,8 +97,10 @@ public class FullServiceTestIT {
 
     for (ProcessingStatusRecordType processingStatus : processingStatusType.getProcessingStatusList()) {
       String logicalAddress = processingStatus.getLogicalAddress();
+
       assertTrue(String.format("%s wasn't expected in ProcessingStatus", logicalAddress),
           expectedResponse.contains(logicalAddress));
+
       assertEquals(expectedResponse.getStatusCode(logicalAddress), processingStatus.getStatusCode());
       if (processingStatus.getStatusCode() == StatusCodeEnum.NO_DATA_SYNCH_FAILED) {
         final String errTxtPart = expectedResponse.getErrTxtPart(logicalAddress);
@@ -89,9 +110,7 @@ public class FullServiceTestIT {
         assertTrue(String.format("Error txt: %s\n Does not contain:\n  %s ", errTxt, errTxtPart),
             errTxt.contains(errTxtPart));
 
-        // TODO Fix
-        assertTrue(String.format("Error code: %s\n Does not contain:\n  %s ", errCode, errTxtPart),
-            errCode.contains(errTxtPart));
+        assertNotNull("errorCode should not be null", errCode);
       }
 
     }

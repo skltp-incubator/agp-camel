@@ -2,6 +2,11 @@ package se.skltp.aggregatingservices.processors;
 
 import static se.skltp.aggregatingservices.constants.AgpProperties.AGP_ORIGINAL_QUERY;
 import static se.skltp.aggregatingservices.constants.AgpProperties.AGP_SERVICE_HANDLER;
+import static se.skltp.aggregatingservices.constants.AgpProperties.ENGAGEMENT_PROCESSING_RESULT;
+import static se.skltp.aggregatingservices.constants.AgpProperties.LOG_ENGAGEMENT_PROCESSING_RESULT;
+import static se.skltp.aggregatingservices.constants.AgpProperties.LOG_PROCESSING_COUNT_FAIL;
+import static se.skltp.aggregatingservices.constants.AgpProperties.LOG_PROCESSING_COUNT_TOT;
+import static se.skltp.aggregatingservices.constants.AgpProperties.LOG_PROCESSING_STATUS;
 
 import java.io.StringReader;
 import java.util.List;
@@ -16,8 +21,9 @@ import org.apache.cxf.headers.Header.Direction;
 import org.apache.cxf.message.MessageContentsList;
 import org.apache.cxf.staxutils.StaxUtils;
 import org.springframework.stereotype.Service;
-import se.skltp.aggregatingservices.api.AgpServiceFactory;
 import se.skltp.aggregatingservices.aggregate.AggregatedResponseResults;
+import se.skltp.aggregatingservices.api.AgpServiceFactory;
+import se.skltp.aggregatingservices.logging.ProcessingStatusLogFormat;
 import se.skltp.aggregatingservices.utils.JaxbUtil;
 import se.skltp.agp.riv.interoperability.headers.v1.ObjectFactory;
 import se.skltp.agp.riv.interoperability.headers.v1.ProcessingStatusType;
@@ -40,6 +46,14 @@ public class CreateResponseProcessor implements Processor {
     exchange.getIn().setBody(responseObject);
 
     insertProcessingStatusHeader(exchange, aggregatedResponseResults.getProcessingStatus());
+
+    ProcessingStatusLogFormat processingStatusLogFormat = new ProcessingStatusLogFormat(aggregatedResponseResults.getProcessingStatus());
+    exchange.setProperty(LOG_PROCESSING_STATUS, processingStatusLogFormat.getProcStatus());
+    exchange.setProperty(LOG_PROCESSING_COUNT_TOT, processingStatusLogFormat.getProcStatusCountTot());
+    exchange.setProperty(LOG_PROCESSING_COUNT_FAIL, processingStatusLogFormat.getProcStatusCountFail());
+    exchange.setProperty(LOG_ENGAGEMENT_PROCESSING_RESULT, exchange.getProperty(ENGAGEMENT_PROCESSING_RESULT));
+
+    exchange.getIn().setHeader(Exchange.HTTP_RESPONSE_CODE, 200);
   }
 
   private void insertProcessingStatusHeader(Exchange exchange, ProcessingStatusType processingStatus) throws XMLStreamException {

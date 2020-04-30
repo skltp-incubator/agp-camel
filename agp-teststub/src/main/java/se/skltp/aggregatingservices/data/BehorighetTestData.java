@@ -21,6 +21,7 @@ public class BehorighetTestData {
   private static final String[] receivers = {TestDataDefines.TEST_LOGICAL_ADDRESS_1, TestDataDefines.TEST_LOGICAL_ADDRESS_2,
       TestDataDefines.TEST_LOGICAL_ADDRESS_3, TestDataDefines.TEST_LOGICAL_ADDRESS_4, TestDataDefines.TEST_LOGICAL_ADDRESS_5,
       TestDataDefines.TEST_LOGICAL_ADDRESS_6};
+  public static final String HSA_ID_FEL = "HSA-ID-FEL";
 
   private HamtaAllaAnropsBehorigheterResponseType anropsBehorigheterResponse = new HamtaAllaAnropsBehorigheterResponseType();
 
@@ -62,9 +63,9 @@ public class BehorighetTestData {
     // Some faulty random permissions
 
     type.getAnropsBehorighetsInfo()
-        .add(anropsBehorighetsInfoType(UUID.randomUUID().toString(), "HSA-ID-FEL", "TK_" + "HSA-ID-FEL"));
+        .add(anropsBehorighetsInfoType(UUID.randomUUID().toString(), HSA_ID_FEL, "TK_" + HSA_ID_FEL));
     type.getAnropsBehorighetsInfo()
-        .add(anropsBehorighetsInfoType(UUID.randomUUID().toString(), "HSA-ID-FEL", "TK_" + "HSA-ID-FEL"));
+        .add(anropsBehorighetsInfoType(UUID.randomUUID().toString(), HSA_ID_FEL, "TK_" + HSA_ID_FEL));
 
     return type;
   }

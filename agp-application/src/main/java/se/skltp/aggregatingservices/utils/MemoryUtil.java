@@ -10,6 +10,11 @@ import sun.misc.VM;
 
 public class MemoryUtil {
   private static MemoryMXBean mbean = ManagementFactory.getMemoryMXBean();
+
+  // Utility class
+  private MemoryUtil() {
+  }
+
   public static String getMemoryUsed() {
     return bytesReadable(SharedSecrets.getJavaNioAccess().getDirectBufferPool().getMemoryUsed());
   }

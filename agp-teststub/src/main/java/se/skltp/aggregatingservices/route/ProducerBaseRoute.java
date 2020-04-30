@@ -12,10 +12,9 @@ import se.skltp.aggregatingservices.processors.ProducerResponseProcessor;
 
 @Component
 public class ProducerBaseRoute extends RouteBuilder {
-   private static String SERVICE_CONFIGURATION="cxf:%s"
+   private static final String SERVICE_CONFIGURATION="cxf:%s"
       + "?wsdlURL=%s"
-      + "&serviceClass=%s"
-      + "&loggingFeatureEnabled=true";
+      + "&serviceClass=%s";
 
   List<TestProducerConfiguration> testProducerConfigurations;
 
@@ -28,7 +27,7 @@ public class ProducerBaseRoute extends RouteBuilder {
   }
 
   @Override
-  public void configure() throws Exception {
+  public void configure() {
     for(TestProducerConfiguration testProducerConfiguration : testProducerConfigurations){
       createProducerRoute(testProducerConfiguration);
     }
@@ -44,6 +43,8 @@ public class ProducerBaseRoute extends RouteBuilder {
       ProducerResponseProcessor producerResponseProcessor = new ProducerResponseProcessor(testDataGenerator);
 
       from(serviceAddress)
+          .errorHandler(noErrorHandler())
+
           .to("mock:producer:input")
           .process(producerResponseProcessor);
 

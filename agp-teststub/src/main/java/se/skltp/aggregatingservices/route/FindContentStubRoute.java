@@ -15,7 +15,7 @@ public class FindContentStubRoute extends RouteBuilder {
   public static final String FINDCONTENT_WSDL_PATH = "/schemas/TD_ENGAGEMENTINDEX_1_0_R/interactions/FindContentInteraction/FindContentInteraction_1.0_RIVTABP21.wsdl";
   public static final String FINDCONTENT_SERVICECLASS = FindContentResponderInterface.class.getName();
 
-  private static String SERVICE_CONFIGURATION = "cxf:%s"
+  private static final String SERVICE_CONFIGURATION = "cxf:%s"
       + "?wsdlURL=%s"
       + "&serviceClass=%s";
 
@@ -36,10 +36,8 @@ public class FindContentStubRoute extends RouteBuilder {
   @Override
   public void configure() throws Exception {
     from(serviceAddress).id("FindContent.route")
-        .log(">> FindContent")
         .to("mock:findcontent:input")
-        .process(findContentResponseProcessor)
-        .log("<< FindContent");
+        .process(findContentResponseProcessor);
   }
 
   public MockEndpoint getMock() {

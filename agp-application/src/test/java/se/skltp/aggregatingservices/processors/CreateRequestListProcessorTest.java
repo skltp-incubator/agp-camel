@@ -2,10 +2,8 @@ package se.skltp.aggregatingservices.processors;
 
 import static org.junit.Assert.assertEquals;
 import static se.skltp.aggregatingservices.constants.AgpProperties.AGP_ORIGINAL_QUERY;
-import static se.skltp.aggregatingservices.constants.AgpProperties.AGP_RIVTA_ORIGINAL_CONSUMER_ID;
 import static se.skltp.aggregatingservices.constants.AgpProperties.AGP_SERVICE_HANDLER;
 import static se.skltp.aggregatingservices.constants.AgpProperties.AGP_TAK_CONTRACT_NAME;
-import static se.skltp.aggregatingservices.constants.AgpProperties.AGP_VP_SENDER_ID;
 import static se.skltp.aggregatingservices.data.TestDataDefines.TEST_RR_ID_MANY_HITS_NO_ERRORS;
 
 import java.util.List;
@@ -22,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
+import se.skltp.aggregatingservices.constants.AgpHeaders;
 import se.skltp.aggregatingservices.riv.itintegration.engagementindex.findcontentresponder.v1.FindContentResponseType;
 import se.skltp.aggregatingservices.service.Authority;
 import se.skltp.aggregatingservices.service.TakCacheServiceImpl;
@@ -50,9 +49,9 @@ public class CreateRequestListProcessorTest {
     Mockito.when(takCacheMock.isAuthorized("org_sender1", "ns:1", "HSA-ID-5")).thenReturn(true);
     Mockito.when(takCacheMock.isAuthorized("sender1", "ns:1", "HSA-ID-6")).thenReturn(true);
 
-   createRequestListProcessor.process(ex);
+    createRequestListProcessor.process(ex);
 
-    List< MessageContentsList > list = (List<MessageContentsList>) ex.getIn().getBody();
+    List<MessageContentsList> list = (List<MessageContentsList>) ex.getIn().getBody();
     assertEquals(3, list.size());
 
   }
@@ -109,9 +108,9 @@ public class CreateRequestListProcessorTest {
 
     ex.setProperty(AGP_ORIGINAL_QUERY, RequestUtil.createTestMessageContentsList());
     ex.setProperty(AGP_SERVICE_HANDLER, AgpServiceFactoryImpl.createInstance("domain1", "cat1"));
-    ex.setProperty(AGP_VP_SENDER_ID, "sender1");
-    ex.setProperty(AGP_RIVTA_ORIGINAL_CONSUMER_ID, "org_sender1");
-    ex.setProperty(AGP_TAK_CONTRACT_NAME,"ns:1" );
+    ex.getIn().setHeader(AgpHeaders.X_VP_SENDER_ID, "sender1");
+    ex.getIn().setHeader(AgpHeaders.X_RIVTA_ORIGINAL_SERVICE_CONSUMER_HSA_ID, "org_sender1");
+    ex.setProperty(AGP_TAK_CONTRACT_NAME, "ns:1");
     ex.getIn().setBody(FindContentUtil.createMessageContentsList(TEST_RR_ID_MANY_HITS_NO_ERRORS));
 
     return ex;

@@ -13,16 +13,5 @@ import lombok.NoArgsConstructor;
 @EnableConfigurationProperties
 @ConfigurationProperties(prefix = "vp")
 public class VpConfig {
-
-	// String host;
-	// int port;
-	// String address;
-	// String findcontent.address;
-	// boolean disconnect=false;
-	// boolean keepAlive=true;
-	// int connect.timeout=2000
-	
-	String senderId;
-	
 	String instanceId;
 }

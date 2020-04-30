@@ -15,7 +15,7 @@ public class SokVagValInfoStubRoute extends RouteBuilder {
   public static final String SOKVAGVAL_WSDL_PATH = "/schemas/TD_SOKVAGVAL_2/sokvagval-info-v2.wsdl";
   public static final String SOKVAGVAL_SERVICECLASS = SokVagvalsInfoInterface.class.getName();
 
-  private static String SERVICE_CONFIGURATION = "cxf:%s"
+  private static final String SERVICE_CONFIGURATION = "cxf:%s"
       + "?wsdlURL=%s"
       + "&serviceClass=%s";
 
@@ -35,15 +35,13 @@ public class SokVagValInfoStubRoute extends RouteBuilder {
   @Override
   public void configure() throws Exception {
     from(serviceAddress).id("SokVagval.route")
-        .log(">> SokVagval")
         .to("mock:sokvagval:input")
         .choice()
             .when(header("operationName").isEqualTo("hamtaAllaAnropsBehorigheter"))
                 .process(behorighetResponseProcessor)
             .when(header("operationName").isEqualTo("hamtaAllaVirtualiseringar"))
                 .log("Not implemented!")
-        .end()
-        .log("<< SokVagval");
+        .end();
   }
 
   public MockEndpoint getMock() {

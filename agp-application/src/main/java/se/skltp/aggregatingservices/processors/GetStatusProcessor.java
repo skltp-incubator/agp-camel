@@ -1,7 +1,5 @@
 package se.skltp.aggregatingservices.processors;
 
-import static se.skltp.aggregatingservices.constants.AgpProperties.HEADER_CONTENT_TYPE;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.util.DefaultIndenter;
 import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
@@ -24,6 +22,7 @@ import org.apache.camel.impl.EventDrivenConsumerRoute;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.info.BuildProperties;
 import org.springframework.stereotype.Service;
+import se.skltp.aggregatingservices.constants.AgpHeaders;
 import se.skltp.aggregatingservices.service.TakCacheService;
 import se.skltp.aggregatingservices.utils.MemoryUtil;
 import se.skltp.takcache.TakCacheLog;
@@ -42,8 +41,6 @@ public class GetStatusProcessor implements Processor {
   public static final String KEY_CAMEL_VERSION = "CamelVersion";
   public static final String KEY_TAK_CACHE_INITIALIZED = "TakCacheInitialized";
   public static final String KEY_TAK_CACHE_RESET_INFO = "TakCacheResetInfo";
-  //public static final String KEY_HSA_CACHE_INITIALIZED = "HsaCacheInitialized";
-  //public static final String KEY_HSA_CACHE_RESET_INFO = "HsaCacheResetInfo";
   public static final String KEY_JVM_TOTAL_MEMORY = "JvmTotalMemory";
   public static final String KEY_JVM_FREE_MEMORY = "JvmFreeMemory";
   public static final String KEY_JVM_USED_MEMORY = "JvmUsedMemory";
@@ -58,9 +55,6 @@ public class GetStatusProcessor implements Processor {
 
   @Autowired
   TakCacheService takService;
-
-  //@Autowired
-  //HsaCacheService hsaService;
 
   @Autowired
   BuildProperties buildProperties;
@@ -82,7 +76,7 @@ public class GetStatusProcessor implements Processor {
       json = map.toString();
     }
     exchange.getIn().setBody(json.replace("\\/", "/"));
-    exchange.getIn().getHeaders().put(HEADER_CONTENT_TYPE, "application/json");
+    exchange.getIn().getHeaders().put(AgpHeaders.HEADER_CONTENT_TYPE, "application/json");
   }
 
   private Map<String, Object> registerInfo(boolean showMemory) {
@@ -102,17 +96,13 @@ public class GetStatusProcessor implements Processor {
     map.put(KEY_TAK_CACHE_INITIALIZED, "" + takService.isInitalized());
     map.put(KEY_TAK_CACHE_RESET_INFO, getTakRefreshInfo());
 
-    //HsaCacheStatus hsaCacheStatus = hsaService.getHsaCacheStatus();
-    //map.put(KEY_HSA_CACHE_INITIALIZED, "" + hsaCacheStatus.isInitialized());
-    //map.put(KEY_HSA_CACHE_RESET_INFO, getHsaRefreshInfo(hsaCacheStatus));
-
-    Runtime instance = Runtime.getRuntime();
+      Runtime instance = Runtime.getRuntime();
     map.put(KEY_JVM_TOTAL_MEMORY, "" + MemoryUtil.bytesReadable(instance.totalMemory()));
     map.put(KEY_JVM_FREE_MEMORY, "" + MemoryUtil.bytesReadable(instance.freeMemory()));
     map.put(KEY_JVM_USED_MEMORY, "" + MemoryUtil.bytesReadable((instance.totalMemory() - instance.freeMemory())));
     map.put(KEY_JVM_MAX_MEMORY, "" + MemoryUtil.bytesReadable(instance.maxMemory()));
     if(showMemory) {
-      map.put(KEY_DIRECT_MEMORY, "" + GetDirectMemoryString());
+      map.put(KEY_DIRECT_MEMORY, "" + getDirectMemoryString());
       map.put(KEY_VM_MAX_DIRECT_MEMORY, "" + MemoryUtil.getVMMaxMemory());
       map.put(KEY_NON_HEAP_MEMORY, "" + getNonHeapMemory());
     }
@@ -136,7 +126,7 @@ public class GetStatusProcessor implements Processor {
         MemoryUtil.bytesReadable(nonHeapMemoryUsage.getMax()));
   }
 
-  private String GetDirectMemoryString() {
+  private String getDirectMemoryString() {
     return String.format("Used: %s, Count: %d, Max Capacity: %s",
         MemoryUtil.getMemoryUsed(),
         MemoryUtil.getCount(),
@@ -150,22 +140,14 @@ public class GetStatusProcessor implements Processor {
       String endpoint = route.getEndpoint().getEndpointKey();
       if (endpoint.contains("http://") && ((EventDrivenConsumerRoute) route).getStatus() == ServiceStatus.Started) {
         String key = route.getEndpoint().getEndpointKey();
-        if (key.indexOf("?") > 0) {
-          key = key.substring(0, key.indexOf("?"));
+        if (key.indexOf('?') > -1) {
+          key = key.substring(0, key.indexOf('?'));
         }
         endPoints.add(key);
       }
     }
     return endPoints;
   }
-
-  /*public String getHsaRefreshInfo(HsaCacheStatus hsaCacheStatus) {
-    return String.format("Date:%s Status:%s oldNum:%d newNum:%d",
-        getFormattedDate(hsaCacheStatus.getResetDate()),
-        hsaCacheStatus.isInitialized(),
-        hsaCacheStatus.getNumInCacheOld(),
-        hsaCacheStatus.getNumInCacheNew());
-  }*/
 
   public String getTakRefreshInfo() {
     TakCacheLog takCacheLog = takService.getLastRefreshLog();

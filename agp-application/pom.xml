@@ -60,12 +60,22 @@
       <artifactId>spring-boot-actuator</artifactId>
     </dependency>
 
+    <!-- logging -->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-log4j2</artifactId>
+    </dependency>
+    <!-- for async logging -->
+    <dependency>
+      <groupId>com.lmax</groupId>
+      <artifactId>disruptor</artifactId>
+    </dependency>
+
 
     <!--hawt.io-->
     <dependency>
       <groupId>io.hawt</groupId>
       <artifactId>hawtio-springboot</artifactId>
-      <version>2.6.0</version>
     </dependency>
 
     <dependency>
@@ -125,7 +135,6 @@
       <version>1.1.0</version>
       <scope>test</scope>
     </dependency>
-
 
 
     <dependency>

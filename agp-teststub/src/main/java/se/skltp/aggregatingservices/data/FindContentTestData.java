@@ -13,7 +13,8 @@ import se.skltp.aggregatingservices.riv.itintegration.engagementindex.v1.Engagem
 @Service
 public class FindContentTestData {
 
-  private static final Map<String, FindContentResponseType> FINDCONTENT_RESPONSE_MAP = new HashMap<String, FindContentResponseType>();
+  private static final Map<String, FindContentResponseType> FINDCONTENT_RESPONSE_MAP = new HashMap<>();
+  public static final String LOG_MSG_ADDED_ITEM = "### Engagemengsindex add {} items to the index for resident {}";
 
   public FindContentTestData() {
     generateResponseMap();
@@ -44,7 +45,7 @@ public class FindContentTestData {
             TestDataDefines.TEST_BO_ID_MANY_HITS_3,
             TestDataDefines.TEST_DATE_MANY_HITS_3));
     FINDCONTENT_RESPONSE_MAP.put(TestDataDefines.TEST_RR_ID_MANY_HITS_NO_ERRORS, response);
-    log.info("### Engagemengsindex add {} items to the index for resident {}", response.getEngagement().size(),
+    log.info(LOG_MSG_ADDED_ITEM, response.getEngagement().size(),
         TestDataDefines.TEST_RR_ID_MANY_HITS_NO_ERRORS);
 
     //
@@ -58,7 +59,7 @@ public class FindContentTestData {
         .add(createResponse(TestDataDefines.TEST_LOGICAL_ADDRESS_2, TestDataDefines.TEST_RR_ID_ONE_HIT,
             TestDataDefines.TEST_BO_ID_ONE_HIT, TestDataDefines.TEST_DATE_ONE_HIT));
     FINDCONTENT_RESPONSE_MAP.put(TestDataDefines.TEST_RR_ID_ONE_HIT, response);
-    log.info("### Engagemengsindex add {} items to the index for resident {}", response.getEngagement().size(),
+    log.info(LOG_MSG_ADDED_ITEM, response.getEngagement().size(),
         TestDataDefines.TEST_RR_ID_ONE_HIT);
 
     //
@@ -82,7 +83,7 @@ public class FindContentTestData {
             TestDataDefines.TEST_BO_ID_MANY_HITS_4,
             TestDataDefines.TEST_DATE_MANY_HITS_4));
     FINDCONTENT_RESPONSE_MAP.put(TestDataDefines.TEST_RR_ID_MANY_HITS, response);
-    log.info("### Engagemengsindex add {} items to the index for resident {}", response.getEngagement().size(),
+    log.info(LOG_MSG_ADDED_ITEM, response.getEngagement().size(),
         TestDataDefines.TEST_RR_ID_MANY_HITS);
 
     //
@@ -93,7 +94,7 @@ public class FindContentTestData {
         TestDataDefines.TEST_RR_ID_FAULT_INVALID_ID, TEST_BO_ID_FAULT_INVALID_ID,
         TestDataDefines.TEST_DATE_FAULT_INVALID_ID));
     FINDCONTENT_RESPONSE_MAP.put(TestDataDefines.TEST_RR_ID_FAULT_INVALID_ID, response);
-    log.info("### Engagemengsindex add {} items to the index for resident {}", response.getEngagement().size(),
+    log.info(LOG_MSG_ADDED_ITEM, response.getEngagement().size(),
         TestDataDefines.TEST_RR_ID_FAULT_INVALID_ID);
 
     //
@@ -105,7 +106,7 @@ public class FindContentTestData {
             TestDataDefines.TEST_BO_ID_EJ_SAMVERKAN_I_TAK,
             TestDataDefines.TEST_DATE_EJ_SAMVERKAN_I_TAK));
     FINDCONTENT_RESPONSE_MAP.put(TestDataDefines.TEST_RR_ID_EJ_SAMVERKAN_I_TAK, response);
-    log.info("### Engagemengsindex add {} items to the index for resident {}", response.getEngagement().size(),
+    log.info(LOG_MSG_ADDED_ITEM, response.getEngagement().size(),
         TestDataDefines.TEST_RR_ID_EJ_SAMVERKAN_I_TAK);
     //
     // TC7 - Patient with one booking
@@ -116,7 +117,7 @@ public class FindContentTestData {
             TestDataDefines.TEST_BO_ID_TRADKLATTRING,
             TestDataDefines.TEST_DATE_TRADKLATTRING));
     FINDCONTENT_RESPONSE_MAP.put(TestDataDefines.TEST_RR_ID_TRADKLATTRING, response);
-    log.info("### Engagemengsindex add {} items to the index for resident {}", response.getEngagement().size(),
+    log.info(LOG_MSG_ADDED_ITEM, response.getEngagement().size(),
         TestDataDefines.TEST_RR_ID_TRADKLATTRING);
   }
 

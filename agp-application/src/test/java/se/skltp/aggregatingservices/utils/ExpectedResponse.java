@@ -8,6 +8,16 @@ public class ExpectedResponse {
   private Map<String, Object[]> map = new HashMap<>();
   int numResponses=0;
 
+  int responseCode;
+
+  public ExpectedResponse() {
+    this(200);
+  }
+
+  public ExpectedResponse(int responseCode) {
+    this.responseCode = responseCode;
+  }
+
   public void add(String producer, int responseSize, StatusCodeEnum statusCode, String errTxtPart){
     map.put(producer, new Object[]{statusCode, responseSize, errTxtPart});
     numResponses+=responseSize;
@@ -33,7 +43,9 @@ public class ExpectedResponse {
     return (int) map.get(producer)[1];
   }
 
-
+  public int getResponseCode() {
+    return responseCode;
+  }
 
   public boolean contains(String producer){
     return map.containsKey(producer);

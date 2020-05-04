@@ -9,4 +9,5 @@ public abstract class TestProducerConfiguration {
   String serviceClass;
   String serviceNamespace;
   String testDataGeneratorClass;
+  String portName;
 }

@@ -21,6 +21,7 @@ public class AgpRoute extends RouteBuilder {
   public static final String EI_FINDCONTENT_URI = "cxf://{{ei.findContentUrl}}"
       + "?wsdlURL=/schemas/TD_ENGAGEMENTINDEX_1_0_R/interactions/FindContentInteraction/FindContentInteraction_1.0_RIVTABP21.wsdl"
       + "&serviceClass=se.skltp.aggregatingservices.riv.itintegration.engagementindex.findcontent.v1.rivtabp21.FindContentResponderInterface"
+      + "&portName={urn:riv:itintegration:engagementindex:FindContent:1:rivtabp21}FindContentResponderPort"
       + "&dataFormat=POJO"
       + "&features=#loggingFeatures";
 

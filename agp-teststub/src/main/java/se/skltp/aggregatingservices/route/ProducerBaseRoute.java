@@ -14,7 +14,8 @@ import se.skltp.aggregatingservices.processors.ProducerResponseProcessor;
 public class ProducerBaseRoute extends RouteBuilder {
    private static final String SERVICE_CONFIGURATION="cxf:%s"
       + "?wsdlURL=%s"
-      + "&serviceClass=%s";
+      + "&serviceClass=%s"
+      + "&portName=%s";
 
   List<TestProducerConfiguration> testProducerConfigurations;
 
@@ -35,7 +36,7 @@ public class ProducerBaseRoute extends RouteBuilder {
 
   private void createProducerRoute(TestProducerConfiguration configuration){
     String serviceAddress = String.format(SERVICE_CONFIGURATION, configuration.getProducerAddress(),
-        configuration.getWsdlPath(), configuration.getServiceClass());
+        configuration.getWsdlPath(), configuration.getServiceClass(), configuration.getPortName());
 
     try {
       final ProducerTestDataGenerator testDataGenerator = createTestDataGenerator(

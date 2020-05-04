@@ -54,7 +54,7 @@ public class GLOOConsumerService implements ConsumerService {
 
     headers.put(AgpHeaders.X_RIVTA_ORIGINAL_SERVICE_CONSUMER_HSA_ID, originalId);
     headers.put(AgpHeaders.X_VP_SENDER_ID, senderId);
-    headers.put(AgpHeaders.X_SKLTP_CORRELATION_ID, "corr-id");
+    headers.put(AgpHeaders.X_SKLTP_CORRELATION_ID, "test-corr-id");
 
     final MessageContentsList testRequest = RequestUtil.createTestMessageContentsList(logicalAddress, patientId);
 

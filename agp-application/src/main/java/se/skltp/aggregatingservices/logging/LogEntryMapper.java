@@ -31,12 +31,11 @@ public class LogEntryMapper {
     logEntry.setComponentId(getComponentId(message));
     logEntry.setSenderId(getHeader(AgpHeaders.X_VP_SENDER_ID, message));
     logEntry.setOriginalSenderId(getHeader(AgpHeaders.X_RIVTA_ORIGINAL_SERVICE_CONSUMER_HSA_ID, message));
-    logEntry.setReceiverId(getProperty(AgpProperties.LOGICAL_ADDRESS, message));
     logEntry.setEngagementProcessingResult(getProperty(AgpProperties.LOG_ENGAGEMENT_PROCESSING_RESULT, message));
     logEntry.setProcessingStatus(getProperty(AgpProperties.LOG_PROCESSING_STATUS, message));
     logEntry.setProcessingStatusCountFail(getProperty(AgpProperties.LOG_PROCESSING_COUNT_FAIL, message));
     logEntry.setProcessingStatusCountTot(getProperty(AgpProperties.LOG_PROCESSING_COUNT_TOT, message));
-
+    logEntry.setReceiverId(getLogicalAddress(message));
 
     String correlationId = getCorrelationId(message);
     if(correlationId != null){
@@ -46,6 +45,15 @@ public class LogEntryMapper {
     }
 
     return logEntry;
+  }
+
+  private static String getLogicalAddress(Message message) {
+    final String logicalAddress = getProperty(AgpProperties.LOGICAL_ADDRESS, message);
+    if(logicalAddress==null){
+      return (String) message.getExchange().get(AgpProperties.LOGICAL_ADDRESS);
+    }
+    message.getExchange().put(AgpProperties.LOGICAL_ADDRESS, logicalAddress);
+    return logicalAddress;
   }
 
   private static String getComponentId(Message message) {

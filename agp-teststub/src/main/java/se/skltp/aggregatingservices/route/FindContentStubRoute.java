@@ -17,7 +17,8 @@ public class FindContentStubRoute extends RouteBuilder {
 
   private static final String SERVICE_CONFIGURATION = "cxf:%s"
       + "?wsdlURL=%s"
-      + "&serviceClass=%s";
+      + "&serviceClass=%s"
+      + "&portName={urn:riv:itintegration:engagementindex:FindContent:1:rivtabp21}FindContentResponderPort";
 
   protected String serviceAddress;
 

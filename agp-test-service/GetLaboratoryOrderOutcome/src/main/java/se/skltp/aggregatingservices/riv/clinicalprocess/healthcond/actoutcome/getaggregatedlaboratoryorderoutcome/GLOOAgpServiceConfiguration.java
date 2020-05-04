@@ -4,6 +4,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 import riv.clinicalprocess.healthcond.actoutcome.getlaboratoryorderoutcome.v4.rivtabp21.GetLaboratoryOrderOutcomeResponderInterface;
+import riv.clinicalprocess.healthcond.actoutcome.getlaboratoryorderoutcome.v4.rivtabp21.GetLaboratoryOrderOutcomeResponderService;
 
 @Configuration
 @EnableConfigurationProperties
@@ -21,11 +22,13 @@ public class GLOOAgpServiceConfiguration extends se.skltp.aggregatingservices.co
     setInboundServiceURL("http://localhost:8081/GetAggregatedLaboratoryOrderOutcome/service/v4");
     setInboundServiceWsdl(SCHEMA_PATH);
     setInboundServiceClass(GetLaboratoryOrderOutcomeResponderInterface.class.getName());
+    setInboundPortName(GetLaboratoryOrderOutcomeResponderService.GetLaboratoryOrderOutcomeResponderPort.toString());
 
     // Set outbound defaults
     setOutboundServiceURL("http://localhost:8083/vp/gloo");
     setOutboundServiceWsdl(SCHEMA_PATH);
     setOutboundServiceClass(GetLaboratoryOrderOutcomeResponderInterface.class.getName());
+    setOutboundPortName(GetLaboratoryOrderOutcomeResponderService.GetLaboratoryOrderOutcomeResponderPort.toString());
 
     // FindContent
     setEiServiceDomain("riv:clinicalprocess:healthcond:actoutcome");

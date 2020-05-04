@@ -19,7 +19,7 @@ import org.apache.logging.log4j.MarkerManager;
 @Log4j2
 public class MessageLogEventSender {
 
-  private static final Marker PAYLOAD_MARKER = MarkerManager.getMarker("PAYLOAD");
+  private static final Marker MESSAGE_LOG_MARKER = MarkerManager.getMarker("AGP_MESSAGE_LOG");
 
   protected static String hostName = "UNKNOWN (UNKNOWN)";
 
@@ -36,7 +36,7 @@ public class MessageLogEventSender {
   }
 
   public void send(LogEntry event, Logger logger) {
-    logger.info(PAYLOAD_MARKER, getLogMessage(event));
+    logger.info(MESSAGE_LOG_MARKER, getLogMessage(event));
   }
 
 

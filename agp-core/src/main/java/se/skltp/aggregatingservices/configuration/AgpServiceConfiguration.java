@@ -11,10 +11,12 @@ public class AgpServiceConfiguration {
   String inboundServiceWsdl;
   String inboundServiceURL;
   String inboundServiceClass;
+  String inboundPortName;
 
   String outboundServiceURL;
   String outboundServiceWsdl;
   String outboundServiceClass;
+  String outboundPortName;
 
   String takContract;
 

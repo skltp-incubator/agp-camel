@@ -14,10 +14,9 @@
       <PatternLayout pattern="${LOG_PATTERN}"/>
     </Console>
 
-    <Console name="Payload" target="SYSTEM_OUT">
-      <MarkerFilter marker="PAYLOAD" onMatch="ACCEPT" onMismatch="DENY"/>
-      <PatternLayout pattern="${PAYLOAD_LOG_PATTERN}"/>
-    </Console>
+    <TestLogAppender name="TestLogAppender">
+      <MarkerFilter marker="AGP_MESSAGE_LOG" onMatch="ACCEPT" onMismatch="DENY"/>
+    </TestLogAppender>
   </Appenders>
 
   <Loggers>
@@ -34,12 +33,8 @@
     <!--Apache camel-->
     <AsyncLogger name="org.apache.camel" level="WARN"/>
 
-
     <!--    Cxf payload logging - on if INFO level-->
-    <AsyncLogger name="org.apache.cxf.services" level="INFO" additivity="false">
-        <AppenderRef ref="Payload"/>
-    </AsyncLogger>
-
+<!--    <AsyncLogger name="org.apache.cxf.services" level="INFO" additivity="false"/>-->
 
     <!-- Message logging -->
     <AsyncLogger name="se.skltp.aggregatingservices.logging" level="DEBUG"/>
@@ -47,9 +42,8 @@
 
 
     <AsyncRoot level="WARN">
-      <!--<AppenderRef ref="RollingRandomAccessFile"/>-->
-      <AppenderRef ref="Console"/>
-<!--      <AppenderRef ref="Payload"/>-->
+<!--      <AppenderRef ref="Console"/>-->
+      <AppenderRef ref="TestLogAppender"/>
     </AsyncRoot>
 
   </Loggers>

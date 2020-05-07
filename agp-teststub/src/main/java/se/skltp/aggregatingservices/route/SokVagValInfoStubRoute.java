@@ -17,7 +17,8 @@ public class SokVagValInfoStubRoute extends RouteBuilder {
 
   private static final String SERVICE_CONFIGURATION = "cxf:%s"
       + "?wsdlURL=%s"
-      + "&serviceClass=%s";
+      + "&serviceClass=%s"
+      + "&portName={urn:skl:tp:vagvalsinfo:v2}SokVagvalsSoap11LitDocPort";
 
   protected String serviceAddress;
 

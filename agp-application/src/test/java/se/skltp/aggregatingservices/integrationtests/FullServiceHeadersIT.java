@@ -85,7 +85,7 @@ public class FullServiceHeadersIT {
   public void correlationIdForwardedToProducer() throws Exception {
 
     final MockEndpoint mock = producerBaseRoute.getMock();
-    mock.expectedHeaderReceived(AgpHeaders.X_SKLTP_CORRELATION_ID, "corr-id");
+    mock.expectedHeaderReceived(AgpHeaders.X_SKLTP_CORRELATION_ID, "test-corr-id");
     mock.expectedMessageCount(3);
 
     consumerService.callService(TEST_RR_ID_MANY_HITS_NO_ERRORS);
@@ -97,7 +97,7 @@ public class FullServiceHeadersIT {
   public void correlationIdForwardedToEI() throws Exception {
 
     final MockEndpoint mock = findContentStubRoute.getMock();
-    mock.expectedHeaderReceived(AgpHeaders.X_SKLTP_CORRELATION_ID, "corr-id");
+    mock.expectedHeaderReceived(AgpHeaders.X_SKLTP_CORRELATION_ID, "test-corr-id");
     mock.expectedMessageCount(1);
 
     consumerService.callService(TEST_RR_ID_MANY_HITS_NO_ERRORS);

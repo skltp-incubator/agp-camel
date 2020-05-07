@@ -53,6 +53,9 @@ public class AgpServiceRoutes extends RouteBuilder {
         , serviceConfiguration.getServiceName()
         , serviceConfiguration.getServiceName());
     String inRouteName = String.format("%s.in.route", serviceConfiguration.getServiceName());
+    if(serviceConfiguration.getInboundPortName()!=null){
+      inboundServiceAddress = inboundServiceAddress +"&portName="+serviceConfiguration.getInboundPortName();
+    }
 
     // Set outbound props
     String outboundServiceAddress = String.format(OUTBOUND_SERVICE_CONFIGURATION
@@ -62,6 +65,11 @@ public class AgpServiceRoutes extends RouteBuilder {
         , serviceConfiguration.getServiceName());
     String outRouteName = String.format("%s.out.route", serviceConfiguration.getServiceName());
     String directRouteToProducer = serviceConfiguration.getServiceName();
+    if(serviceConfiguration.getOutboundPortName()!=null){
+      outboundServiceAddress = outboundServiceAddress +"&portName="+serviceConfiguration.getOutboundPortName();
+    }
+
+
 
     AgpServiceFactory agpServiceFactory = getServiceFactory(serviceConfiguration);
 

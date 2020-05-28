@@ -1,16 +1,24 @@
 package se.skltp.aggregatingservices.integrationtests;
 
+import static org.apache.camel.test.junit4.TestSupport.assertStringContains;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static se.skltp.aggregatingservices.data.TestDataDefines.TEST_ID_FAULT_INVALID_ID_IN_EI;
+import static se.skltp.aggregatingservices.data.TestDataDefines.TEST_ID_FAULT_TIMEOUT_IN_EI;
 import static se.skltp.aggregatingservices.data.TestDataDefines.TEST_RR_ID_EJ_SAMVERKAN_I_TAK;
 import static se.skltp.aggregatingservices.data.TestDataDefines.TEST_RR_ID_FAULT_INVALID_ID;
 import static se.skltp.aggregatingservices.data.TestDataDefines.TEST_RR_ID_MANY_HITS;
 import static se.skltp.aggregatingservices.data.TestDataDefines.TEST_RR_ID_MANY_HITS_NO_ERRORS;
 import static se.skltp.aggregatingservices.data.TestDataDefines.TEST_RR_ID_ONE_HIT;
 import static se.skltp.aggregatingservices.data.TestDataDefines.TEST_RR_ID_ZERO_HITS;
+import static se.skltp.aggregatingservices.utils.AssertLoggingUtil.LOGGER_NAME_ERROR_OUT;
+import static se.skltp.aggregatingservices.utils.AssertLoggingUtil.assertEventMessageCommon;
 import static se.skltp.aggregatingservices.utils.AssertLoggingUtil.assertLogging;
 import static se.skltp.aggregatingservices.utils.AssertUtil.assertExpectedProcessingStatus;
 import static se.skltp.aggregatingservices.utils.AssertUtil.assertExpectedResponse;
 
 import org.apache.camel.test.spring.CamelSpringBootRunner;
+import org.apache.cxf.binding.soap.SoapFault;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -143,6 +151,44 @@ public class FullServiceTestIT {
     assertLogging(testLogAppender, expectedResponse);
   }
 
+  //
+  // FindContent timeout should give a soap fault
+  //
+  @Test
+  public void testFindContentTimeoutShouldReturnSoapFault() throws Exception {
+
+    final ServiceResponse<GetLaboratoryOrderOutcomeResponseType> response = consumerService
+        .callService(TEST_ID_FAULT_TIMEOUT_IN_EI);
+
+    assertEquals("Not expected response code", 500, response.getResponseCode());
+
+    final SoapFault soapFault = response.getSoapFault();
+    assertNotNull("Expected a SoapFault", soapFault);
+    assertEquals("Read timed out", soapFault.getReason());
+
+    final String eventMessage = testLogAppender.getEventMessage(LOGGER_NAME_ERROR_OUT, 0);
+    assertEventMessageCommon(eventMessage, "error-out");
+    assertStringContains(eventMessage, "-responseCode=500");
+  }
+
+  //
+  // FindContent error should give a soap fault
+  //
+  @Test
+  public void testFindContentErrorShouldReturnSoapFault() throws Exception {
+    final ServiceResponse<GetLaboratoryOrderOutcomeResponseType> response = consumerService
+        .callService(TEST_ID_FAULT_INVALID_ID_IN_EI);
+
+    assertEquals("Not expected response code", 500, response.getResponseCode());
+
+    final SoapFault soapFault = response.getSoapFault();
+    assertNotNull("Expected a SoapFault", soapFault);
+    assertEquals("Invalid Id: EI:INV_ID", soapFault.getReason());
+
+    final String eventMessage = testLogAppender.getEventMessage(LOGGER_NAME_ERROR_OUT, 0);
+    assertEventMessageCommon(eventMessage, "error-out");
+    assertStringContains(eventMessage, "-responseCode=500");
+  }
 
 }
 

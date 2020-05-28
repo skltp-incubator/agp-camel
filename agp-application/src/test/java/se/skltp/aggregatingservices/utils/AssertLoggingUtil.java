@@ -19,13 +19,14 @@ import se.skltp.agp.riv.interoperability.headers.v1.StatusCodeEnum;
 public class AssertLoggingUtil {
 
   private static final Pattern receiverPattern = Pattern.compile("-receiverid=(.*)");
-  private static final String LOGGER_NAME_REQ_IN = "se.skltp.aggregatingservices.logging.GetLaboratoryOrderOutcomeResponderInterface.REQ_IN";
-  private static final String LOGGER_NAME_REQ_OUT = "se.skltp.aggregatingservices.logging.GetLaboratoryOrderOutcomeResponderInterface.REQ_OUT";
-  private static final String LOGGER_NAME_RESP_IN = "se.skltp.aggregatingservices.logging.GetLaboratoryOrderOutcomeResponderInterface.RESP_IN";
-  private static final String LOGGER_NAME_ERROR_IN = "se.skltp.aggregatingservices.logging.GetLaboratoryOrderOutcomeResponderInterface.FAULT_IN";
-  private static final String LOGGER_NAME_RESP_OUT = "se.skltp.aggregatingservices.logging.GetLaboratoryOrderOutcomeResponderInterface.RESP_OUT";
-  private static final String LOGGER_NAME_EI_REQ_OUT = "se.skltp.aggregatingservices.logging.FindContentResponderInterface.REQ_OUT";
-  private static final String LOGGER_NAME_EI_RESP_IN = "se.skltp.aggregatingservices.logging.FindContentResponderInterface.RESP_IN";
+  public static final String LOGGER_NAME_REQ_IN = "se.skltp.aggregatingservices.logging.GetLaboratoryOrderOutcomeResponderInterface.REQ_IN";
+  public static final String LOGGER_NAME_REQ_OUT = "se.skltp.aggregatingservices.logging.GetLaboratoryOrderOutcomeResponderInterface.REQ_OUT";
+  public static final String LOGGER_NAME_RESP_IN = "se.skltp.aggregatingservices.logging.GetLaboratoryOrderOutcomeResponderInterface.RESP_IN";
+  public static final String LOGGER_NAME_ERROR_IN = "se.skltp.aggregatingservices.logging.GetLaboratoryOrderOutcomeResponderInterface.FAULT_IN";
+  public static final String LOGGER_NAME_ERROR_OUT = "se.skltp.aggregatingservices.logging.GetLaboratoryOrderOutcomeResponderInterface.FAULT_OUT";
+  public static final String LOGGER_NAME_RESP_OUT = "se.skltp.aggregatingservices.logging.GetLaboratoryOrderOutcomeResponderInterface.RESP_OUT";
+  public static final String LOGGER_NAME_EI_REQ_OUT = "se.skltp.aggregatingservices.logging.FindContentResponderInterface.REQ_OUT";
+  public static final String LOGGER_NAME_EI_RESP_IN = "se.skltp.aggregatingservices.logging.FindContentResponderInterface.RESP_IN";
 
   // Utility class
   private AssertLoggingUtil() {
@@ -137,7 +138,7 @@ public class AssertLoggingUtil {
     assertStringContains(eventMessage, "-wsdl_namespace=urn:riv:itintegration:engagementindex:FindContent:1:rivtabp21");
   }
 
-  private static void assertEventMessageCommon(String eventMessage, String logMessage) {
+  public static void assertEventMessageCommon(String eventMessage, String logMessage) {
     assertStringContains(eventMessage, String.format("LogMessage=%s", logMessage));
     assertStringContains(eventMessage, "ComponentId=aggregating-services");
     assertStringContains(eventMessage, "ServiceImpl=GetLaboratoryOrderOutcome.V4");

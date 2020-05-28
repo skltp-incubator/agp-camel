@@ -11,4 +11,6 @@ public class EiConfig {
   String logicalAddress;
   String senderId;
   String findContentUrl;
+  int connectTimeout;
+  int receiveTimeout;
 }

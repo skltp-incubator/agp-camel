@@ -14,4 +14,7 @@ import lombok.NoArgsConstructor;
 @ConfigurationProperties(prefix = "vp")
 public class VpConfig {
 	String instanceId;
+	String defaultServiceURL;
+	int defaultConnectTimeout;
+	int defaultReceiveTimeout;
 }

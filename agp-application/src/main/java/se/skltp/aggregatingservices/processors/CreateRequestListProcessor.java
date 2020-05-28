@@ -3,9 +3,11 @@ package se.skltp.aggregatingservices.processors;
 import static se.skltp.aggregatingservices.constants.AgpProperties.AGP_ORIGINAL_QUERY;
 import static se.skltp.aggregatingservices.constants.AgpProperties.AGP_SERVICE_HANDLER;
 import static se.skltp.aggregatingservices.constants.AgpProperties.AGP_TAK_CONTRACT_NAME;
+import static se.skltp.aggregatingservices.constants.AgpProperties.EXPECTED_IN_PROCESSING_STATUS;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Collectors;
 import lombok.extern.log4j.Log4j2;
 import org.apache.camel.Exchange;
 import org.apache.camel.Message;
@@ -45,6 +47,8 @@ public class CreateRequestListProcessor implements Processor {
 
     EngagementProcessingStatusUtil.updateWithNotFilteredByService(queryObjects, exchange);
 
+    List<String> logicalAddresses = queryObjects.stream().map(mc->(String)mc.get(0)).collect(Collectors.toList());
+    exchange.setProperty(EXPECTED_IN_PROCESSING_STATUS, logicalAddresses);
     exchange.getIn().setBody(queryObjects);
 
   }

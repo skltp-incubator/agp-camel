@@ -17,6 +17,8 @@ public class AgpProperties {
   public static final String INCOMMING_VP_SENDER_ID = "org-vp-sender-id";
   public static final String CORRELATION_ID = "CorrelationId";
 
+  public static final String EXPECTED_IN_PROCESSING_STATUS = "ExpectedInProcessingStatus";
+
   public static final String ENGAGEMENT_PROCESSING_RESULT = "EngagementProcessingResult";
   public static final String LOG_ENGAGEMENT_PROCESSING_RESULT = "logEngagementProcessingResult";
   public static final String LOG_PROCESSING_STATUS = "logProcessingStatus";

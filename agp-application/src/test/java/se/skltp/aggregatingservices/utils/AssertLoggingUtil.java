@@ -47,62 +47,12 @@ public class AssertLoggingUtil {
     assertReqOut(testLogAppender, expectedResponse);
     assertMsgIn(testLogAppender, expectedResponse, LOGGER_NAME_RESP_IN);
     assertMsgIn(testLogAppender, expectedResponse, LOGGER_NAME_ERROR_IN);
-//    assertRespIn(testLogAppender, expectedResponse);
-//    assertErrorIn(testLogAppender, expectedResponse);
-
-  }
-
-  private static void assertErrorIn(TestLogAppender testLogAppender, ExpectedResponse expectedResponse) {
-    final List<LogEvent> events = testLogAppender.getEvents(LOGGER_NAME_ERROR_IN);
-    final List<String> expectedProducers = expectedResponse.getProducers().stream().filter(producer -> expectedResponse.getStatusCode(producer).equals(
-        NO_DATA_SYNCH_FAILED)).collect(Collectors.toList());
-    final List<String> loggedProducers = new ArrayList();
-
-    for (LogEvent logEvent : events) {
-      String eventMessage = logEvent.getMessage().getFormattedMessage();
-      assertEventMessageCommon(eventMessage, "error-in");
-      assertStringContains(eventMessage,
-          "-wsdl_namespace=urn:riv:clinicalprocess:healthcond:actoutcome:GetLaboratoryOrderOutcome:4:rivtabp21");
-
-      Matcher matcher = receiverPattern.matcher(eventMessage);
-      assertTrue("No -receiverid found in logentry: \n" + eventMessage, matcher.find());
-      String producer = matcher.group(1);
-      loggedProducers.add(producer);
-      assertStringContains(eventMessage, String.format("-responseCode=%d", expectedResponse.getResponseCode(producer)));
-
-
-    }
-    assertEquals("Unexpected number receivers logged in err-in", expectedProducers.size(), loggedProducers.size());
-    assertThat(expectedProducers, containsInAnyOrder(loggedProducers.toArray()));
-  }
-
-  private static void assertRespIn(TestLogAppender testLogAppender, ExpectedResponse expectedResponse) {
-    final List<LogEvent> events = testLogAppender.getEvents(LOGGER_NAME_RESP_IN);
-    final List<String> expectedProducers = expectedResponse.getProducers().stream().filter(producer -> expectedResponse.getStatusCode(producer).equals(
-        DATA_FROM_SOURCE)).collect(Collectors.toList());
-    final List<String> loggedProducers = new ArrayList();
-
-    for (LogEvent logEvent : events) {
-      String eventMessage = logEvent.getMessage().getFormattedMessage();
-      assertEventMessageCommon(eventMessage, "resp-in");
-      assertStringContains(eventMessage,
-          "-wsdl_namespace=urn:riv:clinicalprocess:healthcond:actoutcome:GetLaboratoryOrderOutcome:4:rivtabp21");
-
-      Matcher matcher = receiverPattern.matcher(eventMessage);
-      assertTrue("No -receiverid found in logentry: \n" + eventMessage, matcher.find());
-      String producer = matcher.group(1);
-      loggedProducers.add(producer);
-      assertStringContains(eventMessage, String.format("-responseCode=%d", expectedResponse.getResponseCode(producer)));
-    }
-    assertEquals("Unexpected number receivers logged in resp-in", expectedProducers.size(), loggedProducers.size());
-    assertThat(expectedProducers, containsInAnyOrder(loggedProducers.toArray()));
-
   }
 
   private static void assertMsgIn(TestLogAppender testLogAppender, ExpectedResponse expectedResponse, String loggerName) {
     StatusCodeEnum statusCode = DATA_FROM_SOURCE;
     String logMessage = "resp-in";
-    if(loggerName.equals(LOGGER_NAME_ERROR_IN)){
+    if (loggerName.equals(LOGGER_NAME_ERROR_IN)) {
       statusCode = NO_DATA_SYNCH_FAILED;
       logMessage = "error-in";
     }
@@ -110,7 +60,6 @@ public class AssertLoggingUtil {
     final List<LogEvent> events = testLogAppender.getEvents(loggerName);
     final List<String> expectedProducers = getFilterProducers(expectedResponse, statusCode);
     final List<String> loggedProducers = new ArrayList();
-
 
     for (LogEvent logEvent : events) {
       String eventMessage = logEvent.getMessage().getFormattedMessage();
@@ -124,23 +73,23 @@ public class AssertLoggingUtil {
       loggedProducers.add(producer);
       assertStringContains(eventMessage, String.format("-responseCode=%d", expectedResponse.getResponseCode(producer)));
     }
-    assertEquals("Unexpected number receivers logged in "+logMessage, expectedProducers.size(), loggedProducers.size());
+    assertEquals("Unexpected number receivers logged in " + logMessage, expectedProducers.size(), loggedProducers.size());
     assertThat(expectedProducers, containsInAnyOrder(loggedProducers.toArray()));
 
   }
 
   private static List<String> getFilterProducers(ExpectedResponse expectedResponse, final StatusCodeEnum statusCode) {
-    return expectedResponse.getProducers().stream().filter(producer -> expectedResponse.getStatusCode(producer)==statusCode).collect(
+    return expectedResponse.getProducers().stream().filter(
+        producer -> expectedResponse.getStatusCode(producer) == statusCode && !expectedResponse.getErrTxtPart(producer)
+            .contains("Read timed out")).collect(
         Collectors.toList());
   }
 
 
-
   private static void assertReqOut(TestLogAppender testLogAppender, ExpectedResponse expectedResponse) {
     final List<LogEvent> events = testLogAppender.getEvents(LOGGER_NAME_REQ_OUT);
-    final List<String> expectedProducers = new ArrayList<> (expectedResponse.getProducers());
+    final List<String> expectedProducers = new ArrayList<>(expectedResponse.getProducers());
     final List<String> loggedProducers = new ArrayList();
-
 
     for (LogEvent logEvent : events) {
       String eventMessage = logEvent.getMessage().getFormattedMessage();

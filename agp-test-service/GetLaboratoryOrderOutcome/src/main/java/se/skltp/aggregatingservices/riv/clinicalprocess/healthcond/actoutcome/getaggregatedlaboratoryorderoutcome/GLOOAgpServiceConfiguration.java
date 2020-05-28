@@ -25,7 +25,6 @@ public class GLOOAgpServiceConfiguration extends se.skltp.aggregatingservices.co
     setInboundPortName(GetLaboratoryOrderOutcomeResponderService.GetLaboratoryOrderOutcomeResponderPort.toString());
 
     // Set outbound defaults
-    setOutboundServiceURL("http://localhost:8083/vp/gloo");
     setOutboundServiceWsdl(SCHEMA_PATH);
     setOutboundServiceClass(GetLaboratoryOrderOutcomeResponderInterface.class.getName());
     setOutboundPortName(GetLaboratoryOrderOutcomeResponderService.GetLaboratoryOrderOutcomeResponderPort.toString());

@@ -1,8 +1,11 @@
 package se.skltp.aggregatingservices.integrationtests;
 
+import static se.skltp.aggregatingservices.data.TestDataDefines.TEST_RR_ID_EJ_SAMVERKAN_I_TAK;
 import static se.skltp.aggregatingservices.data.TestDataDefines.TEST_RR_ID_FAULT_INVALID_ID;
 import static se.skltp.aggregatingservices.data.TestDataDefines.TEST_RR_ID_MANY_HITS;
 import static se.skltp.aggregatingservices.data.TestDataDefines.TEST_RR_ID_MANY_HITS_NO_ERRORS;
+import static se.skltp.aggregatingservices.data.TestDataDefines.TEST_RR_ID_ONE_HIT;
+import static se.skltp.aggregatingservices.data.TestDataDefines.TEST_RR_ID_ZERO_HITS;
 import static se.skltp.aggregatingservices.utils.AssertLoggingUtil.assertLogging;
 import static se.skltp.aggregatingservices.utils.AssertUtil.assertExpectedProcessingStatus;
 import static se.skltp.aggregatingservices.utils.AssertUtil.assertExpectedResponse;
@@ -40,6 +43,9 @@ public class FullServiceTestIT {
 
   }
 
+  //
+  // TC1 - Get data from 3 producers
+  //
   @Test
   public void testThreeHitsDifferentProducersNoErrors() throws Exception {
     ExpectedResponse expectedResponse = new ExpectedResponse();
@@ -55,12 +61,47 @@ public class FullServiceTestIT {
     assertLogging(testLogAppender, expectedResponse);
   }
 
+  //
+  // TC2 - Test person has no engagements
+  //
+  @Test
+  public void testNoEngagementForTestPerson() throws Exception {
+    ExpectedResponse expectedResponse = new ExpectedResponse();
+
+    final ServiceResponse<GetLaboratoryOrderOutcomeResponseType> response = consumerService
+        .callService(TEST_RR_ID_ZERO_HITS);
+
+    assertExpectedResponse(response, expectedResponse, TEST_RR_ID_ZERO_HITS);
+    assertExpectedProcessingStatus(response.getProcessingStatus(), expectedResponse);
+    assertLogging(testLogAppender, expectedResponse);
+  }
+
+
+  //
+  // TC3 - Empty response from one system, and one response from one system
+  //
+  @Test
+  public void testOneEmptyResponseAndOneResponse() throws Exception {
+    ExpectedResponse expectedResponse = new ExpectedResponse();
+    expectedResponse.add("HSA-ID-1", 1, StatusCodeEnum.DATA_FROM_SOURCE, "");
+    expectedResponse.add("HSA-ID-2", 0, StatusCodeEnum.DATA_FROM_SOURCE, "");
+
+    final ServiceResponse<GetLaboratoryOrderOutcomeResponseType> response = consumerService.callService(TEST_RR_ID_ONE_HIT);
+
+    assertExpectedResponse(response, expectedResponse, TEST_RR_ID_ONE_HIT);
+    assertExpectedProcessingStatus(response.getProcessingStatus(), expectedResponse);
+    assertLogging(testLogAppender, expectedResponse);
+  }
+
+  //
+  // TC4 - Response from two source systems, timeout from one source system
+  //
   @Test
   public void testOneProducerReturnsTwoHitsNoErrors() throws Exception {
     ExpectedResponse expectedResponse = new ExpectedResponse();
     expectedResponse.add("HSA-ID-1", 1, StatusCodeEnum.DATA_FROM_SOURCE, "");
     expectedResponse.add("HSA-ID-2", 2, StatusCodeEnum.DATA_FROM_SOURCE, "");
-    expectedResponse.add("HSA-ID-3", 1, StatusCodeEnum.DATA_FROM_SOURCE, "");
+    expectedResponse.add("HSA-ID-3", 0, StatusCodeEnum.NO_DATA_SYNCH_FAILED, "Read timed out");
 
     final ServiceResponse<GetLaboratoryOrderOutcomeResponseType> response = consumerService.callService(TEST_RR_ID_MANY_HITS);
 
@@ -82,6 +123,22 @@ public class FullServiceTestIT {
         .callService(TEST_RR_ID_FAULT_INVALID_ID);
 
     assertExpectedResponse(response, expectedResponse, TEST_RR_ID_FAULT_INVALID_ID);
+    assertExpectedProcessingStatus(response.getProcessingStatus(), expectedResponse);
+    assertLogging(testLogAppender, expectedResponse);
+  }
+
+  //
+  // TC6 - Authorization missing for LogicalAddress
+  //
+  @Test
+  public void testAuthorizationMissingForOneLogicalAddress() throws Exception {
+    // A OK response with no engagements expected
+    ExpectedResponse expectedResponse = new ExpectedResponse();
+
+    final ServiceResponse<GetLaboratoryOrderOutcomeResponseType> response = consumerService
+        .callService(TEST_RR_ID_EJ_SAMVERKAN_I_TAK);
+
+    assertExpectedResponse(response, expectedResponse, TEST_RR_ID_EJ_SAMVERKAN_I_TAK);
     assertExpectedProcessingStatus(response.getProcessingStatus(), expectedResponse);
     assertLogging(testLogAppender, expectedResponse);
   }

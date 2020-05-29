@@ -1,7 +1,6 @@
 package se.skltp.aggregatingservices.route;
 
 import static org.apache.commons.lang.StringUtils.isEmpty;
-import static org.springframework.beans.factory.config.BeanDefinition.SCOPE_PROTOTYPE;
 import static se.skltp.aggregatingservices.constants.AgpProperties.AGP_SERVICE_COMPONENT_ID;
 import static se.skltp.aggregatingservices.constants.AgpProperties.AGP_SERVICE_HANDLER;
 import static se.skltp.aggregatingservices.constants.AgpProperties.AGP_TAK_CONTRACT_NAME;
@@ -127,8 +126,7 @@ public class AgpServiceRoutes extends RouteBuilder {
         serviceConfiguration.getServiceName());
 
     applicationContext.registerBean(serviceConfiguration.getServiceName(), AgpCxfEndpointConfigurer.class,
-        () -> new AgpCxfEndpointConfigurer(receiveTimeout, connectTimeout),
-        bd -> bd.setScope(SCOPE_PROTOTYPE));
+        () -> new AgpCxfEndpointConfigurer(receiveTimeout, connectTimeout));
   }
 
 }

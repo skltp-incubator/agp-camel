@@ -43,17 +43,14 @@ public class TestLogAppender extends AbstractAppender {
 
   private static List<LogEvent> events = new ArrayList<>();
 
-  protected TestLogAppender(String name, Filter filter, Layout<? extends Serializable> layout) {
-    super(name, filter, layout);
-  }
-
-  protected TestLogAppender(String name, Filter filter, Layout<? extends Serializable> layout, final boolean ignoreExceptions) {
+  private TestLogAppender(String name, Filter filter, Layout<? extends Serializable> layout, final boolean ignoreExceptions) {
     super(name, filter, layout, ignoreExceptions);
   }
 
   @Override
   public void append(final LogEvent event) {
 
+    System.out.println("** APPEND ** "+ event.getLoggerName());
     // Clear events if start if new incomming message to VP
     if (event.getLoggerName().endsWith(EventType.REQ_IN.name())) {
       clearEvents();
@@ -93,6 +90,10 @@ public class TestLogAppender extends AbstractAppender {
 
   public static int getNumEvents(String loggerName) {
     return events.stream().filter(lg -> loggerName.equals(lg.getLoggerName())).collect(Collectors.toList()).size();
+  }
+
+  public static List<LogEvent> getEvents() {
+    return events;
   }
 
 

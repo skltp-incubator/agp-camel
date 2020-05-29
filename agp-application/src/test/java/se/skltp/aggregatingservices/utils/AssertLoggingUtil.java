@@ -38,8 +38,10 @@ public class AssertLoggingUtil {
     assertEquals(1, testLogAppender.getNumEvents(LOGGER_NAME_EI_REQ_OUT));
     assertEquals(1, testLogAppender.getNumEvents(LOGGER_NAME_EI_RESP_IN));
 
-    assertEquals(expectedResponse.numProducers(), testLogAppender.getNumEvents(LOGGER_NAME_REQ_OUT));
-    assertEquals(expectedResponse.getNumProducerCallsOk(), testLogAppender.getNumEvents(LOGGER_NAME_RESP_IN));
+    assertEquals("Unexpected num REQ_OUT\n" + getAllLogs(testLogAppender), expectedResponse.numProducers(),
+        testLogAppender.getNumEvents(LOGGER_NAME_REQ_OUT));
+    assertEquals("Unexpected num RESP_IN\n" + getAllLogs(testLogAppender), expectedResponse.getNumProducerCallsOk(),
+        testLogAppender.getNumEvents(LOGGER_NAME_RESP_IN));
 
     assertReqIn(testLogAppender, expectedResponse);
     assertRespOut(testLogAppender, expectedResponse);
@@ -48,6 +50,18 @@ public class AssertLoggingUtil {
     assertReqOut(testLogAppender, expectedResponse);
     assertMsgIn(testLogAppender, expectedResponse, LOGGER_NAME_RESP_IN);
     assertMsgIn(testLogAppender, expectedResponse, LOGGER_NAME_ERROR_IN);
+  }
+
+  private static String getAllLogs(TestLogAppender testLogAppender) {
+    StringBuilder builder = new StringBuilder();
+    for (LogEvent event : testLogAppender.getEvents()) {
+      builder.append("Logger Name: '")
+          .append(event.getLoggerName())
+          .append("'\n")
+          .append(event.getMessage().getFormattedMessage())
+          .append('\n');
+    }
+    return builder.toString();
   }
 
   private static void assertMsgIn(TestLogAppender testLogAppender, ExpectedResponse expectedResponse, String loggerName) {
@@ -109,7 +123,7 @@ public class AssertLoggingUtil {
   }
 
 
-  private static void assertRespOut(TestLogAppender testLogAppender, ExpectedResponse expectedResponse) {
+  public static void assertRespOut(TestLogAppender testLogAppender, ExpectedResponse expectedResponse) {
     final String eventMessage = testLogAppender.getEventMessage(LOGGER_NAME_RESP_OUT, 0);
     assertEventMessageCommon(eventMessage, "resp-out");
     assertStringContains(eventMessage, String.format("-responseCode=%d", expectedResponse.responseCode));

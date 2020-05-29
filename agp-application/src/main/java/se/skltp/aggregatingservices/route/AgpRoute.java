@@ -1,6 +1,5 @@
 package se.skltp.aggregatingservices.route;
 
-import static org.springframework.beans.factory.config.BeanDefinition.SCOPE_PROTOTYPE;
 import static se.skltp.aggregatingservices.constants.AgpHeaders.X_VP_SENDER_ID;
 import static se.skltp.aggregatingservices.constants.AgpProperties.AGP_ORIGINAL_QUERY;
 import static se.skltp.aggregatingservices.constants.AgpProperties.INCOMMING_VP_SENDER_ID;
@@ -59,8 +58,7 @@ public class AgpRoute extends RouteBuilder {
 
 
     applicationContext.registerBean("eiEndpointConfBean", AgpCxfEndpointConfigurer.class,
-        ()->new AgpCxfEndpointConfigurer(eiConfig.getReceiveTimeout(), eiConfig.getConnectTimeout()),
-        bd -> bd.setScope(SCOPE_PROTOTYPE));
+        ()->new AgpCxfEndpointConfigurer(eiConfig.getReceiveTimeout(), eiConfig.getConnectTimeout()));
 
      from("direct:agproute").id("agp-service-route").streamCaching()
         .process(checkInboundHeadersProcessor)

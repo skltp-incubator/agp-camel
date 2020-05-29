@@ -50,7 +50,7 @@ public class FindContentResponseProcessor implements Processor {
     // Force a timeout if zero Id
     if (TEST_ID_FAULT_TIMEOUT_IN_EI.equals(id)) {
       try {
-        TimeUnit.MILLISECONDS.sleep(serviceTimeoutMS+1000);
+        TimeUnit.MILLISECONDS.sleep(serviceTimeoutMS+1000L);
       } catch (InterruptedException e) {
         Thread.currentThread().interrupt();
       }

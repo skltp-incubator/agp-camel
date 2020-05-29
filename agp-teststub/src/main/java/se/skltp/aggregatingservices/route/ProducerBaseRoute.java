@@ -41,6 +41,7 @@ public class ProducerBaseRoute extends RouteBuilder {
     try {
       final ProducerTestDataGenerator testDataGenerator = createTestDataGenerator(
           configuration.getTestDataGeneratorClass());
+      testDataGenerator.setServiceTimeoutMs(configuration.getServiceTimeout());
       ProducerResponseProcessor producerResponseProcessor = new ProducerResponseProcessor(testDataGenerator);
 
       from(serviceAddress)

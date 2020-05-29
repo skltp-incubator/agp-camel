@@ -9,6 +9,7 @@ import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
 import org.apache.cxf.message.MessageContentsList;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import se.skltp.aggregatingservices.data.FindContentTestData;
 import se.skltp.aggregatingservices.data.ProducerTestDataGenerator.TestProducerException;
@@ -22,6 +23,9 @@ public class FindContentResponseProcessor implements Processor {
 
   @Autowired
   FindContentTestData findContentTestData;
+
+  @Value("${teststub.findContentTimeout:30000}")
+  int serviceTimeoutMS;
 
   @Override
   public void process(Exchange exchange) throws Exception {
@@ -46,7 +50,7 @@ public class FindContentResponseProcessor implements Processor {
     // Force a timeout if zero Id
     if (TEST_ID_FAULT_TIMEOUT_IN_EI.equals(id)) {
       try {
-        TimeUnit.SECONDS.sleep(35);
+        TimeUnit.MILLISECONDS.sleep(serviceTimeoutMS+1000);
       } catch (InterruptedException e) {
         Thread.currentThread().interrupt();
       }

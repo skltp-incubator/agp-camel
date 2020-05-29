@@ -37,14 +37,14 @@
 <!--    <AsyncLogger name="org.apache.cxf.services" level="INFO" additivity="false"/>-->
 
     <!-- Message logging -->
-    <AsyncLogger name="se.skltp.aggregatingservices.logging" level="DEBUG"/>
-    <AsyncLogger name="se.skltp.aggregatingservices.logging.FindContentResponderInterface" level="DEBUG"/>
+    <Logger name="se.skltp.aggregatingservices.logging" level="DEBUG"/>
+    <Logger name="se.skltp.aggregatingservices.logging.FindContentResponderInterface" level="DEBUG"/>
 
 
-    <AsyncRoot level="WARN">
-<!--      <AppenderRef ref="Console"/>-->
+    <Root level="WARN">
       <AppenderRef ref="TestLogAppender"/>
-    </AsyncRoot>
+<!--      <AppenderRef ref="Console"/>-->
+    </Root>
 
   </Loggers>
 </Configuration>

@@ -6,7 +6,7 @@ import static se.skltp.agp.riv.interoperability.headers.v1.StatusCodeEnum.NO_DAT
 
 import lombok.extern.log4j.Log4j2;
 import org.apache.camel.Exchange;
-import org.apache.camel.processor.aggregate.AggregationStrategy;
+import org.apache.camel.processor.aggregate.TimeoutAwareAggregationStrategy;
 import org.springframework.stereotype.Service;
 import se.skltp.aggregatingservices.utils.EngagementProcessingStatusUtil;
 import se.skltp.aggregatingservices.utils.ProcessingStatusUtil;
@@ -14,7 +14,7 @@ import se.skltp.agp.riv.interoperability.headers.v1.ProcessingStatusRecordType;
 
 @Service
 @Log4j2
-public class AgpAggregationStrategy implements AggregationStrategy {
+public class AgpAggregationStrategy implements TimeoutAwareAggregationStrategy {
 
 
   @Override
@@ -48,8 +48,16 @@ public class AgpAggregationStrategy implements AggregationStrategy {
       EngagementProcessingStatusUtil.updateOK(logicalAddress, newExchange);
       statusRecord = ProcessingStatusUtil.createStatusRecord(logicalAddress, DATA_FROM_SOURCE);
       aggregatedResponseResults.getProcessingStatus().getProcessingStatusList().add(statusRecord);
-      aggregatedResponseResults.getResponseObjects().add(newExchange.getIn().getBody());
+      final Object inBody = newExchange.getIn().getBody();
+      if(inBody!=null) {
+        aggregatedResponseResults.getResponseObjects().add(inBody);
+      }
     }
+  }
+
+  @Override
+  public void timeout(Exchange oldExchange, int index, int total, long timeout) {
+    log.warn("Aggregation timeout occured for index {}. Timeout value: {}", index, timeout);
   }
 
 }

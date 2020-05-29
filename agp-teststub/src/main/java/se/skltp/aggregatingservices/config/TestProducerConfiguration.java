@@ -10,4 +10,5 @@ public abstract class TestProducerConfiguration {
   String serviceNamespace;
   String testDataGeneratorClass;
   String portName;
+  int serviceTimeout;
 }

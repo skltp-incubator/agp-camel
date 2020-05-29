@@ -25,6 +25,10 @@ public class AgpServiceConfiguration {
 
   String serviceFactoryClass;
 
+  int receiveTimeout = -1;
+  int connectTimeout = -1;
+  int aggregatedServiceTimeout = -1;
+
   int messageContentListQueryIndex = 1;
 
 }

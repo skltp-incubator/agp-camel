@@ -34,7 +34,7 @@
     <camel.version>2.24.0</camel.version>
     <spring.boot-version>2.1.1.RELEASE</spring.boot-version>
     <hawtio.spring.boot-version>2.6.0</hawtio.spring.boot-version>
-    <lombok.version>1.18.10</lombok.version>
+    <lombok.version>1.18.12</lombok.version>
     <apache-cfx.version>3.2.7</apache-cfx.version>
     <cxf.xjc.version>3.2.3</cxf.xjc.version>
     <takdatahandler.version>1.1.0</takdatahandler.version>
@@ -45,7 +45,7 @@
     <!-- ************************-->
     <!-- Sonar/Reporting settings -->
     <!-- ************************-->
-    <jacoco.plugin.version>0.8.2</jacoco.plugin.version>
+    <jacoco.plugin.version>0.8.5</jacoco.plugin.version>
     <sonar.plugin.version>3.5.0.1254</sonar.plugin.version>
 
     <jacoco.outputDir>${project.build.directory}</jacoco.outputDir>
@@ -58,6 +58,9 @@
     <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
     <sonar.jacoco.reportPath>${jacoco.outputDir}/${jacoco.out.ut.file}</sonar.jacoco.reportPath>
     <sonar.jacoco.itReportPath>${jacoco.outputDir}/${jacoco.out.it.file}</sonar.jacoco.itReportPath>
+    <sonar.coverage.exclusions>
+      **/aggregatingservices/constants/*
+    </sonar.coverage.exclusions>
   </properties>
 
   <distributionManagement>
@@ -272,6 +275,7 @@
                   <outputDirectory>${project.reporting.outputDirectory}/jacoco-it</outputDirectory>
                 </configuration>
               </execution>
+
             </executions>
           </plugin>
         </plugins>

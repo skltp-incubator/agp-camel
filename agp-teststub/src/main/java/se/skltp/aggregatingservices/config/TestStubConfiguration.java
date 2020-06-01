@@ -12,5 +12,6 @@ import org.springframework.context.annotation.Configuration;
 public class TestStubConfiguration {
   String findContentAddress;
   String sokVagValInfoAddress;
+  String faultyServiceAddress;
 
 }

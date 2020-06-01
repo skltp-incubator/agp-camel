@@ -35,19 +35,19 @@
     <!-- Message logging -->
     <Logger name="se.skltp.aggregatingservices.logging" level="DEBUG" additivity="false">
       <AppenderRef ref="TestLogAppender"/>
-<!--      <AppenderRef ref="Console"/>-->
+      <AppenderRef ref="Console"/>
     </Logger>
     <Logger name="se.skltp.aggregatingservices.logging.FindContentResponderInterface" level="DEBUG"  additivity="false">
       <AppenderRef ref="TestLogAppender"/>
-<!--      <AppenderRef ref="Console"/>-->
+      <AppenderRef ref="Console"/>
     </Logger>
     <Logger name="se.skltp.aggregatingservices.logging.GetLaboratoryOrderOutcomeResponderInterface.REQ_OUT" level="DEBUG"  additivity="false">
       <AppenderRef ref="TestLogAppender"/>
-      <AppenderRef ref="Console"/>
+<!--      <AppenderRef ref="Console"/>-->
     </Logger>
     <Logger name="se.skltp.aggregatingservices.logging.GetLaboratoryOrderOutcomeResponderInterface.RESP_IN" level="DEBUG"  additivity="false">
       <AppenderRef ref="TestLogAppender"/>
-      <AppenderRef ref="Console"/>
+<!--      <AppenderRef ref="Console"/>-->
     </Logger>
 
 

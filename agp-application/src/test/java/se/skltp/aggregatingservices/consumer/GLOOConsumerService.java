@@ -20,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import se.skltp.aggregatingservices.constants.AgpHeaders;
 import se.skltp.aggregatingservices.riv.clinicalprocess.healthcond.actoutcome.getaggregatedlaboratoryorderoutcome.GLOOAgpServiceConfiguration;
+import se.skltp.aggregatingservices.utils.FindContentUtil;
 import se.skltp.aggregatingservices.utils.JaxbUtil;
 import se.skltp.aggregatingservices.utils.RequestUtil;
 import se.skltp.aggregatingservices.utils.ServiceResponse;
@@ -63,7 +64,27 @@ public class GLOOConsumerService implements ConsumerService {
     exchange.getIn().setHeaders(headers);
     exchange.setPattern(ExchangePattern.InOut);
     final Message response = template.send(getAddress(), exchange).getOut();
+    return createServiceResponse(response);
+  }
 
+  public ServiceResponse callServiceWithWrongContract() {
+    Map<String, Object> headers = new HashMap();
+
+    headers.put(AgpHeaders.X_RIVTA_ORIGINAL_SERVICE_CONSUMER_HSA_ID, "originalId");
+    headers.put(AgpHeaders.X_VP_SENDER_ID, "senderId");
+    headers.put(AgpHeaders.X_SKLTP_CORRELATION_ID, "test-corr-id");
+
+    final MessageContentsList faultyTestRequest = FindContentUtil.createRequestMessageContentsList("123456", "patientId");
+
+    final Exchange exchange = new DefaultExchange(template.getCamelContext());
+    exchange.getIn().setBody(faultyTestRequest);
+    exchange.getIn().setHeaders(headers);
+    exchange.setPattern(ExchangePattern.InOut);
+    final Message response = template.send(getFaultyProducerAddress(), exchange).getOut();
+    return createServiceResponse(response);
+  }
+
+  private ServiceResponse createServiceResponse(Message response) {
     ServiceResponse serviceResponse = new ServiceResponse();
 
     ProcessingStatusType processingStatusType = getProcessingStatus(response);
@@ -73,10 +94,9 @@ public class GLOOConsumerService implements ConsumerService {
     MessageContentsList contentsList = response.getBody(MessageContentsList.class);
     if (contentsList != null) {
       serviceResponse.setObject(contentsList.get(0));
-    }else {
+    } else {
       serviceResponse.setSoapFault(response.getExchange().getException(SoapFault.class));
     }
-
     return serviceResponse;
   }
 
@@ -93,5 +113,13 @@ public class GLOOConsumerService implements ConsumerService {
         , serviceConfiguration.getInboundServiceURL()
         , serviceConfiguration.getInboundServiceWsdl()
         , serviceConfiguration.getInboundServiceClass());
+  }
+
+  protected String getFaultyProducerAddress() {
+    return String.format(GLOO_SERVICE_ADDRESS
+        , serviceConfiguration.getInboundServiceURL()
+        , "/schemas/TD_ENGAGEMENTINDEX_1_0_R/interactions/FindContentInteraction/FindContentInteraction_1.0_RIVTABP21.wsdl"
+        , "se.skltp.aggregatingservices.riv.itintegration.engagementindex.findcontent.v1.rivtabp21.FindContentResponderInterface"
+        );
   }
 }

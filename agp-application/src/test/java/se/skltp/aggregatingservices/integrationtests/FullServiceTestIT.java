@@ -190,6 +190,28 @@ public class FullServiceTestIT {
     assertStringContains(eventMessage, "-responseCode=500");
   }
 
+
+  //
+  // Call service with wrong contract should give a soap fault
+  //
+  @Test
+  public void testCallWithWrongContractShouldGiveSoapFault() throws Exception {
+    final ServiceResponse<GetLaboratoryOrderOutcomeResponseType> response = consumerService.callServiceWithWrongContract();
+
+    assertEquals("Not expected response code", 500, response.getResponseCode());
+
+    final SoapFault soapFault = response.getSoapFault();
+    assertNotNull("Expected a SoapFault", soapFault);
+
+    // The service was called with a FindContent (instead of GetLaboratoryOrderOutcome)
+    assertStringContains(soapFault.getReason(), "FindContent was not recognized");
+
+    final String eventMessage = testLogAppender.getEventMessage(LOGGER_NAME_ERROR_OUT, 0);
+    assertStringContains(eventMessage, "LogMessage=error-out");
+    assertStringContains(eventMessage, "ComponentId=aggregating-services");
+    assertStringContains(eventMessage, "ServiceImpl=GetLaboratoryOrderOutcome.V4");
+    assertStringContains(eventMessage, "-responseCode=500");
+  }
 }
 
 

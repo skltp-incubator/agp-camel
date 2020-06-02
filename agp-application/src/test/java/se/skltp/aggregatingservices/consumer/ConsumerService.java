@@ -11,5 +11,7 @@ public interface ConsumerService {
 
   public ServiceResponse callService(String senderId, String originalId,  String logicalAddress, String patientId  );
 
+  public ServiceResponse callServiceWithWrongContract();
+
 
 }

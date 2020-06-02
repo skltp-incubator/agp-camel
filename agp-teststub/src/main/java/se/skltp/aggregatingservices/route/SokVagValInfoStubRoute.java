@@ -20,7 +20,10 @@ public class SokVagValInfoStubRoute extends RouteBuilder {
       + "&serviceClass=%s"
       + "&portName={urn:skl:tp:vagvalsinfo:v2}SokVagvalsSoap11LitDocPort";
 
+  private static final String FAULTY_SERVICE_CONFIGURATION = "jetty:%s";
+
   protected String serviceAddress;
+  protected String faultyServiceAddress;
 
   @EndpointInject(uri="mock:sokvagval:input")
   MockEndpoint mock;
@@ -31,6 +34,7 @@ public class SokVagValInfoStubRoute extends RouteBuilder {
   @Autowired
   public SokVagValInfoStubRoute(TestStubConfiguration testStubConfiguration) {
     serviceAddress = String.format(SERVICE_CONFIGURATION, testStubConfiguration.getSokVagValInfoAddress(), SOKVAGVAL_WSDL_PATH, SOKVAGVAL_SERVICECLASS) ;
+    faultyServiceAddress = String.format(FAULTY_SERVICE_CONFIGURATION, testStubConfiguration.getFaultyServiceAddress()) ;
   }
 
   @Override
@@ -43,6 +47,10 @@ public class SokVagValInfoStubRoute extends RouteBuilder {
             .when(header("operationName").isEqualTo("hamtaAllaVirtualiseringar"))
                 .log("Not implemented!")
         .end();
+
+    from(faultyServiceAddress).id("Faulty.producer")
+        .setBody(simple("Hello World!"));
+
   }
 
   public MockEndpoint getMock() {

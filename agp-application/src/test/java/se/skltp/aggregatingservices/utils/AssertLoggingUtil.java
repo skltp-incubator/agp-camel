@@ -33,6 +33,10 @@ public class AssertLoggingUtil {
   }
 
   public static void assertLogging(TestLogAppender testLogAppender, ExpectedResponse expectedResponse) {
+    assertLogging(testLogAppender, expectedResponse, true);
+  }
+
+  public static void assertLogging(TestLogAppender testLogAppender, ExpectedResponse expectedResponse, boolean assertMessageIn) {
     assertEquals(1, testLogAppender.getNumEvents(LOGGER_NAME_REQ_IN));
     assertEquals(1, testLogAppender.getNumEvents(LOGGER_NAME_RESP_OUT));
     assertEquals(1, testLogAppender.getNumEvents(LOGGER_NAME_EI_REQ_OUT));
@@ -48,8 +52,11 @@ public class AssertLoggingUtil {
     assertReqOutFindContent(testLogAppender, expectedResponse);
     assertRespInFindContent(testLogAppender, expectedResponse);
     assertReqOut(testLogAppender, expectedResponse);
-    assertMsgIn(testLogAppender, expectedResponse, LOGGER_NAME_RESP_IN);
-    assertMsgIn(testLogAppender, expectedResponse, LOGGER_NAME_ERROR_IN);
+
+    if(assertMessageIn) {
+      assertMsgIn(testLogAppender, expectedResponse, LOGGER_NAME_RESP_IN);
+      assertMsgIn(testLogAppender, expectedResponse, LOGGER_NAME_ERROR_IN);
+    }
   }
 
   private static String getAllLogs(TestLogAppender testLogAppender) {

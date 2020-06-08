@@ -12,6 +12,7 @@ import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import lombok.extern.log4j.Log4j2;
 import org.apache.camel.CamelContext;
 import org.apache.camel.Exchange;
@@ -22,6 +23,7 @@ import org.apache.camel.impl.EventDrivenConsumerRoute;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.info.BuildProperties;
 import org.springframework.stereotype.Service;
+import se.skltp.aggregatingservices.configuration.AgpServiceConfiguration;
 import se.skltp.aggregatingservices.constants.AgpHeaders;
 import se.skltp.aggregatingservices.service.TakCacheService;
 import se.skltp.aggregatingservices.utils.MemoryUtil;
@@ -49,6 +51,7 @@ public class GetStatusProcessor implements Processor {
   public static final String KEY_NON_HEAP_MEMORY = "NonHeapMemory";
   public static final String KEY_VM_MAX_DIRECT_MEMORY = "MaxDirectMemory";
   public static final String KEY_ENDPOINTS = "Endpoints";
+  public static final String KEY_SERVICE_IMPLEMENTATIONS = "ServiceImplementations";
 
   @Autowired
   private CamelContext camelContext;
@@ -58,6 +61,19 @@ public class GetStatusProcessor implements Processor {
 
   @Autowired
   BuildProperties buildProperties;
+
+  Map<String, String> implementationVersions;
+
+  @Autowired
+  public GetStatusProcessor(List<AgpServiceConfiguration> serviceConfigurations) {
+    if (serviceConfigurations != null) {
+      implementationVersions = serviceConfigurations.stream()
+          .filter(sc -> sc.getClass().getPackage().getImplementationVersion() != null)
+          .collect(Collectors
+              .toMap(sc -> sc.getClass().getPackage().getImplementationTitle(),
+                  sc -> sc.getClass().getPackage().getImplementationVersion()));
+    }
+  }
 
   @Override
   public void process(Exchange exchange) {
@@ -96,17 +112,21 @@ public class GetStatusProcessor implements Processor {
     map.put(KEY_TAK_CACHE_INITIALIZED, "" + takService.isInitalized());
     map.put(KEY_TAK_CACHE_RESET_INFO, getTakRefreshInfo());
 
-      Runtime instance = Runtime.getRuntime();
+    Runtime instance = Runtime.getRuntime();
     map.put(KEY_JVM_TOTAL_MEMORY, "" + MemoryUtil.bytesReadable(instance.totalMemory()));
     map.put(KEY_JVM_FREE_MEMORY, "" + MemoryUtil.bytesReadable(instance.freeMemory()));
     map.put(KEY_JVM_USED_MEMORY, "" + MemoryUtil.bytesReadable((instance.totalMemory() - instance.freeMemory())));
     map.put(KEY_JVM_MAX_MEMORY, "" + MemoryUtil.bytesReadable(instance.maxMemory()));
-    if(showMemory) {
+    if (showMemory) {
       map.put(KEY_DIRECT_MEMORY, "" + getDirectMemoryString());
       map.put(KEY_VM_MAX_DIRECT_MEMORY, "" + MemoryUtil.getVMMaxMemory());
       map.put(KEY_NON_HEAP_MEMORY, "" + getNonHeapMemory());
     }
     map.put(KEY_ENDPOINTS, getEndpointInfo());
+
+    if(implementationVersions!=null) {
+      map.put(KEY_SERVICE_IMPLEMENTATIONS, implementationVersions);
+    }
     return map;
   }
 
@@ -162,7 +182,7 @@ public class GetStatusProcessor implements Processor {
         takCacheLog.getNumberBehorigheter());
   }
 
-  private String getFormattedDate(Date date){
+  private String getFormattedDate(Date date) {
     SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm");
     return date == null ? "" : dateFormat.format(date);
   }

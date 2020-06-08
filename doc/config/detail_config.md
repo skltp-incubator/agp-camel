@@ -12,12 +12,12 @@ I application-custom.properties kan man sätta propertyn:
 till true eller false. Default är den false. Men det rekommenderas att ha autentisering på eftersom man kan ändra funktionalitet i AGP via Hawtio. Att sätta på autentisering innebär att man behöver konfigurera en user och password enligt nedan. 
 ##### Konfigurera ny user och password 
 För att ändra/lägga till användare/lösenord för Hawtio: Generera en md5-hash av det password ni valt, till exempel med (på Linux): `printf  '%s' "<password>" | md5sum`.
-     Skapa en ny login-fil, t.ex. realm-custom.properties. Den ska innehålla namn på user och hashat pw enligt:
+     Skapa en ny login-fil, t.ex. hawtio_users.properties. Den ska innehålla namn på user och hashat pw enligt:
      `<user>: MD5:<password hash>, user, admin`     
      Placera filen lämpligen tillsammans med övriga konfigurations-filer.
      I `application-custom.properties`: Lägg till sökväg till filen enligt:
-     `hawtio.external.loginfile=<path>/realm-custom.properties`
-     Installera om VP och starta. Kontrollera vilken port AGP är konfigurerad att starta på. Det ska nu gå att surfa till http://\<server\>:\<port\>/actuator/hawtio/ och logga in med vald user och password.
+     `hawtio.external.loginfile=<path>/hawtio_users.properties`
+     Installera om VP och starta. Kontrollera vilken port AGP är konfigurerad att starta på. Det ska nu gå att surfa till http://\<server\>:\<port\>/actuator/hawtio/ och logga in med vald user och password. Kontrollera även log-filen för agp-camel för att se om installationen gått bra.
      
      
 ### Konfigurera loggning

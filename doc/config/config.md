@@ -16,7 +16,7 @@ Spring-boot property fil som ligger under resources i jaren. Inställningarna ka
 | agp.host | localhost | DNS/ip där servern finns |
 | management.endpoints.web.exposure.include | hawtio,jolokia | Porten som servern ska starta på |
 | hawtio.authentication.enabled | true | Ska autentiserng användas till HawtIO? |
-| hawtio.external.loginfile | C:/Temp/realm-custom.properties | Extern fil med password till Hawtio |
+| hawtio.external.loginfile | C:/Temp/hawtio_users.properties.properties | Extern fil med user/password till Hawtio |
 | endpoints.camelroutes.enabled | true | Porten som servern ska starta på |
 | endpoints.camelroutes.read-only | true | Porten som servern ska starta på |
 | ei.logicalAddress | 556500000 | Porten som servern ska starta på |
@@ -29,3 +29,8 @@ Spring-boot property fil som ligger under resources i jaren. Inställningarna ka
 | takcache.use.vagval.cache | false | Porten |
 | takcache.endpoint.address | http://localhost:8085/tak/teststub/SokVagvalsInfo/v2 | Porten |
 | log.max.payload.size | 49152 | Porten |
+
+[//]: # (These are reference links used in the body of this note and get stripped out when the markdown processor does its job. There is no need to format nicely because it shouldn't be seen. Thanks SO - http://stackoverflow.com/questions/4823468/store-comments-in-markdown-syntax)
+
+   [Loggning konfigurering]: <logging_configuration.md>
+   [Detaljerad konfiguration]: <detail_config.md>

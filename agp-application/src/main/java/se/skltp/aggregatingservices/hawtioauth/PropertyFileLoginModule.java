@@ -79,6 +79,7 @@ public class PropertyFileLoginModule extends AbstractLoginModule {
     log.debug("Checking PropertyUserStore " + filename + " for " + userName);
     final UserIdentity userIdentity = propertyUserStore.getUserIdentity(userName);
     if (userIdentity == null) {
+      log.error("No user identity found in external login file.");
       return null;
     }
 

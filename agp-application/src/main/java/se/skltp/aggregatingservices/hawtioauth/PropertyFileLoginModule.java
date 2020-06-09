@@ -18,7 +18,6 @@ import org.eclipse.jetty.util.security.Credential;
 
 @Log4j2
 public class PropertyFileLoginModule extends AbstractLoginModule {
-  public static final String DEFAULT_FILENAME = "realm.properties";
 
   private static ConcurrentHashMap<String, PropertyUserStore> PROPERTY_USERSTORES =
       new ConcurrentHashMap<>();
@@ -28,7 +27,7 @@ public class PropertyFileLoginModule extends AbstractLoginModule {
 
   /**
    * Read contents of the configured property file.
-   *
+   * Only the callback is used in this case.
    * @param subject
    * @param callbackHandler
    * @param sharedState
@@ -66,7 +65,6 @@ public class PropertyFileLoginModule extends AbstractLoginModule {
   }
 
   private void parseConfig() {
-    filename = DEFAULT_FILENAME;
     filename = System.getProperty("hawtiologin.file", filename);
     hotReload = false;
   }

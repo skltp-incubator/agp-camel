@@ -18,37 +18,46 @@ Här beskivs två sätt att ändra loggnivåer i runtime (det finns förmodligen
 Vissa loggers kan vara av extra intresse för att följa AGPs uppstart och flöden. Se beskrivning nedan:
 ```
 log4j2.xml
-<Loggers>
-     <!--Level INFO will log the init/reset of TAK cache-->
-     <AsyncLogger name="se.skltp.takcache" level="INFO"/>
-     <AsyncLogger name="se.skl.tp.vp.vagval.ResetTakCacheProcessor" level="INFO"/>
- 
-     <!--Level INFO will log the init/reset of HSA cache-->
-     <AsyncLogger name="se.skl.tp.vp.service.HsaCacheServiceImpl" level="INFO"/>
- 
-     <!--Level INFO will log startup for spring boot application-->
-     <AsyncLogger name="se.skl.tp.vp.VpServicesApplication" level="INFO"/>
- 
-     <!--Level INFO will log startup information for Camel -->
-     <AsyncLogger name="org.apache.camel.spring.SpringCamelContext" level="INFO"/>
- 
-    <!-- Message logging
-         Used to follow messages sent thru VP
-         Level DEBUG will log all message information including payload
-         Level INFO will log all message information without payload
-         See chapter "Meddelande loggning" for more information
-    -->
-    <AsyncLogger name="se.skl.tp.vp.logging.req.in" level="DEBUG"/>
-    <AsyncLogger name="se.skl.tp.vp.logging.req.out" level="DEBUG"/>
-    <AsyncLogger name="se.skl.tp.vp.logging.resp.in" level="DEBUG"/>
-    <AsyncLogger name="se.skl.tp.vp.logging.resp.out" level="DEBUG"/>
- 
-    <!--Root logger-->
-    <Root level="WARN">
-       <AppenderRef ref="RollingRandomAccessFile"/>           
-    </Root>
-      
-</Loggers>
+<Configuration status="WARN" monitorInterval="30">
+
+  <Properties>
+    <Property name="LOG_PATTERN">
+      %d %-5p [%t] %-30c - %X{corr.id} %m%n
+    </Property>
+  </Properties>
+
+  <Appenders>
+    <Console name="Console" target="SYSTEM_OUT">
+      <PatternLayout pattern="${LOG_PATTERN}"/>
+    </Console>
+  </Appenders>
+
+  <Loggers>
+    <AsyncLogger name="se.skltp.aggregatingservices" level="WARN"/>
+
+    <!--Level INFO will log the init/reset och TAK cache-->
+    <AsyncLogger name="se.skltp.takcache" level="INFO"/>
+    <AsyncLogger name="se.skl.tp.vp.vagval.ResetTakCacheProcessor" level="INFO"/>
+
+
+    <!--Level INFO will log startup for spring boot application-->
+    <AsyncLogger name="se.skltp.aggregatingservices.AgpApplication" level="INFO"/>
+
+    <!--Apache camel-->
+    <AsyncLogger name="org.apache.camel" level="INFO"/>
+
+    <!-- Message logging -->
+    <AsyncLogger name="se.skltp.aggregatingservices.logging" level="INFO"/>
+    <AsyncLogger name="se.skltp.aggregatingservices.logging.FindContentResponderInterface" level="DEBUG"/>
+
+
+    <AsyncRoot level="WARN">
+      <!--<AppenderRef ref="RollingRandomAccessFile"/>-->
+      <AppenderRef ref="Console"/>
+    </AsyncRoot>
+
+  </Loggers>
+</Configuration>
 ```
 ### Meddelande-loggning
 Det finns fyra speciella loggers som hanterar meddelanden som går genom AGP.
@@ -61,35 +70,7 @@ Dessa kan individuellt slås av och genom att ställa upp lognivån alternativt 
  - se.skl.tp.vp.logging.resp.in - Loggar svaret från producenten.
  - se.skl.tp.vp.logging.resp.out - Loggar svaret AGP skickar till konsumenten.
 
-Exempel på loggning av resp-out med payload:
-```
-camel-app-vp.log
-2019-05-24 10:57:10,695 DEBUG [Camel Thread #11 - NettyClientTCPWorker] se.skl.tp.vp.logging.resp.out  - skltp-messages
-** logEvent-debug.start ***********************************************************
-LogMessage=resp-out
-ServiceImpl=vp-http-route
-Host=ITEM-S12345.emea.msad.sopra (10.1.2.3)
-ComponentId=vp-services-test
-Endpoint=http://localhost:12312/vp/PATH1%20
-MessageId=ID-ITEM-S67684-1558688206461-0-7
-BusinessCorrelationId=0a50df13-eb1a-4386-b280-a86eafff17a7
-ExtraInfo=
--servicecontract_namespace=urn:riv:insuranceprocess:healthreporting:GetCertificateResponder:1
--Headers={CamelHttpResponseCode=200, CamelHttpResponseText=OK, connection=keep-alive, content-length=16, x-skltp-prt=192}
--routerVagvalTrace==hsa-id-for-a-producer
--time.elapsed=4794
--originalServiceconsumerHsaid=tp
--source=se.skl.tp.vp.logging.MessageInfoLogger
--routerBehorighetTrace==hsa-id-for-a-producer
--senderIpAdress=127.0.0.1
--senderid=tp
--receiverid=hsa-id-for-a-producer
--endpoint_url=https://localhost:19001/vardgivare-b/tjanst2
--wsdl_namespace=urn:riv:insuranceprocess:healthreporting:GetCertificate:1:rivtabp20
--rivversion=rivtabp20
--time.producer=192
-Payload=<test answer from testproducer/>
-```
+
 
 [//]: # (These are reference links used in the body of this note and get stripped out when the markdown processor does its job. There is no need to format nicely because it shouldn't be seen. Thanks SO - http://stackoverflow.com/questions/4823468/store-comments-in-markdown-syntax)
 

@@ -9,6 +9,7 @@ import static se.skltp.aggregatingservices.data.TestDataDefines.TEST_RR_ID_EJ_SA
 import static se.skltp.aggregatingservices.data.TestDataDefines.TEST_RR_ID_FAULT_INVALID_ID;
 import static se.skltp.aggregatingservices.data.TestDataDefines.TEST_RR_ID_MANY_HITS;
 import static se.skltp.aggregatingservices.data.TestDataDefines.TEST_RR_ID_MANY_HITS_NO_ERRORS;
+import static se.skltp.aggregatingservices.data.TestDataDefines.TEST_RR_ID_ONE_FORMAT_ERROR;
 import static se.skltp.aggregatingservices.data.TestDataDefines.TEST_RR_ID_ONE_HIT;
 import static se.skltp.aggregatingservices.data.TestDataDefines.TEST_RR_ID_ZERO_HITS;
 import static se.skltp.aggregatingservices.utils.AssertLoggingUtil.LOGGER_NAME_ERROR_OUT;
@@ -147,6 +148,24 @@ public class FullServiceTestIT {
         .callService(TEST_RR_ID_EJ_SAMVERKAN_I_TAK);
 
     assertExpectedResponse(response, expectedResponse, TEST_RR_ID_EJ_SAMVERKAN_I_TAK);
+    assertExpectedProcessingStatus(response.getProcessingStatus(), expectedResponse);
+    assertLogging(testLogAppender, expectedResponse);
+  }
+
+  //
+  // TC8 - One ok response, second response contains field with format error
+  //      Should be Ok when schema validation is not enabled
+  //
+  @Test
+  public void testOneFormatErrorIsOK() throws Exception {
+    ExpectedResponse expectedResponse = new ExpectedResponse();
+    expectedResponse.add("HSA-ID-4", 1, StatusCodeEnum.DATA_FROM_SOURCE, "");
+    expectedResponse.add("HSA-ID-5", 1, StatusCodeEnum.DATA_FROM_SOURCE, "");
+
+    final ServiceResponse<GetLaboratoryOrderOutcomeResponseType> response = consumerService
+        .callService(TEST_RR_ID_ONE_FORMAT_ERROR);
+
+    assertExpectedResponse(response, expectedResponse, TEST_RR_ID_ONE_FORMAT_ERROR);
     assertExpectedProcessingStatus(response.getProcessingStatus(), expectedResponse);
     assertLogging(testLogAppender, expectedResponse);
   }

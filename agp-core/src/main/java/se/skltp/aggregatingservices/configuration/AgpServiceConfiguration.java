@@ -31,4 +31,6 @@ public class AgpServiceConfiguration {
 
   int messageContentListQueryIndex = 1;
 
+  boolean enableSchemaValidation = false;
+
 }

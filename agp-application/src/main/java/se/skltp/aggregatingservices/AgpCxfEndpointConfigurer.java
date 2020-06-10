@@ -1,6 +1,9 @@
 package se.skltp.aggregatingservices;
 
+import static org.apache.cxf.message.Message.SCHEMA_VALIDATION_ENABLED;
+
 import org.apache.camel.component.cxf.CxfEndpointConfigurer;
+import org.apache.cxf.annotations.SchemaValidation.SchemaValidationType;
 import org.apache.cxf.endpoint.Client;
 import org.apache.cxf.endpoint.Server;
 import org.apache.cxf.frontend.AbstractWSDLBasedEndpointFactory;
@@ -18,14 +21,17 @@ public  class AgpCxfEndpointConfigurer implements CxfEndpointConfigurer {
 
   private int connectTimeout = 5000;
 
+  private boolean schemaValidationEnabled = false;
+
 
   public AgpCxfEndpointConfigurer(int receiveTimeout) {
     this.receiveTimeout = receiveTimeout;
   }
 
-  public AgpCxfEndpointConfigurer(int receiveTimeout, int connectTimeout) {
+  public AgpCxfEndpointConfigurer(int receiveTimeout, int connectTimeout,  boolean schemaValidation ) {
     this.receiveTimeout = receiveTimeout;
     this.connectTimeout = connectTimeout;
+    this.schemaValidationEnabled = schemaValidation;
   }
 
   @Override
@@ -36,6 +42,13 @@ public  class AgpCxfEndpointConfigurer implements CxfEndpointConfigurer {
   @Override
   public void configureClient(Client client) {
     setClientTimeouts(client);
+
+    if(schemaValidationEnabled) {
+      client.getEndpoint().put(SCHEMA_VALIDATION_ENABLED, SchemaValidationType.IN);
+    } else {
+      client.getEndpoint().put(SCHEMA_VALIDATION_ENABLED, SchemaValidationType.NONE);
+    }
+
   }
 
   private void setClientTimeouts(Client client) {

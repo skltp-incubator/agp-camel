@@ -17,7 +17,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
 import se.skltp.aggregatingservices.AgpApplication;
 import se.skltp.aggregatingservices.data.BehorighetTestData;
 import se.skltp.aggregatingservices.service.TakCacheService;

@@ -79,6 +79,10 @@ public abstract class ProducerTestDataGenerator {
   public abstract Object createResponseItem(String logicalAddress, String registeredResidentId, String businessObjectId,
       String time);
 
+  public Object createFormatError(Object responseItem){
+    return responseItem;
+  }
+
   //
   // Simplest possible memory db for business object instances from test-stubs for a number of source systems
   //
@@ -152,6 +156,26 @@ public abstract class ProducerTestDataGenerator {
         TestDataDefines.TEST_BO_ID_TRADKLATTRING,
         TestDataDefines.TEST_DATE_TRADKLATTRING));
     storeInDb(TestDataDefines.TEST_LOGICAL_ADDRESS_CHILD, TestDataDefines.TEST_RR_ID_TRADKLATTRING, response);
+
+    //
+    // TC8 - One ok response, one response contains malformed field , id = TEST_RR_ID_TRADKLATTRING
+    //
+    response = createResponse(
+        createResponseItem(TestDataDefines.TEST_LOGICAL_ADDRESS_4, TestDataDefines.TEST_RR_ID_ONE_FORMAT_ERROR,
+            TestDataDefines.TEST_BO_ID_MANY_HITS_1,
+            TestDataDefines.TEST_DATE_MANY_HITS_1));
+    storeInDb(TestDataDefines.TEST_LOGICAL_ADDRESS_4, TestDataDefines.TEST_RR_ID_ONE_FORMAT_ERROR, response);
+
+    response = createResponse(
+        createFormatError(
+          createResponseItem(TestDataDefines.TEST_LOGICAL_ADDRESS_5,
+            TestDataDefines.TEST_RR_ID_ONE_FORMAT_ERROR,
+            TestDataDefines.TEST_BO_ID_MANY_HITS_2,
+            TestDataDefines.TEST_DATE_MANY_HITS_2)
+        )
+    );
+    storeInDb(TestDataDefines.TEST_LOGICAL_ADDRESS_5, TestDataDefines.TEST_RR_ID_ONE_FORMAT_ERROR, response);
+
 
   }
 

@@ -8,7 +8,7 @@ import org.apache.cxf.message.MessageContentsList;
 
 
 @Log4j2
-public abstract class ProducerTestDataGenerator {
+public abstract class TestDataGenerator {
 
 
   private long serviceTimeoutMs;
@@ -18,7 +18,7 @@ public abstract class ProducerTestDataGenerator {
   }
 
 
-  public ProducerTestDataGenerator() {
+  public TestDataGenerator() {
     initDb();
   }
 
@@ -79,6 +79,7 @@ public abstract class ProducerTestDataGenerator {
   public abstract Object createResponseItem(String logicalAddress, String registeredResidentId, String businessObjectId,
       String time);
 
+  public abstract Object createRequest(String patientId, String sourceSystemHSAId);
   //
   // Simplest possible memory db for business object instances from test-stubs for a number of source systems
   //

@@ -7,7 +7,7 @@ import org.apache.camel.component.mock.MockEndpoint;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import se.skltp.aggregatingservices.config.TestProducerConfiguration;
-import se.skltp.aggregatingservices.data.ProducerTestDataGenerator;
+import se.skltp.aggregatingservices.data.TestDataGenerator;
 import se.skltp.aggregatingservices.processors.ProducerResponseProcessor;
 
 @Component
@@ -39,7 +39,7 @@ public class ProducerBaseRoute extends RouteBuilder {
         configuration.getWsdlPath(), configuration.getServiceClass(), configuration.getPortName());
 
     try {
-      final ProducerTestDataGenerator testDataGenerator = createTestDataGenerator(
+      final TestDataGenerator testDataGenerator = createTestDataGenerator(
           configuration.getTestDataGeneratorClass());
       testDataGenerator.setServiceTimeoutMs(configuration.getServiceTimeout());
       ProducerResponseProcessor producerResponseProcessor = new ProducerResponseProcessor(testDataGenerator);
@@ -56,9 +56,9 @@ public class ProducerBaseRoute extends RouteBuilder {
   }
 
 
-  private ProducerTestDataGenerator createTestDataGenerator(String className)
+  private TestDataGenerator createTestDataGenerator(String className)
       throws Exception {
-    return (ProducerTestDataGenerator) Class.forName(className).getConstructor().newInstance();
+    return (TestDataGenerator) Class.forName(className).getConstructor().newInstance();
   }
 
   public MockEndpoint getMock() {

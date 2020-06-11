@@ -31,15 +31,16 @@ import riv.clinicalprocess.healthcond.actoutcome._4.LaboratoryOrderOutcomeType;
 import riv.clinicalprocess.healthcond.actoutcome._4.OrgUnitType;
 import riv.clinicalprocess.healthcond.actoutcome._4.PatientType;
 import riv.clinicalprocess.healthcond.actoutcome._4.PatientinformationType;
+import riv.clinicalprocess.healthcond.actoutcome._4.PersonIdType;
 import riv.clinicalprocess.healthcond.actoutcome._4.SourceType;
 import riv.clinicalprocess.healthcond.actoutcome.getlaboratoryorderoutcomeresponder.v4.GetLaboratoryOrderOutcomeResponseType;
 import riv.clinicalprocess.healthcond.actoutcome.getlaboratoryorderoutcomeresponder.v4.GetLaboratoryOrderOutcomeType;
-import se.skltp.aggregatingservices.data.ProducerTestDataGenerator;
+import se.skltp.aggregatingservices.data.TestDataGenerator;
 
 
 @Log4j2
 @Service
-public class GLOOTestDataGenerator extends ProducerTestDataGenerator {
+public class GLOOTestDataGenerator extends TestDataGenerator {
 
 	@Override
 	public String getPatientId(MessageContentsList messageContentsList) {
@@ -114,4 +115,24 @@ public class GLOOTestDataGenerator extends ProducerTestDataGenerator {
 
 		return labOrderOutcome;
 	}
+
+	@Override
+	public Object createRequest(String patientId, String sourceSystemHSAId) {
+		GetLaboratoryOrderOutcomeType outcomeType = new GetLaboratoryOrderOutcomeType();
+
+		PersonIdType personIdType = new PersonIdType();
+		personIdType.setId(patientId);
+		personIdType.setType("1.2.752.129.2.1.3.1");
+
+		outcomeType.setPatientId(personIdType);
+		if (sourceSystemHSAId != null) {
+			IIType sourceSystem = new IIType();
+			sourceSystem.setExtension(sourceSystemHSAId);
+			sourceSystem.setRoot("1.2.3");
+			outcomeType.setSourceSystemHSAId(sourceSystemHSAId);
+		}
+
+		return outcomeType;
+	}
+
 }

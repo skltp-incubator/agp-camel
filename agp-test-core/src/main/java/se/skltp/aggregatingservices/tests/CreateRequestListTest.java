@@ -1,4 +1,4 @@
-package se.skltp.aggregatingservices;
+package se.skltp.aggregatingservices.tests;
 
 import static org.junit.Assert.assertEquals;
 

@@ -1,4 +1,4 @@
-package se.skltp.aggregatingservices;
+package se.skltp.aggregatingservices.tests;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,15 +46,13 @@ public abstract class CreateAggregatedResponseTest {
     MessageContentsList originalRequest = RequestListUtil.createRequest("logiskAdress", testDataGenerator
         .createRequest(patientId1, null));
 
-    int responceSize = getResponseSize(agpServiceFactory.createAggregatedResponseObject(originalRequest, listOfResponsesFromAllProducers));
+    int responseSize = getResponseSize(agpServiceFactory.createAggregatedResponseObject(originalRequest, listOfResponsesFromAllProducers));
 
-    assertEquals(3, responceSize);
+    assertEquals(3, responseSize);
   }
 
   @Test
   public void testCreateAggregatedResponse_MultipleResponseFromOneProducer(){
-
-
     List<MessageContentsList> listOfResponsesFromAllProducers = new ArrayList<>();
     listOfResponsesFromAllProducers.add(RequestListUtil.createRequest(testDataGenerator
         .retrieveFromDb(producer2, patientId2)));
@@ -64,8 +62,8 @@ public abstract class CreateAggregatedResponseTest {
         .createRequest(patientId2, null));
 
 
-    int responceSize = getResponseSize(agpServiceFactory.createAggregatedResponseObject(originalRequest, listOfResponsesFromAllProducers));
-    assertEquals(2, responceSize);
+    int responseSize = getResponseSize(agpServiceFactory.createAggregatedResponseObject(originalRequest, listOfResponsesFromAllProducers));
+    assertEquals(2, responseSize);
   }
 
   public abstract int getResponseSize(Object response);

@@ -1,4 +1,4 @@
-package se.skltp.aggregatingservices.serviceTests;
+package se.skltp.aggregatingservices;
 
 import java.util.ArrayList;
 import java.util.List;

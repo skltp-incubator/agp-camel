@@ -9,8 +9,6 @@ import org.apache.cxf.message.MessageContentsList;
 
 @Log4j2
 public abstract class TestDataGenerator {
-
-
   private long serviceTimeoutMs;
 
   public void setServiceTimeoutMs(long serviceTimeoutMs) {

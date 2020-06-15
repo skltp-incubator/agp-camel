@@ -118,7 +118,22 @@ public class FindContentTestData {
             TestDataDefines.TEST_DATE_TRADKLATTRING));
     FINDCONTENT_RESPONSE_MAP.put(TestDataDefines.TEST_RR_ID_TRADKLATTRING, response);
     log.info(LOG_MSG_ADDED_ITEM, response.getEngagement().size(),
-        TestDataDefines.TEST_RR_ID_TRADKLATTRING);
+        TestDataDefines.TEST_RR_ID_TRADKLATTRING);  //
+
+    // TC8 - Patient with one booking
+    //
+    response = new FindContentResponseType();
+    response.getEngagement().add(
+        createResponse(TestDataDefines.TEST_LOGICAL_ADDRESS_4, TestDataDefines.TEST_RR_ID_ONE_FORMAT_ERROR,
+            TestDataDefines.TEST_BO_ID_MANY_HITS_1,
+            TestDataDefines.TEST_DATE_MANY_HITS_1));
+    response.getEngagement().add(
+        createResponse(TestDataDefines.TEST_LOGICAL_ADDRESS_5, TestDataDefines.TEST_RR_ID_ONE_FORMAT_ERROR,
+            TestDataDefines.TEST_BO_ID_MANY_HITS_2,
+            TestDataDefines.TEST_DATE_MANY_HITS_2));
+    FINDCONTENT_RESPONSE_MAP.put(TestDataDefines.TEST_RR_ID_ONE_FORMAT_ERROR, response);
+    log.info(LOG_MSG_ADDED_ITEM, response.getEngagement().size(),
+        TestDataDefines.TEST_RR_ID_ONE_FORMAT_ERROR);
   }
 
   private EngagementType createResponse(String receiverLogicalAddress, String registeredResidentIdentification,

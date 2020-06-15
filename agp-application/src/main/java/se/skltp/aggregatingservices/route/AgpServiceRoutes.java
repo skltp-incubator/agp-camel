@@ -71,7 +71,6 @@ public class AgpServiceRoutes extends RouteBuilder {
       inboundServiceAddress = inboundServiceAddress + "&portName=" + serviceConfiguration.getInboundPortName();
     }
 
-
     // Set outbound props
     final String outboundServiceURL = getOutboundServiceURL(serviceConfiguration);
     String outboundServiceAddress = String.format(OUTBOUND_SERVICE_CONFIGURATION
@@ -121,12 +120,12 @@ public class AgpServiceRoutes extends RouteBuilder {
         : vpConfig.getDefaultReceiveTimeout();
     int connectTimeout = serviceConfiguration.getConnectTimeout() >= 0 ? serviceConfiguration.getConnectTimeout()
         : vpConfig.getDefaultConnectTimeout();
-
-    log.info("Setting receiveTimeout={} and connectTimeout={} for {}", receiveTimeout, connectTimeout,
-        serviceConfiguration.getServiceName());
+    boolean enableSchemaValidation = serviceConfiguration.isEnableSchemaValidation();
+    log.info("Setting receiveTimeout={}, connectTimeout={} and schemaValidation={} for {}", receiveTimeout, connectTimeout
+        , enableSchemaValidation, serviceConfiguration.getServiceName());
 
     applicationContext.registerBean(serviceConfiguration.getServiceName(), AgpCxfEndpointConfigurer.class,
-        () -> new AgpCxfEndpointConfigurer(receiveTimeout, connectTimeout));
+        () -> new AgpCxfEndpointConfigurer(receiveTimeout, connectTimeout, enableSchemaValidation));
   }
 
 }

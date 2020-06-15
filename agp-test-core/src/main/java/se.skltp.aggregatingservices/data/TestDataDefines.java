@@ -29,6 +29,7 @@ public class TestDataDefines {
   public static final String TEST_RR_ID_FAULT_INVALID_ID = "192011189228"; // TC5 - Gunbritt Boden
   public static final String TEST_RR_ID_EJ_SAMVERKAN_I_TAK = "194804032094"; // TC6 - Laban Meijer
   public static final String TEST_RR_ID_TRADKLATTRING = "194808069887"; // TC7
+  public static final String TEST_RR_ID_ONE_FORMAT_ERROR = "194800000001"; // TC8
   public static final String TEST_ID_FAULT_INVALID_ID_IN_EI = "EI:INV_ID";
   public static final String TEST_ID_FAULT_TIMEOUT_IN_EI = "EI:TIMEOUT";
 

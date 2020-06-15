@@ -25,41 +25,35 @@ Se anvisningar på sidan [Loggning konfigurering]
 
 ### Exempel på application-custom.properties
 ```
-server.port=8888
+server.port=8881
 agp.host=localhost
-#spring.profiles.include=GetLaboratoryOrderOutcome
 
 # Hawtio
 management.endpoints.web.exposure.include=hawtio,jolokia
-# Not set defaults to false
-hawtio.authentication.enabled=true
-hawtio.external.loginfile=C:/Temp/realm-custom.properties
-
-# All access to actuator endpoints without security
-#management.security.enabled=false
-## Turn on actuator health check
-#endpoints.health.enabled=true
+hawtio.authentication.enabled=false
+#hawtio.external.loginfile=C:/Temp/hawtio_users.properties
 
 # Allow to obtain basic information about camel routes (read only mode)
 endpoints.camelroutes.enabled=true
 endpoints.camelroutes.read-only=true
 
-# Outgoing communication properties
-#vp.host=localhost
-#vp.port=8083
-#findcontent.port=8081
-#
-#vp.address=http://${vp.host}:${vp.port}/vp
+# Total timeout for aggregated calls to producers
+aggregate.timeout=28000
 
+# Outpoing parameters for calling services
+vp.instanceId=dev_env
+vp.defaultReceiveTimeout=27000
+vp.defaultConnectTimeout=2000
+vp.defaultServiceURL=http://localhost:8083/vp
 
 # Outgoing parameters for calling EI-FindContent
 ei.logicalAddress=556500000
 ei.senderId=SENDER1
 ei.findContentUrl=http://localhost:8082/findcontent
+ei.connectTimeout=2000
+ei.receiveTimeout=20000
 
-# VP instance id used when calling VP with http
-vp.instanceId=dev_env
-
+# Other services URLs
 reset.cache.url=http://${agp.host}:8091/resetcache
 agp.status.url=http://${agp.host}:1080/status
 
@@ -68,8 +62,8 @@ takcache.use.behorighet.cache=true
 takcache.use.vagval.cache=false
 takcache.endpoint.address=http://localhost:8085/tak/teststub/SokVagvalsInfo/v2
 
+# Max size of payload loggings
 log.max.payload.size=49152
-
 ```
 
 [//]: # (These are reference links used in the body of this note and get stripped out when the markdown processor does its job. There is no need to format nicely because it shouldn't be seen. Thanks SO - http://stackoverflow.com/questions/4823468/store-comments-in-markdown-syntax)

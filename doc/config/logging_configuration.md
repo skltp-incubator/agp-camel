@@ -3,14 +3,14 @@
 Denna sida handlar om loggning. För allmän information om konfiguration av AGP Camel, se [AGP Camel konfigurering].
 ### Allmänt
 Som logg-ramverk används Log4j2, se [log4j2s dokumentation] för mer information.
-En grundkonfigurering finns i projektet under `resources/log4j2.xml` som default loggar till konsollen.
+En grundkonfigurering finns i projektet under `resources/log4j2.xml`.
 
 ### Extern konfiguration
 För att använda en extern log4j2.xml konfigurationsfil kan man starta applikationen med parametern `-Dlog4j.configurationFile`, 
 till exempel:
- `java -jar -Xms256m -Xmx1024m -Dlog4j.configurationFile=file:///opt/vp/config/log4j2.xml agp-application.jar"`
+ `java -jar -Xms256m -Xmx1024m -Dlog4j.configurationFile=file:///opt/agp/config/log4j2.xml agp-application.jar"`
 ### Ändring av loggnivåer i runtime
-Här beskivs två sätt att ändra loggnivåer i runtime (det finns förmodligen fler), .
+Här beskivs två sätt att ändra loggnivåer i runtime.
 
  1. Om en extern konfiguration används räcker det att ändra i konfigureringsfilen förutsatt att den är grundkonfigurerad att upptäcka förändringar i runtime. Kontrollera att parametern `monitorInterval="30"` är satt.
  2. Ändra loggnivåer med Hawtio (eller på annat sätt via jmx)
@@ -50,6 +50,9 @@ log4j2.xml
     <AsyncLogger name="se.skltp.aggregatingservices.logging" level="INFO"/>
     <AsyncLogger name="se.skltp.aggregatingservices.logging.FindContentResponderInterface" level="DEBUG"/>
 
+    <!-- Message logging per service -->
+    <Logger name="se.skltp.aggregatingservices.logging.GetLaboratoryOrderOutcomeResponderInterface level="INFO"/>
+
 
     <AsyncRoot level="WARN">
       <!--<AppenderRef ref="RollingRandomAccessFile"/>-->
@@ -60,16 +63,18 @@ log4j2.xml
 </Configuration>
 ```
 ### Meddelande-loggning
-Det finns fyra speciella loggers som hanterar meddelanden som går genom AGP.
+Meddelanden loggas av en Cxf interceptor med följande grund logger:
+ *se.skltp.aggregatingservices.logging*
+
    - INFO nivå - innebär att meddelanden loggas utan payload.
    - DEBUG nivå - innebär att meddelanden loggas med payload. 
 
-Dessa kan individuellt slås av och genom att ställa upp lognivån alternativt ta bort loggers.
- - se.skl.tp.vp.logging.req.in - Loggar inkommande meddelanden från konsumenten.
- - se.skl.tp.vp.logging.req.out - Loggar utgående meddelanden till producenten.
- - se.skl.tp.vp.logging.resp.in - Loggar svaret från producenten.
- - se.skl.tp.vp.logging.resp.out - Loggar svaret AGP skickar till konsumenten.
-
+ Det går också att konfigurera en egen logger per tjänstekontrakt enligt:
+ *se.skltp.aggregatingservices.logging.{servicecontractresponder}*
+ 
+ Exempel:
+ - *se.skltp.aggregatingservices.logging.GetLaboratoryOrderOutcomeResponderInterface*
+ - *se.skltp.aggregatingservices.logging.FindContentResponderInterface"*
 
 
 [//]: # (These are reference links used in the body of this note and get stripped out when the markdown processor does its job. There is no need to format nicely because it shouldn't be seen. Thanks SO - http://stackoverflow.com/questions/4823468/store-comments-in-markdown-syntax)

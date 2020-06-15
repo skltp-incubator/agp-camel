@@ -4,14 +4,14 @@ import lombok.extern.log4j.Log4j2;
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
 import org.apache.cxf.message.MessageContentsList;
-import se.skltp.aggregatingservices.data.ProducerTestDataGenerator;
+import se.skltp.aggregatingservices.data.TestDataGenerator;
 
 @Log4j2
 public class ProducerResponseProcessor implements Processor {
 
-  ProducerTestDataGenerator producerData;
+  TestDataGenerator producerData;
 
-  public ProducerResponseProcessor(ProducerTestDataGenerator producerData){
+  public ProducerResponseProcessor(TestDataGenerator producerData){
     this.producerData = producerData;
   }
 

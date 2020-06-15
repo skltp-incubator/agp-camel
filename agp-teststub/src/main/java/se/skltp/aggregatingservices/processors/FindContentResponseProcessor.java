@@ -12,7 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import se.skltp.aggregatingservices.data.FindContentTestData;
-import se.skltp.aggregatingservices.data.ProducerTestDataGenerator.TestProducerException;
+import se.skltp.aggregatingservices.data.TestDataGenerator.TestProducerException;
 import se.skltp.aggregatingservices.riv.itintegration.engagementindex.findcontentresponder.v1.FindContentResponseType;
 import se.skltp.aggregatingservices.riv.itintegration.engagementindex.findcontentresponder.v1.FindContentType;
 import se.skltp.aggregatingservices.riv.itintegration.engagementindex.v1.EngagementType;

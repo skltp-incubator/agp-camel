@@ -8,9 +8,7 @@ import org.apache.cxf.message.MessageContentsList;
 
 
 @Log4j2
-public abstract class ProducerTestDataGenerator {
-
-
+public abstract class TestDataGenerator {
   private long serviceTimeoutMs;
 
   public void setServiceTimeoutMs(long serviceTimeoutMs) {
@@ -18,7 +16,7 @@ public abstract class ProducerTestDataGenerator {
   }
 
 
-  public ProducerTestDataGenerator() {
+  public TestDataGenerator() {
     initDb();
   }
 
@@ -83,6 +81,7 @@ public abstract class ProducerTestDataGenerator {
     return responseItem;
   }
 
+  public abstract Object createRequest(String patientId, String sourceSystemHSAId);
   //
   // Simplest possible memory db for business object instances from test-stubs for a number of source systems
   //
@@ -168,10 +167,10 @@ public abstract class ProducerTestDataGenerator {
 
     response = createResponse(
         createFormatError(
-          createResponseItem(TestDataDefines.TEST_LOGICAL_ADDRESS_5,
-            TestDataDefines.TEST_RR_ID_ONE_FORMAT_ERROR,
-            TestDataDefines.TEST_BO_ID_MANY_HITS_2,
-            TestDataDefines.TEST_DATE_MANY_HITS_2)
+            createResponseItem(TestDataDefines.TEST_LOGICAL_ADDRESS_5,
+                TestDataDefines.TEST_RR_ID_ONE_FORMAT_ERROR,
+                TestDataDefines.TEST_BO_ID_MANY_HITS_2,
+                TestDataDefines.TEST_DATE_MANY_HITS_2)
         )
     );
     storeInDb(TestDataDefines.TEST_LOGICAL_ADDRESS_5, TestDataDefines.TEST_RR_ID_ONE_FORMAT_ERROR, response);

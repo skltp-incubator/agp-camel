@@ -10,6 +10,7 @@
     <module>agp-teststub</module>
     <module>agp-application</module>
     <module>agp-test-service</module>
+    <module>agp-test-core</module>
   </modules>
   <parent>
     <groupId>org.springframework.boot</groupId>

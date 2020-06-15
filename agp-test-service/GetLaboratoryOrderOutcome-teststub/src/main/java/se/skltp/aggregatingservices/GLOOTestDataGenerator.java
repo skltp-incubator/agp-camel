@@ -33,12 +33,12 @@ import riv.clinicalprocess.healthcond.actoutcome._4.SourceType;
 import riv.clinicalprocess.healthcond.actoutcome._4.SvarsmottagareType;
 import riv.clinicalprocess.healthcond.actoutcome.getlaboratoryorderoutcomeresponder.v4.GetLaboratoryOrderOutcomeResponseType;
 import riv.clinicalprocess.healthcond.actoutcome.getlaboratoryorderoutcomeresponder.v4.GetLaboratoryOrderOutcomeType;
-import se.skltp.aggregatingservices.data.ProducerTestDataGenerator;
+import se.skltp.aggregatingservices.data.TestDataGenerator;
 
 
 @Log4j2
 @Service
-public class GLOOTestDataGenerator extends ProducerTestDataGenerator {
+public class GLOOTestDataGenerator extends TestDataGenerator {
 
   @Override
   public String getPatientId(MessageContentsList messageContentsList) {
@@ -89,7 +89,12 @@ public class GLOOTestDataGenerator extends ProducerTestDataGenerator {
     return labOrderOutcome;
   }
 
-  private LaboratoryOrderOutcomeBodyType createLaboratoryOrderOutcomeBodyType() {
+	@Override
+	public Object createRequest(String patientId, String sourceSystemHSAId) {
+		return null;
+	}
+
+	private LaboratoryOrderOutcomeBodyType createLaboratoryOrderOutcomeBodyType() {
     LaboratoryOrderOutcomeBodyType body = new LaboratoryOrderOutcomeBodyType();
 
     // Remiss

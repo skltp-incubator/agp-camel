@@ -77,6 +77,11 @@
       <groupId>io.hawt</groupId>
       <artifactId>hawtio-springboot</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.eclipse.jetty</groupId>
+      <artifactId>jetty-jaas</artifactId>
+      <version>9.4.11.v20180605</version>
+    </dependency>
 
     <dependency>
       <groupId>org.projectlombok</groupId>
@@ -113,7 +118,7 @@
     </dependency>
     <dependency>
       <groupId>se.skltp.agp</groupId>
-      <artifactId>agp-teststub</artifactId>
+      <artifactId>agp-test-core</artifactId>
       <version>${project.version}</version>
       <scope>test</scope>
     </dependency>

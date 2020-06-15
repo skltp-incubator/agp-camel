@@ -118,7 +118,7 @@
     </dependency>
     <dependency>
       <groupId>se.skltp.agp</groupId>
-      <artifactId>agp-teststub</artifactId>
+      <artifactId>agp-test-core</artifactId>
       <version>${project.version}</version>
       <scope>test</scope>
     </dependency>

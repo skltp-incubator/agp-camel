@@ -9,10 +9,10 @@ import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 import lombok.extern.log4j.Log4j2;
 import org.apache.camel.CamelContext;
 import org.apache.camel.Exchange;
@@ -67,11 +67,18 @@ public class GetStatusProcessor implements Processor {
   @Autowired
   public GetStatusProcessor(List<AgpServiceConfiguration> serviceConfigurations) {
     if (serviceConfigurations != null) {
-      implementationVersions = serviceConfigurations.stream()
-          .filter(sc -> sc.getClass().getPackage().getImplementationVersion() != null)
-          .collect(Collectors
-              .toMap(sc -> sc.getClass().getPackage().getImplementationTitle(),
-                  sc -> sc.getClass().getPackage().getImplementationVersion()));
+      implementationVersions = new HashMap<>();
+
+      for (AgpServiceConfiguration sc : serviceConfigurations) {
+        final String implementationTitle = sc.getClass().getPackage().getImplementationTitle();
+        final String implementationVersion = sc.getClass().getPackage().getImplementationVersion();
+        log.info("ServiceConfiguration class: {}\npackage: {}\ntitle: {}\nversion: {}",
+            sc.getClass().getName(),
+            sc.getClass().getPackage().getName(),
+            implementationTitle,
+            implementationVersion);
+        implementationVersions.put(implementationTitle, implementationVersion);
+      }
     }
   }
 
@@ -124,7 +131,7 @@ public class GetStatusProcessor implements Processor {
     }
     map.put(KEY_ENDPOINTS, getEndpointInfo());
 
-    if(implementationVersions!=null) {
+    if (implementationVersions != null) {
       map.put(KEY_SERVICE_IMPLEMENTATIONS, implementationVersions);
     }
     return map;

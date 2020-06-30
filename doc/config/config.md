@@ -33,6 +33,8 @@ Spring-boot property fil som ligger under resources i jaren. Inställningarna ka
 | takcache.use.vagval.cache | false | Ska vägval användas i TAK-cachen? |
 | takcache.endpoint.address | http://localhost:8085/tak/teststub/SokVagvalsInfo/v2 | URL till TAK information |
 | log.max.payload.size | 49152 | Max storlek i bytes som loggas av payloaden  |
+| headers.request.filter | (?i)SoapAction/x-skltp-prt/Server/Host | (regexp) Headers att filtrera i anrop till producent  |
+| headers.response.filter | (?i)x-vp.*/x-rivta-original-serviceconsumer-hsaid/x-skltp-prt/User-Agent/breadcrumbId/Host/Server | (regexp) Headers att filtrera i svar till konsument  |
 
 [//]: # (These are reference links used in the body of this note and get stripped out when the markdown processor does its job. There is no need to format nicely because it shouldn't be seen. Thanks SO - http://stackoverflow.com/questions/4823468/store-comments-in-markdown-syntax)
 

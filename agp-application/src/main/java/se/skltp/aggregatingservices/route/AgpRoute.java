@@ -68,12 +68,14 @@ public class AgpRoute extends RouteBuilder {
         .to(EI_FINDCONTENT_URI).id("to.findcontent")
         .setHeader(X_VP_SENDER_ID, exchangeProperty(INCOMMING_VP_SENDER_ID))
         .process(createRequestListProcessor)
-        .removeHeader("SoapAction")
+        .removeHeaders("{{headers.request.filter}}")
         .split(body()).timeout(aggregationTimeout).parallelProcessing(true).aggregationStrategy(agpAggregationStrategy)
           .setProperty(LOGICAL_ADDRESS).exchange(ex -> ex.getIn().getBody(MessageContentsList.class).get(0))
+          .removeHeader("breadcrumbId")
           .toD("direct:${property.AgpServiceComponentId}")
         .end()
         .process(createResponseProcessor)
+        .removeHeaders("{{headers.response.filter}}")
         .removeProperty(LOGICAL_ADDRESS);
 
   }

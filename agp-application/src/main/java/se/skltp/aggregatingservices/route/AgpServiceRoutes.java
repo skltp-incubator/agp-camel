@@ -9,6 +9,7 @@ import java.util.List;
 import lombok.extern.log4j.Log4j2;
 import org.apache.camel.builder.RouteBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.support.GenericApplicationContext;
 import org.springframework.stereotype.Component;
 import se.skltp.aggregatingservices.AgpCxfEndpointConfigurer;
@@ -25,6 +26,10 @@ public class AgpServiceRoutes extends RouteBuilder {
 
   @Autowired
   VpConfig vpConfig;
+
+
+  @Value("${validate.soapAction:false}")
+  Boolean validateSoapAction;
 
   public static final String INBOUND_SERVICE_CONFIGURATION = "cxf:%s"
       + "?wsdlURL=%s"
@@ -125,7 +130,7 @@ public class AgpServiceRoutes extends RouteBuilder {
         , enableSchemaValidation, serviceConfiguration.getServiceName());
 
     applicationContext.registerBean(serviceConfiguration.getServiceName(), AgpCxfEndpointConfigurer.class,
-        () -> new AgpCxfEndpointConfigurer(receiveTimeout, connectTimeout, enableSchemaValidation));
+        () -> new AgpCxfEndpointConfigurer(receiveTimeout, connectTimeout, enableSchemaValidation, validateSoapAction));
   }
 
 }

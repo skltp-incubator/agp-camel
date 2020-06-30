@@ -58,7 +58,7 @@ public class AgpRoute extends RouteBuilder {
 
 
     applicationContext.registerBean("eiEndpointConfBean", AgpCxfEndpointConfigurer.class,
-        ()->new AgpCxfEndpointConfigurer(eiConfig.getReceiveTimeout(), eiConfig.getConnectTimeout(), false));
+        ()->new AgpCxfEndpointConfigurer(eiConfig.getReceiveTimeout(), eiConfig.getConnectTimeout(), false, true));
 
      from("direct:agproute").id("agp-service-route").streamCaching()
         .process(checkInboundHeadersProcessor)

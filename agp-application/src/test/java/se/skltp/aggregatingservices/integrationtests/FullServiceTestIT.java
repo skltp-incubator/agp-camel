@@ -5,6 +5,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static se.skltp.aggregatingservices.data.TestDataDefines.TEST_ID_FAULT_INVALID_ID_IN_EI;
 import static se.skltp.aggregatingservices.data.TestDataDefines.TEST_ID_FAULT_TIMEOUT_IN_EI;
+import static se.skltp.aggregatingservices.data.TestDataDefines.TEST_LOGICAL_ADDRESS_1;
 import static se.skltp.aggregatingservices.data.TestDataDefines.TEST_RR_ID_EJ_SAMVERKAN_I_TAK;
 import static se.skltp.aggregatingservices.data.TestDataDefines.TEST_RR_ID_FAULT_INVALID_ID;
 import static se.skltp.aggregatingservices.data.TestDataDefines.TEST_RR_ID_MANY_HITS;
@@ -18,6 +19,8 @@ import static se.skltp.aggregatingservices.utils.AssertLoggingUtil.assertLogging
 import static se.skltp.aggregatingservices.utils.AssertUtil.assertExpectedProcessingStatus;
 import static se.skltp.aggregatingservices.utils.AssertUtil.assertExpectedResponse;
 
+import java.util.HashMap;
+import java.util.Map;
 import org.apache.camel.test.spring.CamelSpringBootRunner;
 import org.apache.cxf.binding.soap.SoapFault;
 import org.junit.Before;
@@ -230,6 +233,23 @@ public class FullServiceTestIT {
     assertStringContains(eventMessage, "ComponentId=aggregating-services");
     assertStringContains(eventMessage, "ServiceImpl=GetLaboratoryOrderOutcome.V4");
     assertStringContains(eventMessage, "-responseCode=500");
+  }
+
+
+  @Test
+  public void defaultWrongSoapActionIsOK() throws Exception {
+    ExpectedResponse expectedResponse = new ExpectedResponse();
+    expectedResponse.add("HSA-ID-4", 1, StatusCodeEnum.DATA_FROM_SOURCE, "");
+    expectedResponse.add("HSA-ID-5", 1, StatusCodeEnum.DATA_FROM_SOURCE, "");
+    expectedResponse.add("HSA-ID-6", 1, StatusCodeEnum.DATA_FROM_SOURCE, "");
+
+    Map<String, Object> headers = new HashMap<>();
+    headers.put("SoapAction", "Unknown-action.is.wrong");
+    final ServiceResponse<GetLaboratoryOrderOutcomeResponseType> response = consumerService
+        .callService(TEST_LOGICAL_ADDRESS_1, TEST_RR_ID_MANY_HITS_NO_ERRORS, headers);
+
+    assertExpectedResponse(response, expectedResponse, TEST_RR_ID_MANY_HITS_NO_ERRORS);
+
   }
 }
 

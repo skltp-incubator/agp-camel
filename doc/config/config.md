@@ -17,6 +17,7 @@ Spring-boot property fil som ligger under resources i jaren. Inställningarna ka
 | endpoints.camelroutes.enabled | true | Medger tillgång till information om de Camel-routes som finns |
 | endpoints.camelroutes.read-only | true | Tillgång till endpoints bara i read-only mode |
 | aggregate.timeout | 28000 | Timeout ms för aggregering av alla producent anrop |
+| validate.soapAction | false | Ska inkommande SOAPAction header valideras |
 | vp.instanceId | dev_env | VP's instans-ID |
 | vp.defaultReceiveTimeout | 27000 | Timout ms för producent anrop, denna kan överridas per tjänst |
 | vp.defaultConnectTimeout | 2000 | Connect timeout ms för producent anrop, denna kan överridas per tjänst |

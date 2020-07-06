@@ -1,12 +1,15 @@
 package se.skltp.aggregatingservices.processors;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
 import static se.skltp.aggregatingservices.constants.AgpProperties.AGP_ORIGINAL_QUERY;
 import static se.skltp.aggregatingservices.constants.AgpProperties.AGP_SERVICE_HANDLER;
 import static se.skltp.aggregatingservices.constants.AgpProperties.AGP_TAK_CONTRACT_NAME;
 import static se.skltp.aggregatingservices.data.TestDataDefines.TEST_RR_ID_MANY_HITS_NO_ERRORS;
 
+import java.util.Arrays;
 import java.util.List;
+import javax.annotation.PostConstruct;
 import org.apache.camel.Exchange;
 import org.apache.camel.impl.DefaultCamelContext;
 import org.apache.camel.impl.DefaultExchange;
@@ -15,6 +18,7 @@ import org.apache.camel.test.spring.MockEndpoints;
 import org.apache.cxf.message.MessageContentsList;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -23,11 +27,15 @@ import org.springframework.test.context.TestPropertySource;
 import se.skltp.aggregatingservices.constants.AgpHeaders;
 import se.skltp.aggregatingservices.riv.itintegration.engagementindex.findcontentresponder.v1.FindContentResponseType;
 import se.skltp.aggregatingservices.service.Authority;
+import se.skltp.aggregatingservices.service.TakCacheService;
 import se.skltp.aggregatingservices.service.TakCacheServiceImpl;
 import se.skltp.aggregatingservices.utils.AgpServiceFactoryImpl;
 import se.skltp.aggregatingservices.utils.FindContentUtil;
 import se.skltp.aggregatingservices.utils.RequestUtil;
+import se.skltp.takcache.BehorigheterCache;
+import se.skltp.takcache.RoutingInfo;
 import se.skltp.takcache.TakCache;
+import se.skltp.takcache.VagvalCache;
 
 @RunWith(CamelSpringRunner.class)
 @ContextConfiguration(classes = {CreateRequestListProcessor.class, TakCacheServiceImpl.class})
@@ -36,18 +44,35 @@ import se.skltp.takcache.TakCache;
 public class CreateRequestListProcessorTest {
 
   @MockBean(name = "takCache")
-  private TakCache takCacheMock;
+  private TakCache takCache;
+
+  @Mock
+  VagvalCache vagvalCache;
+
+  @Mock
+  private BehorigheterCache behorigheterCache;
+
+  @Autowired
+  TakCacheService takCacheService;
 
   @Autowired
   CreateRequestListProcessor createRequestListProcessor;
+
+  @PostConstruct
+  public void postConstruct() {
+    Mockito.when(takCache.getBehorigeterCache()).thenReturn(behorigheterCache);
+    Mockito.when(takCache.getVagvalCache()).thenReturn(vagvalCache);
+    Mockito.when(vagvalCache.getRoutingInfo(any(), any())).thenReturn(Arrays.asList(new RoutingInfo()));
+    ((TakCacheServiceImpl)takCacheService).initHandlers();
+  }
 
   @Test
   public void processWithAllEngagementsAuthorized() throws Exception {
     Exchange ex = createExchange();
 
-    Mockito.when(takCacheMock.isAuthorized("sender1", "ns:1", "HSA-ID-4")).thenReturn(true);
-    Mockito.when(takCacheMock.isAuthorized("org_sender1", "ns:1", "HSA-ID-5")).thenReturn(true);
-    Mockito.when(takCacheMock.isAuthorized("sender1", "ns:1", "HSA-ID-6")).thenReturn(true);
+    Mockito.when(behorigheterCache.isAuthorized("sender1", "ns:1", "HSA-ID-4")).thenReturn(true);
+    Mockito.when(behorigheterCache.isAuthorized("org_sender1", "ns:1", "HSA-ID-5")).thenReturn(true);
+    Mockito.when(behorigheterCache.isAuthorized("sender1", "ns:1", "HSA-ID-6")).thenReturn(true);
 
     createRequestListProcessor.process(ex);
 
@@ -62,9 +87,9 @@ public class CreateRequestListProcessorTest {
     final FindContentResponseType findContentResponse = FindContentUtil.createFindContentResponse(TEST_RR_ID_MANY_HITS_NO_ERRORS);
     assertEquals(3, findContentResponse.getEngagement().size());
 
-    Mockito.when(takCacheMock.isAuthorized("sender1", "ns:1", "HSA-ID-4")).thenReturn(true);
-    Mockito.when(takCacheMock.isAuthorized("org_sender1", "ns:1", "HSA-ID-5")).thenReturn(true);
-    Mockito.when(takCacheMock.isAuthorized("sender1", "ns:1", "HSA-ID-6")).thenReturn(true);
+    Mockito.when(behorigheterCache.isAuthorized("sender1", "ns:1", "HSA-ID-4")).thenReturn(true);
+    Mockito.when(behorigheterCache.isAuthorized("org_sender1", "ns:1", "HSA-ID-5")).thenReturn(true);
+    Mockito.when(behorigheterCache.isAuthorized("sender1", "ns:1", "HSA-ID-6")).thenReturn(true);
 
     createRequestListProcessor.filterFindContentResponseBasedOnAuthority(findContentResponse, getAuthority());
     assertEquals(3, findContentResponse.getEngagement().size());
@@ -77,7 +102,7 @@ public class CreateRequestListProcessorTest {
     final FindContentResponseType findContentResponse = FindContentUtil.createFindContentResponse(TEST_RR_ID_MANY_HITS_NO_ERRORS);
     assertEquals(3, findContentResponse.getEngagement().size());
 
-    Mockito.when(takCacheMock.isAuthorized("sender1", "ns:1", "HSA-ID-4")).thenReturn(true);
+    Mockito.when(behorigheterCache.isAuthorized("sender1", "ns:1", "HSA-ID-4")).thenReturn(true);
 
     createRequestListProcessor.filterFindContentResponseBasedOnAuthority(findContentResponse, getAuthority());
     assertEquals(1, findContentResponse.getEngagement().size());
@@ -89,7 +114,7 @@ public class CreateRequestListProcessorTest {
     final FindContentResponseType findContentResponse = FindContentUtil.createFindContentResponse(TEST_RR_ID_MANY_HITS_NO_ERRORS);
     assertEquals(3, findContentResponse.getEngagement().size());
 
-    Mockito.when(takCacheMock.isAuthorized("sender1", "ns:1", "HSA-ID-4")).thenReturn(false);
+    Mockito.when(behorigheterCache.isAuthorized("sender1", "ns:1", "HSA-ID-4")).thenReturn(false);
 
     createRequestListProcessor.filterFindContentResponseBasedOnAuthority(findContentResponse, getAuthority());
     assertEquals(0, findContentResponse.getEngagement().size());

@@ -145,6 +145,11 @@
       <artifactId>behorighethandler</artifactId>
       <version>${takdatahandler.version}</version>
     </dependency>
+    <dependency>
+      <groupId>se.skltp.takdatahandler</groupId>
+      <artifactId>vagvalhandler</artifactId>
+      <version>${takdatahandler.version}</version>
+    </dependency>
 
 
   </dependencies>

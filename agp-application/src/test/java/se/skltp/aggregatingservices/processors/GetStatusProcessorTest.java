@@ -26,7 +26,7 @@ import se.skltp.takcache.TakCache;
 public class GetStatusProcessorTest extends CamelTestSupport {
 
   @MockBean(name = "takCache")
-  private TakCache takCacheMock;
+  private TakCache takCache;
 
   @Autowired GetStatusProcessor getStatusProcessor;
 

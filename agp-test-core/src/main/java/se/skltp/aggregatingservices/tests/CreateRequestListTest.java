@@ -13,14 +13,16 @@ import se.skltp.aggregatingservices.riv.itintegration.engagementindex.findconten
 import se.skltp.aggregatingservices.utility.RequestListUtil;
 
 public abstract class CreateRequestListTest {
+
   private FindContentTestData eiResponseDataHelper  = new FindContentTestData();
 
   private TestDataGenerator testDataGenerator ;
   private AgpServiceFactory agpServiceFactory;
 
-  private static String patientId1 = "121212121212";
-  private static String patientId2 = "198611062384";
-  private String producer2 = "HSA-ID-2";
+  public static final String LOGISK_ADRESS = "logiskAdress";
+  private static final String PATIENT_ID_1 = "121212121212";
+  private static final String PATIENT_ID_2 = "198611062384";
+  private static final String HSA_ID_2 = "HSA-ID-2";
 
   public CreateRequestListTest(TestDataGenerator testDataGenerator, AgpServiceFactory agpServiceFactory, AgpServiceConfiguration configuration){
     this.testDataGenerator = testDataGenerator;
@@ -29,10 +31,10 @@ public abstract class CreateRequestListTest {
   }
 
   @Test
-  public void testCreateRequestList_allProducers(){
+  public void testCreateRequestListAllProducers(){
     MessageContentsList messageContentsList = RequestListUtil
-        .createRequest("logiskAdress", testDataGenerator.createRequest(patientId1, null));
-    FindContentResponseType eiResponse = eiResponseDataHelper.getResponseForPatient(patientId1);
+        .createRequest(LOGISK_ADRESS, testDataGenerator.createRequest(PATIENT_ID_1, null));
+    FindContentResponseType eiResponse = eiResponseDataHelper.getResponseForPatient(PATIENT_ID_1);
 
 
     List<MessageContentsList> requestList = agpServiceFactory.createRequestList(messageContentsList, eiResponse);
@@ -40,9 +42,10 @@ public abstract class CreateRequestListTest {
   }
 
   @Test
-  public void testCreateRequestList_concreteProducer(){
-    MessageContentsList messageContentsList = RequestListUtil.createRequest("logiskAdress", testDataGenerator.createRequest(patientId2, producer2));
-    FindContentResponseType eiResponse = eiResponseDataHelper.getResponseForPatient(patientId2);
+  public void testCreateRequestListConcreteProducer(){
+    MessageContentsList messageContentsList = RequestListUtil.createRequest(LOGISK_ADRESS, testDataGenerator.createRequest(
+        PATIENT_ID_2, HSA_ID_2));
+    FindContentResponseType eiResponse = eiResponseDataHelper.getResponseForPatient(PATIENT_ID_2);
 
 
     List<MessageContentsList> requestList = agpServiceFactory.createRequestList(messageContentsList, eiResponse);
@@ -51,10 +54,11 @@ public abstract class CreateRequestListTest {
   }
 
   @Test
-  public void testCreateRequestList_noDataInEIForThisProducer(){
-    MessageContentsList messageContentsList = RequestListUtil.createRequest("logiskAdress", testDataGenerator.createRequest(patientId1, producer2));
+  public void testCreateRequestListNoDataInEIForThisProducer(){
+    MessageContentsList messageContentsList = RequestListUtil.createRequest(LOGISK_ADRESS, testDataGenerator.createRequest(
+        PATIENT_ID_1, HSA_ID_2));
 
-    FindContentResponseType eiResponse = eiResponseDataHelper.getResponseForPatient(patientId1);
+    FindContentResponseType eiResponse = eiResponseDataHelper.getResponseForPatient(PATIENT_ID_1);
 
     List<MessageContentsList> requestList = agpServiceFactory.createRequestList(messageContentsList, eiResponse);
 

@@ -19,8 +19,14 @@ public class TestDataDefines {
   public static final String TEST_LOGICAL_ADDRESS_5 = "HSA-ID-5";
   public static final String TEST_LOGICAL_ADDRESS_6 = "HSA-ID-6";
   public static final String TEST_LOGICAL_ADDRESS_7 = "HSA-ID-7";
+  public static final String TEST_LOGICAL_ADDRESS_11 = "HSA-ID-11";
+  public static final String TEST_LOGICAL_ADDRESS_12 = "HSA-ID-12";
+  public static final String TEST_LOGICAL_ADDRESS_31 = "HSA-ID-31";
+  public static final String TEST_LOGICAL_ADDRESS_32 = "HSA-ID-32";
+  public static final String TEST_LOGICAL_ADDRESS_77 = "HSA-ID-77";
   public static final String TEST_LOGICAL_ADDRESS_CHILD = "SE0000000005-1234";
   public static final String TEST_LOGICAL_ADDRESS_PARENT = "SE0000000003-1234";
+  public static final String HSA_ID_FEL = "HSA-ID-FEL";
 
   public static final String TEST_RR_ID_MANY_HITS_NO_ERRORS = "121212121212"; // TC1 - Tolvan Tolvansson
   public static final String TEST_RR_ID_ZERO_HITS = "188803099368"; // TC2 - Agda Andersson

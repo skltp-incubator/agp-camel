@@ -1,11 +1,10 @@
 package se.skltp.aggregatingservices.tests;
 
+import static org.junit.Assert.assertEquals;
+
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.cxf.message.MessageContentsList;
-
-import static org.junit.Assert.assertEquals;
-
 import org.junit.Test;
 import se.skltp.aggregatingservices.api.AgpServiceFactory;
 import se.skltp.aggregatingservices.configuration.AgpServiceConfiguration;
@@ -52,7 +51,7 @@ public abstract class CreateAggregatedResponseTest {
   }
 
   @Test
-  public void testCreateAggregatedResponse_MultipleResponseFromOneProducer(){
+  public void testCreateAggregatedResponseWithMultipleResponseFromOneProducer(){
     List<MessageContentsList> listOfResponsesFromAllProducers = new ArrayList<>();
     listOfResponsesFromAllProducers.add(RequestListUtil.createRequest(testDataGenerator
         .retrieveFromDb(producer2, patientId2)));

@@ -18,7 +18,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import se.skltp.aggregatingservices.AgpApplication;
-import se.skltp.aggregatingservices.data.BehorighetTestData;
+import se.skltp.aggregatingservices.data.VagvalsInfoTestData;
 import se.skltp.aggregatingservices.service.TakCacheService;
 import se.skltp.takcache.TakCacheLog;
 
@@ -30,7 +30,7 @@ public class TakCacheResetIT {
   protected ProducerTemplate template;
 
   @Autowired
-  BehorighetTestData behorighetTestData;
+  VagvalsInfoTestData vagvalsInfoTestData;
 
   @Autowired
   TakCacheService takCacheService;
@@ -38,10 +38,11 @@ public class TakCacheResetIT {
   @Before
   public void setUp(){
     // See agp-teststub/readme.md for information about the TAK data generated.
-    behorighetTestData.resetAnropsBehorigheterResponse();
-    behorighetTestData.generateBehorighetDefaultStubData("test.namespace.1");
-    behorighetTestData.generateBehorighetDefaultStubData("test.namespace.2");
-    takCacheService.setTakContracts(Arrays.asList("test.namespace.1", "test.namespace.2"));
+    vagvalsInfoTestData.resetTestData();
+    vagvalsInfoTestData.generateDefaultTestData("test.namespace.1");
+    vagvalsInfoTestData.generateDefaultTestData("test.namespace.2");
+    takCacheService.setTakContracts(Arrays.asList("test.namespace.1","test.namespace.2"));
+
   }
 
   @After
@@ -60,7 +61,7 @@ public class TakCacheResetIT {
     assertEquals( true, takCacheService.isInitalized() );
 
     TakCacheLog takCacheLog = takCacheService.getLastRefreshLog();
-    assertEquals( 26, takCacheLog.getNumberBehorigheter());
+    assertEquals( 22, takCacheLog.getNumberBehorigheter());
   }
 
   @Test

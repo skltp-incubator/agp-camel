@@ -48,5 +48,11 @@
       <groupId>org.assertj</groupId>
       <artifactId>assertj-core</artifactId>
     </dependency>
+    <dependency>
+      <groupId>se.skltp.tak</groupId>
+      <artifactId>tak-schemas</artifactId>
+      <version>1.5.0</version>
+      <scope>compile</scope>
+    </dependency>
   </dependencies>
 </project>

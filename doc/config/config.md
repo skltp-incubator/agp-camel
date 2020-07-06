@@ -29,8 +29,6 @@ Spring-boot property fil som ligger under resources i jaren. Inställningarna ka
 | ei.receiveTimeout | 20000 | receive timeout ms mot EI/findContent |
 | reset.cache.url | http://localhost:8091/resetcache | URL för att ladda om TAK cache |
 | agp.status.url | http://localhost:1080/status | URL till status funktionen i AGP |
-| takcache.use.behorighet.cache | true | Ska behörigheter användas i TAK-cachen? |
-| takcache.use.vagval.cache | false | Ska vägval användas i TAK-cachen? |
 | takcache.endpoint.address | http://localhost:8085/tak/teststub/SokVagvalsInfo/v2 | URL till TAK information |
 | log.max.payload.size | 49152 | Max storlek i bytes som loggas av payloaden  |
 | headers.request.filter | (?i)SoapAction/x-skltp-prt/Server/Host | (regexp) Headers att filtrera i anrop till producent  |

@@ -54,10 +54,6 @@ public class CreateRequestListProcessor implements Processor {
   }
 
 
-
-
-
-
   protected void filterFindContentResponseBasedOnAuthority(FindContentResponseType eiResp, Authority authority) {
     Iterator<EngagementType> iterator = eiResp.getEngagement().iterator();
 

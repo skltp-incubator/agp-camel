@@ -1,5 +1,6 @@
 package se.skltp.aggregatingservices.processors;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 
 import java.util.ArrayList;
@@ -29,7 +30,7 @@ import se.skltp.takcache.TakCacheLog;
 public class ResetTakCacheProcessorTest extends CamelTestSupport {
 
   @MockBean(name = "takCache")
-  private TakCache takCacheMock;
+  private TakCache takCache;
 
   @Autowired
   ResetTakCacheProcessor resetTakCacheProcessor;
@@ -45,7 +46,7 @@ public class ResetTakCacheProcessorTest extends CamelTestSupport {
 
     TakCacheLog takCacheLog = mock(TakCacheLog.class);
     Mockito.when(takCacheLog.getLog()).thenReturn(testLog);
-    Mockito.when(takCacheMock.refresh()).thenReturn(takCacheLog);
+    Mockito.when(takCache.refresh(any())).thenReturn(takCacheLog);
   }
   @Test
   public void process() {

@@ -37,7 +37,7 @@ public class GLOOAgpServiceConfiguration extends se.skltp.aggregatingservices.co
     setTakContract("urn:riv:clinicalprocess:healthcond:actoutcome:GetLaboratoryOrderOutcomeResponder:4");
 
     // Set service factory
-    setServiceFactoryClass(AgpServiceFactoryImpl.class.getName());
+    setServiceFactoryClass(GLOOAgpServiceFactoryImpl.class.getName());
   }
 
 

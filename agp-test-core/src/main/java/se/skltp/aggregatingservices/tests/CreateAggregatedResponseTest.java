@@ -9,12 +9,11 @@ import org.junit.Test;
 import se.skltp.aggregatingservices.api.AgpServiceFactory;
 import se.skltp.aggregatingservices.configuration.AgpServiceConfiguration;
 import se.skltp.aggregatingservices.data.TestDataGenerator;
-import se.skltp.aggregatingservices.utility.RequestListUtil;
 
 public abstract class CreateAggregatedResponseTest {
 
-  private AgpServiceFactory agpServiceFactory;
-  private TestDataGenerator testDataGenerator ;
+  protected AgpServiceFactory agpServiceFactory;
+  protected TestDataGenerator testDataGenerator ;
 
   private static String patientId1 = "121212121212";
   private static String patientId2 = "198611062384";
@@ -35,14 +34,14 @@ public abstract class CreateAggregatedResponseTest {
   public void testCreateAggregatedResponse(){
 
     List<MessageContentsList> listOfResponsesFromAllProducers = new ArrayList<>();
-    listOfResponsesFromAllProducers.add(RequestListUtil.createRequest(testDataGenerator
+    listOfResponsesFromAllProducers.add(TestDataUtil.createResponse(testDataGenerator
         .retrieveFromDb(producer4, patientId1)));
-    listOfResponsesFromAllProducers.add(RequestListUtil.createRequest(testDataGenerator
+    listOfResponsesFromAllProducers.add(TestDataUtil.createResponse(testDataGenerator
         .retrieveFromDb(producer5, patientId1)));
-    listOfResponsesFromAllProducers.add(RequestListUtil.createRequest(testDataGenerator
+    listOfResponsesFromAllProducers.add(TestDataUtil.createResponse(testDataGenerator
         .retrieveFromDb(producer6, patientId1)));
 
-    MessageContentsList originalRequest = RequestListUtil.createRequest("logiskAdress", testDataGenerator
+    MessageContentsList originalRequest = TestDataUtil.createRequest("logiskAdress", testDataGenerator
         .createRequest(patientId1, null));
 
     int responseSize = getResponseSize(agpServiceFactory.createAggregatedResponseObject(originalRequest, listOfResponsesFromAllProducers));
@@ -53,11 +52,11 @@ public abstract class CreateAggregatedResponseTest {
   @Test
   public void testCreateAggregatedResponseWithMultipleResponseFromOneProducer(){
     List<MessageContentsList> listOfResponsesFromAllProducers = new ArrayList<>();
-    listOfResponsesFromAllProducers.add(RequestListUtil.createRequest(testDataGenerator
+    listOfResponsesFromAllProducers.add(TestDataUtil.createResponse(testDataGenerator
         .retrieveFromDb(producer2, patientId2)));
 
 
-    MessageContentsList originalRequest = RequestListUtil.createRequest("logiskAdress", testDataGenerator
+    MessageContentsList originalRequest = TestDataUtil.createRequest("logiskAdress", testDataGenerator
         .createRequest(patientId2, null));
 
 

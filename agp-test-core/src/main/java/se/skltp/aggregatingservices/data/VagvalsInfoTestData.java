@@ -127,6 +127,10 @@ public class VagvalsInfoTestData {
   }
 
   private XMLGregorianCalendar xmlDateAdd(XMLGregorianCalendar orgDate, int field, int amount) {
+    if(orgDate==null){
+      return null;
+    }
+
     try {
       GregorianCalendar calendar = orgDate.toGregorianCalendar();
       calendar.add(field, amount);

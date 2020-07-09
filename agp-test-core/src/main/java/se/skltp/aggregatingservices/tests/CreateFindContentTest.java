@@ -8,16 +8,15 @@ import se.skltp.aggregatingservices.api.AgpServiceFactory;
 import se.skltp.aggregatingservices.configuration.AgpServiceConfiguration;
 import se.skltp.aggregatingservices.data.TestDataGenerator;
 import se.skltp.aggregatingservices.riv.itintegration.engagementindex.findcontentresponder.v1.FindContentType;
-import se.skltp.aggregatingservices.utility.RequestListUtil;
 
 public abstract class CreateFindContentTest {
 
   private static final String PATIENT_ID = "121212121212";
 
-  private AgpServiceFactory agpServiceFactory;
-  private AgpServiceConfiguration configuration;
+  protected AgpServiceFactory agpServiceFactory;
+  protected AgpServiceConfiguration configuration;
 
-  private TestDataGenerator testDataGenerator;
+  protected TestDataGenerator testDataGenerator;
 
   public CreateFindContentTest(TestDataGenerator testDataGenerator, AgpServiceFactory agpServiceFactory, AgpServiceConfiguration configuration){
     this.testDataGenerator = testDataGenerator;
@@ -29,7 +28,7 @@ public abstract class CreateFindContentTest {
 
   @Test
   public void testCreateFindContent(){
-    MessageContentsList messageContentsList = RequestListUtil.createRequest("logiskAdress", testDataGenerator
+    MessageContentsList messageContentsList = TestDataUtil.createRequest("logiskAdress", testDataGenerator
         .createRequest(PATIENT_ID, null));
 
     FindContentType type = agpServiceFactory.createFindContent(messageContentsList);

@@ -12,6 +12,7 @@ import static se.skltp.aggregatingservices.data.TestDataDefines.TEST_RR_ID_MANY_
 import static se.skltp.aggregatingservices.data.TestDataDefines.TEST_RR_ID_MANY_HITS_NO_ERRORS;
 import static se.skltp.aggregatingservices.data.TestDataDefines.TEST_RR_ID_ONE_FORMAT_ERROR;
 import static se.skltp.aggregatingservices.data.TestDataDefines.TEST_RR_ID_ONE_HIT;
+import static se.skltp.aggregatingservices.data.TestDataDefines.TEST_RR_ID_THREE_CATEGORIES;
 import static se.skltp.aggregatingservices.data.TestDataDefines.TEST_RR_ID_ZERO_HITS;
 import static se.skltp.aggregatingservices.utils.AssertLoggingUtil.LOGGER_NAME_ERROR_OUT;
 import static se.skltp.aggregatingservices.utils.AssertLoggingUtil.assertEventMessageCommon;
@@ -173,6 +174,24 @@ public class FullServiceTestIT {
     assertLogging(testLogAppender, expectedResponse);
   }
 
+  //
+  // TC9 - Three engagements with different categorizations,
+  //       default thats ok if when service has one engagement configurerd
+  //
+  @Test
+  public void testThreeDifferentEiCategoriziesIsDefaultOK() throws Exception {
+    ExpectedResponse expectedResponse = new ExpectedResponse();
+    expectedResponse.add("HSA-ID-4", 1, StatusCodeEnum.DATA_FROM_SOURCE, "");
+    expectedResponse.add("HSA-ID-5", 1, StatusCodeEnum.DATA_FROM_SOURCE, "");
+    expectedResponse.add("HSA-ID-6", 1, StatusCodeEnum.DATA_FROM_SOURCE, "");
+
+    final ServiceResponse<GetLaboratoryOrderOutcomeResponseType> response = consumerService
+        .callService(TEST_RR_ID_THREE_CATEGORIES);
+
+    assertExpectedResponse(response, expectedResponse, TEST_RR_ID_THREE_CATEGORIES);
+    assertExpectedProcessingStatus(response.getProcessingStatus(), expectedResponse);
+    assertLogging(testLogAppender, expectedResponse);
+  }
   //
   // FindContent timeout should give a soap fault
   //

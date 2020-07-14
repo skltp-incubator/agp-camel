@@ -175,6 +175,26 @@ public abstract class TestDataGenerator {
     );
     storeInDb(TestDataDefines.TEST_LOGICAL_ADDRESS_5, TestDataDefines.TEST_RR_ID_ONE_FORMAT_ERROR, response);
 
+    //
+    // TC9 - Patient with three bookings spread over three logical-addresses and three different categories
+    //
+    response = createResponse(
+        createResponseItem(TestDataDefines.TEST_LOGICAL_ADDRESS_4, TestDataDefines.TEST_RR_ID_THREE_CATEGORIES,
+            TestDataDefines.TEST_BO_ID_MANY_HITS_1,
+            TestDataDefines.TEST_DATE_MANY_HITS_1));
+    storeInDb(TestDataDefines.TEST_LOGICAL_ADDRESS_4, TestDataDefines.TEST_RR_ID_THREE_CATEGORIES, response);
+
+    response = createResponse(createResponseItem(TestDataDefines.TEST_LOGICAL_ADDRESS_5,
+        TestDataDefines.TEST_RR_ID_THREE_CATEGORIES,
+        TestDataDefines.TEST_BO_ID_MANY_HITS_2,
+        TestDataDefines.TEST_DATE_MANY_HITS_2));
+    storeInDb(TestDataDefines.TEST_LOGICAL_ADDRESS_5, TestDataDefines.TEST_RR_ID_THREE_CATEGORIES, response);
+
+    response = createResponse(createResponseItem(TestDataDefines.TEST_LOGICAL_ADDRESS_6,
+        TestDataDefines.TEST_RR_ID_THREE_CATEGORIES,
+        TestDataDefines.TEST_BO_ID_MANY_HITS_3,
+        TestDataDefines.TEST_DATE_MANY_HITS_3));
+    storeInDb(TestDataDefines.TEST_LOGICAL_ADDRESS_6, TestDataDefines.TEST_RR_ID_THREE_CATEGORIES, response);
 
   }
 

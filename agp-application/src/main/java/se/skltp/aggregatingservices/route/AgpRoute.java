@@ -18,6 +18,7 @@ import se.skltp.aggregatingservices.processors.CheckInboundHeadersProcessor;
 import se.skltp.aggregatingservices.processors.CreateFindContentProcessor;
 import se.skltp.aggregatingservices.processors.CreateRequestListProcessor;
 import se.skltp.aggregatingservices.processors.CreateResponseProcessor;
+import se.skltp.aggregatingservices.processors.FilterFindContentResponseProcessor;
 
 @Component
 public class AgpRoute extends RouteBuilder {
@@ -45,6 +46,9 @@ public class AgpRoute extends RouteBuilder {
   CreateFindContentProcessor createFindContentProcessor;
 
   @Autowired
+  FilterFindContentResponseProcessor filterFindContentResponseProcessor;
+
+  @Autowired
   CreateResponseProcessor createResponseProcessor;
 
   @Autowired
@@ -67,6 +71,7 @@ public class AgpRoute extends RouteBuilder {
         .process(createFindContentProcessor)
         .to(EI_FINDCONTENT_URI).id("to.findcontent")
         .setHeader(X_VP_SENDER_ID, exchangeProperty(INCOMMING_VP_SENDER_ID))
+        .process(filterFindContentResponseProcessor)
         .process(createRequestListProcessor)
         .removeHeaders("{{headers.request.filter}}")
         .split(body()).timeout(aggregationTimeout).parallelProcessing(true).aggregationStrategy(agpAggregationStrategy)

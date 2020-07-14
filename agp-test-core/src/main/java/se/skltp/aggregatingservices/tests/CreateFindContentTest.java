@@ -1,6 +1,7 @@
 package se.skltp.aggregatingservices.tests;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 import org.apache.cxf.message.MessageContentsList;
 import org.junit.Test;
@@ -31,11 +32,19 @@ public abstract class CreateFindContentTest {
     MessageContentsList messageContentsList = TestDataUtil.createRequest("logiskAdress", testDataGenerator
         .createRequest(PATIENT_ID, null));
 
-    FindContentType type = agpServiceFactory.createFindContent(messageContentsList);
+    FindContentType findContentRequest = agpServiceFactory.createFindContent(messageContentsList);
 
-    assertEquals(configuration.getEiCategorization(), type.getCategorization());
-    assertEquals(configuration.getEiServiceDomain(), type.getServiceDomain());
-    assertEquals(PATIENT_ID, type.getRegisteredResidentIdentification());
+    // If configuration is a list of categories the request.getCategorization should be 'null'
+    // to get all categories from EI
+    final String eiCategorization = configuration.getEiCategorization();
+    if(eiCategorization.contains(",")){
+      assertNull("Expected category==null since it's a list of categories congfigured", findContentRequest.getCategorization());
+    } else {
+      assertEquals(eiCategorization, findContentRequest.getCategorization());
+    }
+
+    assertEquals(configuration.getEiServiceDomain(), findContentRequest.getServiceDomain());
+    assertEquals(PATIENT_ID, findContentRequest.getRegisteredResidentIdentification());
   }
 
 }

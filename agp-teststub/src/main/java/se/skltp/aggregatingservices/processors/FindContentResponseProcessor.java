@@ -2,6 +2,7 @@ package se.skltp.aggregatingservices.processors;
 
 import static se.skltp.aggregatingservices.data.TestDataDefines.TEST_ID_FAULT_INVALID_ID_IN_EI;
 import static se.skltp.aggregatingservices.data.TestDataDefines.TEST_ID_FAULT_TIMEOUT_IN_EI;
+import static se.skltp.aggregatingservices.data.TestDataDefines.TEST_RR_ID_THREE_CATEGORIES;
 
 import java.util.concurrent.TimeUnit;
 import lombok.extern.log4j.Log4j2;
@@ -26,6 +27,9 @@ public class FindContentResponseProcessor implements Processor {
 
   @Value("${teststub.findContentTimeout:30000}")
   int serviceTimeoutMS;
+
+  @Value("${teststub.findContentCategorization:#{null}}")
+  String categorization;
 
   @Override
   public void process(Exchange exchange) throws Exception {
@@ -58,15 +62,27 @@ public class FindContentResponseProcessor implements Processor {
 
     // Lookup the response
     FindContentResponseType response = findContentTestData.getResponseForPatient(request.getRegisteredResidentIdentification());
-    updateResponseWithDomainAndCategory(request, response);
+    updateResponseWithDomain(request, response);
+
+    if(request.getCategorization()== null && categorization!=null){
+      updateResponseWithCategory(categorization, response);
+    } else if (!TEST_RR_ID_THREE_CATEGORIES.equals(id)) {
+      updateResponseWithCategory(request.getCategorization(), response);
+    }
+
 
     log.info("### Engagemengsindex return {} items", response.getEngagement().size());
     return response;
   }
 
-  private void updateResponseWithDomainAndCategory(FindContentType request, FindContentResponseType response) {
+  private void updateResponseWithCategory(String category,  FindContentResponseType response) {
     for(EngagementType engagementType : response.getEngagement()){
-      engagementType.setCategorization(request.getCategorization());
+      engagementType.setCategorization(category);
+    }
+  }
+
+  private void updateResponseWithDomain(FindContentType request, FindContentResponseType response) {
+    for(EngagementType engagementType : response.getEngagement()){
       engagementType.setServiceDomain(request.getServiceDomain());
     }
   }

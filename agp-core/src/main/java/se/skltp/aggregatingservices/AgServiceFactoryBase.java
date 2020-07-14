@@ -27,6 +27,10 @@ public abstract class AgServiceFactoryBase<E, T> implements AgpServiceFactory<T>
     this.agpServiceConfiguration = agpServiceConfiguration;
   }
 
+  @Override
+  public AgpServiceConfiguration getAgpServiceConfiguration() {
+    return agpServiceConfiguration;
+  }
 
   @Override
   public FindContentType createFindContent(MessageContentsList messageContentsList) {
@@ -34,8 +38,13 @@ public abstract class AgServiceFactoryBase<E, T> implements AgpServiceFactory<T>
     E queryObject = (E) messageContentsList.get(index);
     String patientId = getPatientId(queryObject);
 
+    // If more then one categorization configured we use 'null' in FindContent to get
+    // all categories from EI. The answer will then get filtered.
+    final List<String> eiCategorizations = FindContentUtil.getEiCategorizations(agpServiceConfiguration);
+    String eiCategorization = eiCategorizations.size() != 1 ? null : eiCategorizations.get(0);
+
     return FindContentUtil.createFindContent(patientId, agpServiceConfiguration.getEiServiceDomain(),
-        agpServiceConfiguration.getEiCategorization());
+        eiCategorization);
   }
 
   @Override
@@ -54,6 +63,8 @@ public abstract class AgServiceFactoryBase<E, T> implements AgpServiceFactory<T>
     return reqList;
   }
 
+
+
   @Override
   public T createAggregatedResponseObject(MessageContentsList originalQuery,
       List<MessageContentsList> aggregatedResponseList) {
@@ -63,5 +74,6 @@ public abstract class AgServiceFactoryBase<E, T> implements AgpServiceFactory<T>
 
     return aggregateResponse(responseList);
   }
+
 
 }

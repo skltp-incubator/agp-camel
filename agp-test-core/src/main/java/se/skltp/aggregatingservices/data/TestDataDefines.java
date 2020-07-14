@@ -36,6 +36,7 @@ public class TestDataDefines {
   public static final String TEST_RR_ID_EJ_SAMVERKAN_I_TAK = "194804032094"; // TC6 - Laban Meijer
   public static final String TEST_RR_ID_TRADKLATTRING = "194808069887"; // TC7
   public static final String TEST_RR_ID_ONE_FORMAT_ERROR = "194800000001"; // TC8
+  public static final String TEST_RR_ID_THREE_CATEGORIES = "194800000002"; // TC9
   public static final String TEST_ID_FAULT_INVALID_ID_IN_EI = "EI:INV_ID";
   public static final String TEST_ID_FAULT_TIMEOUT_IN_EI = "EI:TIMEOUT";
 
@@ -57,5 +58,11 @@ public class TestDataDefines {
   public static final String TEST_DATE_FAULT_INVALID_ID = "20130101000000";
   public static final String TEST_DATE_EJ_SAMVERKAN_I_TAK = "20130106000000";
   public static final String TEST_DATE_TRADKLATTRING = "20130406000000";
+
+  public static final String CATEGORY_DEFAULT = "test_category";
+  public static final String CATEGORY_1 = "cat1";
+  public static final String CATEGORY_2 = "cat2";
+  public static final String CATEGORY_3 = "cat3";
+
 
 }

@@ -11,13 +11,13 @@ import org.springframework.stereotype.Component;
 @Scope("prototype")
 public class MessageLoggingFeature extends AbstractFeature {
 
-  private MessageInLoggingInterceptor loggingInInterceptor;
-  private MessageOutLoggingInterceptor loggingOutInterceptor;
+  private MessageInInterceptor loggingInInterceptor;
+  private MessageOutInterceptor loggingOutInterceptor;
 
   public MessageLoggingFeature( @Value("${log.max.payload.size}") int maxPayloadSize) {
     MessageLogEventSender sender = new MessageLogEventSender();
-    loggingInInterceptor = new MessageInLoggingInterceptor(sender);
-    loggingOutInterceptor = new MessageOutLoggingInterceptor(sender);
+    loggingInInterceptor = new MessageInInterceptor(sender);
+    loggingOutInterceptor = new MessageOutInterceptor(sender);
     setLimit(maxPayloadSize);
   }
 

@@ -21,13 +21,13 @@ import org.apache.logging.log4j.Logger;
  *
  */
 @NoJSR250Annotations
-public class MessageOutLoggingInterceptor extends AbstractPhaseInterceptor<Message> {
+public class MessageOutInterceptor extends AbstractPhaseInterceptor<Message> {
 
   private MessageLogEventSender sender;
 
   protected int limit = 49152;
 
-  public MessageOutLoggingInterceptor(MessageLogEventSender sender) {
+  public MessageOutInterceptor(MessageLogEventSender sender) {
     super(Phase.PRE_STREAM);
     this.sender = sender;
     addBefore(StaxOutInterceptor.class.getName());

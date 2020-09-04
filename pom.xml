@@ -101,7 +101,7 @@
       </dependency>
       <dependency>
         <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-undertow</artifactId>
+        <artifactId>spring-boot-starter-jetty</artifactId>
         <version>${spring.boot-version}</version>
       </dependency>
       <dependency>
@@ -157,6 +157,11 @@
       <dependency>
         <groupId>org.apache.cxf</groupId>
         <artifactId>cxf-rt-transports-http-jetty</artifactId>
+        <version>${apache-cfx.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.cxf</groupId>
+        <artifactId>cxf-rt-transports-http-hc</artifactId>
         <version>${apache-cfx.version}</version>
       </dependency>
 

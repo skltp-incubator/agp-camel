@@ -32,6 +32,10 @@
     <!--Apache camel-->
     <Logger name="org.apache.camel" level="WARN"/>
 
+    <!--Jetty-->
+    <Logger name="org.eclipse.jetty" level="WARN"/>
+
+
     <!-- Message logging -->
     <Logger name="se.skltp.aggregatingservices.logging" level="INFO" additivity="false">
       <AppenderRef ref="TestLogAppender"/>

@@ -3,6 +3,7 @@ package se.skltp.aggregatingservices.integrationtests;
 import static org.apache.camel.test.junit4.TestSupport.assertStringContains;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static se.skltp.aggregatingservices.data.TestDataDefines.TEST_ID_FAULT_INVALID_ID_IN_EI;
 import static se.skltp.aggregatingservices.data.TestDataDefines.TEST_ID_FAULT_TIMEOUT_IN_EI;
 import static se.skltp.aggregatingservices.data.TestDataDefines.TEST_LOGICAL_ADDRESS_1;
@@ -114,7 +115,7 @@ public class FullServiceTestIT {
     ExpectedResponse expectedResponse = new ExpectedResponse();
     expectedResponse.add("HSA-ID-1", 1, StatusCodeEnum.DATA_FROM_SOURCE, "");
     expectedResponse.add("HSA-ID-2", 2, StatusCodeEnum.DATA_FROM_SOURCE, "");
-    expectedResponse.add("HSA-ID-3", 0, StatusCodeEnum.NO_DATA_SYNCH_FAILED, "Read timed out");
+    expectedResponse.add("HSA-ID-3", 0, StatusCodeEnum.NO_DATA_SYNCH_FAILED, "(?s).*(timeout|Read timed out).*");
 
     final ServiceResponse<GetLaboratoryOrderOutcomeResponseType> response = consumerService.callService(TEST_RR_ID_MANY_HITS);
 
@@ -130,7 +131,7 @@ public class FullServiceTestIT {
   @Test
   public void testOneProducerReturnsSoapFault() throws Exception {
     ExpectedResponse expectedResponse = new ExpectedResponse();
-    expectedResponse.add("HSA-ID-1", 0, StatusCodeEnum.NO_DATA_SYNCH_FAILED, "Invalid Id: " + TEST_RR_ID_FAULT_INVALID_ID, 500);
+    expectedResponse.add("HSA-ID-1", 0, StatusCodeEnum.NO_DATA_SYNCH_FAILED, "(?s).*Invalid Id: " + TEST_RR_ID_FAULT_INVALID_ID+".*", 500);
 
     final ServiceResponse<GetLaboratoryOrderOutcomeResponseType> response = consumerService
         .callService(TEST_RR_ID_FAULT_INVALID_ID);
@@ -205,7 +206,7 @@ public class FullServiceTestIT {
 
     final SoapFault soapFault = response.getSoapFault();
     assertNotNull("Expected a SoapFault", soapFault);
-    assertEquals("Read timed out", soapFault.getReason());
+    assertTrue(soapFault.getReason().matches("(?i).*(timeout|Read timed out).*"));
 
     final String eventMessage = testLogAppender.getEventMessage(LOGGER_NAME_ERROR_OUT, 0);
     assertEventMessageCommon(eventMessage, "error-out");

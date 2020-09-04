@@ -4,9 +4,11 @@ import org.apache.cxf.Bus;
 import org.apache.cxf.feature.AbstractFeature;
 import org.apache.cxf.interceptor.InterceptorProvider;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 @Component
+@Scope("prototype")
 public class MessageLoggingFeature extends AbstractFeature {
 
   private MessageInLoggingInterceptor loggingInInterceptor;

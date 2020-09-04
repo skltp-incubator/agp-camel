@@ -102,9 +102,10 @@ public class AssertLoggingUtil {
 
   private static List<String> getFilterProducers(ExpectedResponse expectedResponse, final StatusCodeEnum statusCode) {
     return expectedResponse.getProducers().stream().filter(
-        producer -> expectedResponse.getStatusCode(producer) == statusCode && !expectedResponse.getErrTxtPart(producer)
-            .contains("Read timed out")).collect(
-        Collectors.toList());
+        producer ->
+            expectedResponse.getStatusCode(producer) == statusCode &&
+            !expectedResponse.getErrTxtPart(producer).matches("(?s).*(timeout|Read timed out).*")
+    ).collect(Collectors.toList());
   }
 
 
@@ -183,7 +184,14 @@ public class AssertLoggingUtil {
       } else {
         assertStringContains(eventMessage,
             String.format("{\"logicalAddress\":\"%s\",\"statusCode\":\"NoDataSynchFailed\"", producer));
-        assertStringContains(eventMessage, expectedResponse.getErrTxtPart(producer));
+
+        final String expectedErrTxtPart = expectedResponse.getErrTxtPart(producer);
+        if( expectedErrTxtPart!=null && !expectedErrTxtPart.isEmpty() ) {
+          assertTrue(
+              String.format("Couldn't match:\n%s \n in message:\n%s ", expectedErrTxtPart, eventMessage),
+              eventMessage.matches(expectedErrTxtPart)
+          );
+        }
       }
     }
   }

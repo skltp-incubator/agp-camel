@@ -41,7 +41,7 @@ public class AA_AggregateTimeoutIT {
     ExpectedResponse expectedResponse = new ExpectedResponse();
     expectedResponse.add("HSA-ID-1", 1, StatusCodeEnum.DATA_FROM_SOURCE, "");
     expectedResponse.add("HSA-ID-2", 2, StatusCodeEnum.DATA_FROM_SOURCE, "");
-    expectedResponse.add("HSA-ID-3", 0, StatusCodeEnum.NO_DATA_SYNCH_FAILED, "Unknown error");
+    expectedResponse.add("HSA-ID-3", 0, StatusCodeEnum.NO_DATA_SYNCH_FAILED, "(?s).*Unknown error.*");
 
     final ServiceResponse<GetLaboratoryOrderOutcomeResponseType> response = consumerService.callService(TEST_RR_ID_MANY_HITS);
 

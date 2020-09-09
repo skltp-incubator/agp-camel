@@ -37,7 +37,7 @@ public abstract class CreateFindContentTest {
     // If configuration is a list of categories the request.getCategorization should be 'null'
     // to get all categories from EI
     final String eiCategorization = configuration.getEiCategorization();
-    if(eiCategorization.contains(",")){
+    if(eiCategorization != null && eiCategorization.contains(",")){
       assertNull("Expected category==null since it's a list of categories congfigured", findContentRequest.getCategorization());
     } else {
       assertEquals(eiCategorization, findContentRequest.getCategorization());

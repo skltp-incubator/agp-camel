@@ -19,7 +19,7 @@
 
   <groupId>se.skltp.agp</groupId>
   <artifactId>agp-parent</artifactId>
-  <version>3.0.0-RC5-SNAPSHOT</version>
+  <version>3.0.0-RC5</version>
   <name>agp-parent</name>
   <description>Demo project for Spring Boot</description>
 
@@ -79,7 +79,7 @@
     <url>https://github.com/skltp-incubator/agp-camel.git</url>
     <connection>scm:git:https://github.com:443/skltp-incubator/agp-camel.git</connection>
     <developerConnection>scm:git:https://github.com:443/skltp-incubator/agp-camel.git</developerConnection>
-    <tag>HEAD</tag>
+    <tag>v3.0.0-RC5</tag>
   </scm>
 
   <dependencyManagement>

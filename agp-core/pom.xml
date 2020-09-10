@@ -26,17 +26,20 @@
       <artifactId>spring-boot-starter-log4j2</artifactId>
     </dependency>
 
-    <dependency>
-      <groupId>org.apache.camel</groupId>
-      <artifactId>camel-cxf-starter</artifactId>
-    </dependency>
+
     <dependency>
       <groupId>org.apache.cxf</groupId>
       <artifactId>cxf-rt-transports-http-jetty</artifactId>
     </dependency>
+
+    <!-- Camel Spring-boot starters -->
     <dependency>
-      <groupId>org.apache.camel</groupId>
-      <artifactId>camel-jetty-starter</artifactId>
+      <groupId>org.apache.camel.springboot</groupId>
+      <artifactId>camel-cxf-starter</artifactId>
+    </dependency>
+    <dependency>
+        <groupId>org.apache.camel.springboot</groupId>
+        <artifactId>camel-jetty-starter</artifactId>
     </dependency>
 
   </dependencies>

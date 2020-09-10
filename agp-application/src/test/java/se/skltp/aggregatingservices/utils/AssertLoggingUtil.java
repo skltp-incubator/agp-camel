@@ -1,6 +1,6 @@
 package se.skltp.aggregatingservices.utils;
 
-import static org.apache.camel.test.junit4.TestSupport.assertStringContains;
+import static org.apache.camel.test.junit5.TestSupport.assertStringContains;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;

@@ -4,10 +4,9 @@ import static se.skltp.aggregatingservices.data.TestDataDefines.SAMPLE_SENDER_ID
 import static se.skltp.aggregatingservices.data.TestDataDefines.TEST_RR_ID_MANY_HITS_NO_ERRORS;
 
 import org.apache.camel.component.mock.MockEndpoint;
-import org.apache.camel.test.spring.CamelSpringBootRunner;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.apache.camel.test.spring.junit5.CamelSpringBootTest;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import se.skltp.aggregatingservices.AgpApplication;
@@ -18,8 +17,8 @@ import se.skltp.aggregatingservices.consumer.ConsumerService;
 import se.skltp.aggregatingservices.route.FindContentStubRoute;
 import se.skltp.aggregatingservices.route.ProducerBaseRoute;
 
-@RunWith(CamelSpringBootRunner.class)
-@SpringBootTest(classes = AgpApplication.class)
+@CamelSpringBootTest
+@SpringBootTest(classes = {AgpApplication.class})
 public class FullServiceHeadersIT {
 
   @Autowired
@@ -37,7 +36,7 @@ public class FullServiceHeadersIT {
   @Autowired
   EiConfig eiConfig;
 
-  @Before
+  @BeforeEach
   public void beforeTest() {
     producerBaseRoute.getMock().reset();
     findContentStubRoute.getMock().reset();

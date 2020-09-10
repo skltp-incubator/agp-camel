@@ -71,13 +71,13 @@ public class AgpServiceRoutes extends RouteBuilder {
       + "&serviceClass=%s"
       + "&beanId=%s"
       + "&properties.ComponentId=%s"
-      + "&cxfEndpointConfigurer=#%s";
+      + "&cxfConfigurer=#%s";
 
   public static final String OUTBOUND_SERVICE_CONFIGURATION = "cxf:%s"
       + "?wsdlURL=%s"
       + "&serviceClass=%s"
       + "&beanId=%s"
-      + "&cxfEndpointConfigurer=#%s"
+      + "&cxfConfigurer=#%s"
       + "&properties.use.async.http.conduit=%s";
 
   /* ----------------------------------------------------------------
@@ -91,7 +91,7 @@ public class AgpServiceRoutes extends RouteBuilder {
       + "&serviceClass=se.skltp.aggregatingservices.riv.itintegration.engagementindex.findcontent.v1.rivtabp21.FindContentResponderInterface"
       + "&portName={urn:riv:itintegration:engagementindex:FindContent:1:rivtabp21}FindContentResponderPort"
       + "&dataFormat=POJO"
-      + "&cxfEndpointConfigurer=#eiEndpointConfBean"
+      + "&cxfConfigurer=#eiEndpointConfBean"
       + "&beanId=findContent.%s"
       + "&properties.use.async.http.conduit=%s";
 
@@ -139,6 +139,7 @@ public class AgpServiceRoutes extends RouteBuilder {
         .setProperty(INCOMMING_VP_SENDER_ID, header(X_VP_SENDER_ID))
         .process(createFindContentProcessor)
           .to(findContentServiceAddress).id("to.findContent.for."+serviceConfiguration.getServiceName())
+//          .recipientList(simple(findContentServiceAddress)).id("to.findContent.for."+serviceConfiguration.getServiceName())
         .setHeader(X_VP_SENDER_ID, exchangeProperty(INCOMMING_VP_SENDER_ID))
         .process(filterFindContentResponseProcessor)
         .process(createRequestListProcessor)

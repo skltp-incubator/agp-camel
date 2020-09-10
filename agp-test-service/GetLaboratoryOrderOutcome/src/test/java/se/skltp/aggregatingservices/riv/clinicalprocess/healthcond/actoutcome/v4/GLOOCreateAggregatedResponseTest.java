@@ -1,15 +1,15 @@
 package se.skltp.aggregatingservices.riv.clinicalprocess.healthcond.actoutcome.v4;
 
-import org.junit.runner.RunWith;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import riv.clinicalprocess.healthcond.actoutcome.getlaboratoryorderoutcomeresponder.v4.GetLaboratoryOrderOutcomeResponseType;
 import se.skltp.aggregatingservices.GLOOTestDataGenerator;
 import se.skltp.aggregatingservices.api.AgpServiceFactory;
-import se.skltp.aggregatingservices.riv.clinicalprocess.healthcond.actoutcome.getaggregatedlaboratoryorderoutcome.GLOOAgpServiceFactoryImpl;
 import se.skltp.aggregatingservices.riv.clinicalprocess.healthcond.actoutcome.getaggregatedlaboratoryorderoutcome.GLOOAgpServiceConfiguration;
+import se.skltp.aggregatingservices.riv.clinicalprocess.healthcond.actoutcome.getaggregatedlaboratoryorderoutcome.GLOOAgpServiceFactoryImpl;
 
 
-@RunWith(SpringJUnit4ClassRunner.class)
+@ExtendWith({SpringExtension.class})
 public class GLOOCreateAggregatedResponseTest extends se.skltp.aggregatingservices.tests.CreateAggregatedResponseTest {
 
   private static GLOOAgpServiceConfiguration configuration = new GLOOAgpServiceConfiguration();

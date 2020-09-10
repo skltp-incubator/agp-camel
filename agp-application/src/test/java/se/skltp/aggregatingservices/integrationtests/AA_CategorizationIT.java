@@ -5,9 +5,8 @@ import static se.skltp.aggregatingservices.utils.AssertLoggingUtil.assertLogging
 import static se.skltp.aggregatingservices.utils.AssertUtil.assertExpectedProcessingStatus;
 import static se.skltp.aggregatingservices.utils.AssertUtil.assertExpectedResponse;
 
-import org.apache.camel.test.spring.CamelSpringBootRunner;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.apache.camel.test.spring.junit5.CamelSpringBootTest;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
@@ -20,7 +19,7 @@ import se.skltp.aggregatingservices.utils.ServiceResponse;
 import se.skltp.aggregatingservices.utils.TestLogAppender;
 import se.skltp.agp.riv.interoperability.headers.v1.StatusCodeEnum;
 
-@RunWith(CamelSpringBootRunner.class)
+@CamelSpringBootTest
 @SpringBootTest(classes = AgpApplication.class, properties = {
      "getaggregatedlaboratoryorderoutcome.v4.eiCategorization=cat2,cat3"})
 @DirtiesContext(classMode = ClassMode.AFTER_CLASS)

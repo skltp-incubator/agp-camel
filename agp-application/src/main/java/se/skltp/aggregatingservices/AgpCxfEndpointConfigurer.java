@@ -2,7 +2,7 @@ package se.skltp.aggregatingservices;
 
 import static org.apache.cxf.message.Message.SCHEMA_VALIDATION_ENABLED;
 
-import org.apache.camel.component.cxf.CxfEndpointConfigurer;
+import org.apache.camel.component.cxf.CxfConfigurer;
 import org.apache.cxf.annotations.SchemaValidation.SchemaValidationType;
 import org.apache.cxf.endpoint.Client;
 import org.apache.cxf.endpoint.Server;
@@ -13,7 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import se.skltp.aggregatingservices.cxf.SoapActionRemoverInInterceptor;
 import se.skltp.aggregatingservices.logging.MessageLoggingFeature;
 
-public class AgpCxfEndpointConfigurer implements CxfEndpointConfigurer {
+public class AgpCxfEndpointConfigurer implements CxfConfigurer {
 
   @Autowired
   MessageLoggingFeature messageLoggingFeature;
@@ -37,6 +37,7 @@ public class AgpCxfEndpointConfigurer implements CxfEndpointConfigurer {
     this.schemaValidationEnabled = schemaValidation;
     this.validateSoapAction = validateSoapAction;
   }
+
 
   @Override
   public void configure(AbstractWSDLBasedEndpointFactory factoryBean) {

@@ -1,6 +1,6 @@
 package se.skltp.aggregatingservices.integrationtests;
 
-import static org.apache.camel.test.junit4.TestSupport.assertStringContains;
+import static org.apache.camel.test.junit5.TestSupport.assertStringContains;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static se.skltp.aggregatingservices.data.TestDataDefines.TEST_LOGICAL_ADDRESS_1;
@@ -11,11 +11,9 @@ import static se.skltp.aggregatingservices.utils.AssertUtil.assertExpectedRespon
 
 import java.util.HashMap;
 import java.util.Map;
-import org.apache.camel.test.spring.CamelSpringBootRunner;
+import org.apache.camel.test.spring.junit5.CamelSpringBootTest;
 import org.apache.cxf.binding.soap.SoapFault;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
@@ -28,7 +26,7 @@ import se.skltp.aggregatingservices.utils.ServiceResponse;
 import se.skltp.aggregatingservices.utils.TestLogAppender;
 import se.skltp.agp.riv.interoperability.headers.v1.StatusCodeEnum;
 
-@RunWith(CamelSpringBootRunner.class)
+@CamelSpringBootTest
 @SpringBootTest(classes = AgpApplication.class, properties = {
     "getaggregatedlaboratoryorderoutcome.v4.enableSchemaValidation=true",
     "validate.soapAction=true"
@@ -41,11 +39,6 @@ public class AA_ValidationErrorIT {
 
   @Autowired
   TestLogAppender testLogAppender;
-
-  @Before
-  public void before() {
-
-  }
 
   //
   // TC8 - One ok response, second response contains field with format error

@@ -5,8 +5,8 @@ import static se.skltp.agp.riv.interoperability.headers.v1.StatusCodeEnum.DATA_F
 import static se.skltp.agp.riv.interoperability.headers.v1.StatusCodeEnum.NO_DATA_SYNCH_FAILED;
 
 import lombok.extern.log4j.Log4j2;
+import org.apache.camel.AggregationStrategy;
 import org.apache.camel.Exchange;
-import org.apache.camel.processor.aggregate.TimeoutAwareAggregationStrategy;
 import org.springframework.stereotype.Service;
 import se.skltp.aggregatingservices.utils.EngagementProcessingStatusUtil;
 import se.skltp.aggregatingservices.utils.ProcessingStatusUtil;
@@ -14,7 +14,7 @@ import se.skltp.agp.riv.interoperability.headers.v1.ProcessingStatusRecordType;
 
 @Service
 @Log4j2
-public class AgpAggregationStrategy implements TimeoutAwareAggregationStrategy {
+public class AgpAggregationStrategy implements AggregationStrategy {
 
 
   @Override

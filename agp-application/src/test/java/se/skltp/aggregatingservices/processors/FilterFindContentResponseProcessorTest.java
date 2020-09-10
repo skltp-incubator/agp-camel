@@ -17,18 +17,18 @@ import java.util.List;
 import javax.annotation.PostConstruct;
 import org.apache.camel.Exchange;
 import org.apache.camel.impl.DefaultCamelContext;
-import org.apache.camel.impl.DefaultExchange;
-import org.apache.camel.test.spring.CamelSpringRunner;
-import org.apache.camel.test.spring.MockEndpoints;
+import org.apache.camel.support.DefaultExchange;
+import org.apache.camel.test.spring.junit5.MockEndpoints;
 import org.apache.cxf.message.MessageContentsList;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import se.skltp.aggregatingservices.constants.AgpHeaders;
 import se.skltp.aggregatingservices.riv.itintegration.engagementindex.findcontentresponder.v1.FindContentResponseType;
 import se.skltp.aggregatingservices.service.Authority;
@@ -42,7 +42,7 @@ import se.skltp.takcache.RoutingInfo;
 import se.skltp.takcache.TakCache;
 import se.skltp.takcache.VagvalCache;
 
-@RunWith(CamelSpringRunner.class)
+@ExtendWith({SpringExtension.class})
 @ContextConfiguration(classes = {FilterFindContentResponseProcessor.class, TakCacheServiceImpl.class})
 @TestPropertySource("classpath:application.properties")
 @MockEndpoints("direct:end")

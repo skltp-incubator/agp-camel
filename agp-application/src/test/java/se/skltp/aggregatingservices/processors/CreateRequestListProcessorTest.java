@@ -9,15 +9,15 @@ import static se.skltp.aggregatingservices.data.TestDataDefines.TEST_RR_ID_MANY_
 import java.util.List;
 import org.apache.camel.Exchange;
 import org.apache.camel.impl.DefaultCamelContext;
-import org.apache.camel.impl.DefaultExchange;
-import org.apache.camel.test.spring.CamelSpringRunner;
-import org.apache.camel.test.spring.MockEndpoints;
+import org.apache.camel.support.DefaultExchange;
+import org.apache.camel.test.spring.junit5.MockEndpoints;
 import org.apache.cxf.message.MessageContentsList;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import se.skltp.aggregatingservices.constants.AgpHeaders;
 import se.skltp.aggregatingservices.riv.itintegration.engagementindex.findcontentresponder.v1.FindContentResponseType;
 import se.skltp.aggregatingservices.utils.AgpServiceFactoryImpl;
@@ -25,7 +25,7 @@ import se.skltp.aggregatingservices.utils.EngagementProcessingStatusUtil;
 import se.skltp.aggregatingservices.utils.FindContentUtil;
 import se.skltp.aggregatingservices.utils.RequestUtil;
 
-@RunWith(CamelSpringRunner.class)
+@ExtendWith({SpringExtension.class})
 @ContextConfiguration(classes = {CreateRequestListProcessor.class})
 @TestPropertySource("classpath:application.properties")
 @MockEndpoints("direct:end")

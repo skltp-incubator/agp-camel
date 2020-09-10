@@ -19,7 +19,7 @@ import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
 import org.apache.camel.Route;
 import org.apache.camel.ServiceStatus;
-import org.apache.camel.impl.EventDrivenConsumerRoute;
+import org.apache.camel.impl.engine.DefaultRoute;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.info.BuildProperties;
 import org.springframework.stereotype.Service;
@@ -165,7 +165,7 @@ public class GetStatusProcessor implements Processor {
     List<Route> routes = camelContext.getRoutes();
     for (Route route : routes) {
       String endpoint = route.getEndpoint().getEndpointKey();
-      if (endpoint.contains("http://") && ((EventDrivenConsumerRoute) route).getStatus() == ServiceStatus.Started) {
+      if (endpoint.contains("http://") && ((DefaultRoute) route).getStatus() == ServiceStatus.Started) {
         String key = route.getEndpoint().getEndpointKey();
         if (key.indexOf('?') > -1) {
           key = key.substring(0, key.indexOf('?'));

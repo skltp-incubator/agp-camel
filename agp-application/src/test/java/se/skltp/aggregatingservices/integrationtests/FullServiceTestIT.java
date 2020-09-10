@@ -1,6 +1,6 @@
 package se.skltp.aggregatingservices.integrationtests;
 
-import static org.apache.camel.test.junit4.TestSupport.assertStringContains;
+import static org.apache.camel.test.junit5.TestSupport.assertStringContains;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -23,11 +23,9 @@ import static se.skltp.aggregatingservices.utils.AssertUtil.assertExpectedRespon
 
 import java.util.HashMap;
 import java.util.Map;
-import org.apache.camel.test.spring.CamelSpringBootRunner;
+import org.apache.camel.test.spring.junit5.CamelSpringBootTest;
 import org.apache.cxf.binding.soap.SoapFault;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import riv.clinicalprocess.healthcond.actoutcome.getlaboratoryorderoutcomeresponder.v4.GetLaboratoryOrderOutcomeResponseType;
@@ -39,8 +37,8 @@ import se.skltp.aggregatingservices.utils.ServiceResponse;
 import se.skltp.aggregatingservices.utils.TestLogAppender;
 import se.skltp.agp.riv.interoperability.headers.v1.StatusCodeEnum;
 
-@RunWith(CamelSpringBootRunner.class)
-@SpringBootTest(classes = AgpApplication.class)
+@CamelSpringBootTest
+@SpringBootTest(classes = {AgpApplication.class})
 public class FullServiceTestIT {
 
   @Autowired
@@ -52,10 +50,7 @@ public class FullServiceTestIT {
   @Autowired
   TestLogAppender testLogAppender;
 
-  @Before
-  public void before() {
 
-  }
 
   //
   // TC1 - Get data from 3 producers

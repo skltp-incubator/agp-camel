@@ -32,7 +32,7 @@
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <camel.version>3.5.0</camel.version>
     <spring.boot-version>2.3.3.RELEASE</spring.boot-version>
-    <hawtio.spring.boot-version>2.8.0</hawtio.spring.boot-version>
+    <hawtio.spring.boot-version>2.10.2</hawtio.spring.boot-version>
     <lombok.version>1.18.12</lombok.version>
     <apache-cfx.version>3.4.0</apache-cfx.version>
     <cxf.xjc.version>3.2.3</cxf.xjc.version>
@@ -109,6 +109,11 @@
       <dependency>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-autoconfigure</artifactId>
+        <version>${spring.boot-version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-actuator</artifactId>
         <version>${spring.boot-version}</version>
       </dependency>
 

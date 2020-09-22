@@ -7,12 +7,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import se.skl.tp.behorighet.BehorighetHandler;
 import se.skl.tp.behorighet.BehorighetHandlerImpl;
-import se.skl.tp.hsa.cache.HsaCache;
-import se.skltp.tak.vagvalsinfo.wsdl.v2.AnropsBehorighetsInfoType;
+import se.skl.tp.vagval.VagvalHandler;
+import se.skl.tp.vagval.VagvalHandlerImpl;
+import se.skltp.aggregatingservices.configuration.AgpServiceConfiguration;
 import se.skltp.takcache.TakCache;
 import se.skltp.takcache.TakCacheLog;
 import se.skltp.takcache.TakCacheLog.RefreshStatus;
-import se.skltp.takcache.util.XmlGregorianCalendarUtil;
 
 @Service
 public class TakCacheServiceImpl implements TakCacheService {
@@ -21,22 +21,40 @@ public class TakCacheServiceImpl implements TakCacheService {
 
   BehorighetHandler behorighetHandler;
 
+  VagvalHandler vagvalHandler;
 
   TakCacheLog takCacheLog = null;
 
   Date lastResetDate;
 
+  List<String> takContracts;
+
+  List<AgpServiceConfiguration> serviceConfigurationList;
+
+
   @Autowired
-  public TakCacheServiceImpl(TakCache takCache) {
+  public TakCacheServiceImpl(TakCache takCache, List<AgpServiceConfiguration> serviceConfigurationList) {
+    this.serviceConfigurationList = serviceConfigurationList;
     this.takCache = takCache;
-    behorighetHandler = new BehorighetHandlerImpl(takCache);
+    initHandlers();
+    resetTakContracts();
+  }
+
+  @Override
+  public void setTakContracts(List<String> takContracts) {
+    this.takContracts = takContracts;
+  }
+
+  @Override
+  public void resetTakContracts() {
+    this.takContracts = serviceConfigurationList.stream().map(AgpServiceConfiguration::getTakContract).collect(Collectors.toList());
   }
 
   @Override
   public TakCacheLog refresh() {
-    // TODO call refresh with filter on targetNamespaces
-    // Update takcache to handle multiple targetNS
-    takCacheLog = takCache.refresh();
+
+    takCacheLog = takCache.refresh(takContracts);
+
     lastResetDate = new Date();
     return takCacheLog;
   }
@@ -48,7 +66,8 @@ public class TakCacheServiceImpl implements TakCacheService {
 
   @Override
   public boolean isAuthorized(String senderId, String servicecontractNamespace, String receiverId) {
-    return behorighetHandler.isAuthorized(senderId, servicecontractNamespace, receiverId);
+    // it has to be authority and a guilty vagval
+    return behorighetHandler.isAuthorized(senderId, servicecontractNamespace, receiverId) && !vagvalHandler.getRoutingInfo(servicecontractNamespace, receiverId).isEmpty();
   }
 
   @Override
@@ -57,31 +76,19 @@ public class TakCacheServiceImpl implements TakCacheService {
   }
 
   @Override
-  public TakCacheLog getLastRefreshLog(){
+  public TakCacheLog getLastRefreshLog() {
     return takCacheLog;
   }
 
   @Override
-  public List<String> getReceivers(String senderId, String originalServiceConsumerId, String servicecontractNamespace) {
-    // TODO where get this
-    String agpHsaId ="";
-
-    List<AnropsBehorighetsInfoType> anropsBehorigheter = takCache.getAnropsBehorighetsInfos();
-    return anropsBehorigheter.stream().
-        filter(anropsBehorighet -> anropsBehorighet.getTjansteKontrakt().equals(servicecontractNamespace)).
-        filter(anropsBehorighet -> senderId.equals(anropsBehorighet.getSenderId()) || originalServiceConsumerId.equals(anropsBehorighet.getSenderId())).
-        filter(anropsBehorighet -> !anropsBehorighet.getReceiverId().equals(HsaCache.DEFAUL_ROOTNODE)).
-        filter(anropsBehorighet -> !anropsBehorighet.getReceiverId().equals(agpHsaId)).
-        filter(anropsBehorighet -> !anropsBehorighet.getReceiverId().equals(BehorighetHandlerImpl.DEFAULT_RECEIVER_ADDRESS)).
-        filter(anropsBehorighet -> XmlGregorianCalendarUtil.isTimeWithinInterval(XmlGregorianCalendarUtil.getNowAsXMLGregorianCalendar(),
-            anropsBehorighet.getFromTidpunkt(), anropsBehorighet.getTomTidpunkt())).
-        map(AnropsBehorighetsInfoType::getReceiverId).collect(Collectors.toList());
+  public boolean isAuthorizedConsumer(Authority authority) {
+    return isAuthorized(authority.getSenderId(),authority.getServicecontractNamespace(), authority.receiverId ) ||
+        isAuthorized(authority.getOriginalSenderId(), authority.getServicecontractNamespace(), authority.receiverId);
   }
 
-  @Override
-  public boolean isAuthorizedConsumer(String senderId, String originalServiceConsumerId, String receiverId, String servicecontractNamespace) {
-    return behorighetHandler.isAuthorized(senderId, servicecontractNamespace, receiverId) ||
-        behorighetHandler.isAuthorized(originalServiceConsumerId, servicecontractNamespace, receiverId);
+  public void initHandlers(){
+    this.behorighetHandler = new BehorighetHandlerImpl(takCache.getBehorigeterCache());
+    this.vagvalHandler = new VagvalHandlerImpl(takCache.getVagvalCache());
   }
 
 

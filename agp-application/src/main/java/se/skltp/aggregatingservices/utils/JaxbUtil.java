@@ -16,15 +16,8 @@
  */
 package se.skltp.aggregatingservices.utils;
 
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.InputStream;
-import java.io.Reader;
-import java.io.StringReader;
 import java.io.StringWriter;
-import java.net.URL;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import javax.xml.bind.JAXBContext;
@@ -32,19 +25,10 @@ import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
-import javax.xml.namespace.QName;
-import javax.xml.stream.XMLEventReader;
-import javax.xml.stream.XMLStreamReader;
-import javax.xml.transform.Source;
 import lombok.extern.log4j.Log4j2;
 import org.w3c.dom.Node;
-import org.xml.sax.InputSource;
 
-/**
- * Helper class that simplify marshalling and unmarshalling java-object to and from XML using JAXB v2.
- *
- * @author Magnus Larsson
- */
+
 @Log4j2
 public class JaxbUtil implements ServiceMarshaller {
 
@@ -63,49 +47,14 @@ public class JaxbUtil implements ServiceMarshaller {
 			}
       jaxbContext = JAXBContext.newInstance(classesToBeBound);
     } catch (JAXBException e) {
-      throw new RuntimeException(e);
+      throw new JaxbUtilException(e);
     }
-  }
-
-  public JaxbUtil(String contextPath) {
-    setContextPath(contextPath);
   }
 
   public JAXBContext getContext() {
     return jaxbContext;
   }
 
-  public void setContextPath(String contextPath) {
-    try {
-      if (contextPath == null || contextPath.length() == 0) {
-				if (log.isDebugEnabled()) {
-					log.debug("No context path, let's wait with creating the jaxbContext");
-				}
-
-      } else {
-				if (log.isDebugEnabled()) {
-					log.debug("Load JAXBContext based on context path: " + contextPath);
-				}
-        jaxbContext = JAXBContext.newInstance(contextPath);
-      }
-    } catch (JAXBException e) {
-      throw new RuntimeException(e);
-    }
-  }
-
-  public void addMarshallProperty(String name, Object value) {
-    if (marshallProps == null) {
-      marshallProps = new HashMap<String, Object>();
-    }
-    marshallProps.put(name, value);
-  }
-
-  public void addUnmarshallProperty(String name, Object value) {
-    if (unmarshallProps == null) {
-      unmarshallProps = new HashMap<String, Object>();
-    }
-    unmarshallProps.put(name, value);
-  }
 
   /**
    * Marshal a JAXB object to a XML-string
@@ -140,21 +89,8 @@ public class JaxbUtil implements ServiceMarshaller {
 
       return xml;
     } catch (JAXBException e) {
-      throw new RuntimeException(e);
+      throw new JaxbUtilException(e);
     }
-  }
-
-  /**
-   * Marshal version for JAXB objects that doesn't contain any @XmlRootElement annotation
-   *
-   * @param namespaceURI namespace for the root element
-   * @param localPart name for the root element
-   * @return the xml string
-   */
-  @SuppressWarnings({"unchecked", "rawtypes"})
-  public String marshal(Object jaxbObject, String namespaceURI, String localPart) {
-    jaxbObject = new JAXBElement(new QName(namespaceURI, localPart), jaxbObject.getClass(), jaxbObject);
-    return marshal(jaxbObject);
   }
 
 
@@ -181,51 +117,14 @@ public class JaxbUtil implements ServiceMarshaller {
           unmarshaller.setProperty(entry.getKey(), entry.getValue());
         }
       }
-      Object jaxbObject = null;
+      Object jaxbObject;
 
-      // Unmarshal depending on the type of source
-      if (payload instanceof String) {
-        String src = (String) payload;
-        jaxbObject = unmarshaller.unmarshal(new StringReader(src));
 
-      } else if (payload instanceof byte[]) {
-        byte[] src = (byte[]) payload;
-        jaxbObject = unmarshaller.unmarshal(new ByteArrayInputStream(src));
-
-        // Rely on standard JAXB unmarshaller
-      } else if (payload instanceof File) {
-        jaxbObject = unmarshaller.unmarshal((File) payload);
-
-      } else if (payload instanceof InputSource) {
-        jaxbObject = unmarshaller.unmarshal((InputSource) payload);
-
-      } else if (payload instanceof InputStream) {
-        jaxbObject = unmarshaller.unmarshal((InputStream) payload);
-
-      } else if (payload instanceof Reader) {
-        jaxbObject = unmarshaller.unmarshal((Reader) payload);
-
-      } else if (payload instanceof URL) {
-        jaxbObject = unmarshaller.unmarshal((URL) payload);
-
-      } else if (payload instanceof InputSource) {
-        jaxbObject = unmarshaller.unmarshal((InputSource) payload);
-
-      } else if (payload instanceof Node) {
+      if (payload instanceof Node) {
         jaxbObject = unmarshaller.unmarshal((Node) payload);
-
-      } else if (payload instanceof Source) {
-        jaxbObject = unmarshaller.unmarshal((Source) payload);
-
-      } else if (payload instanceof XMLEventReader) {
-        jaxbObject = unmarshaller.unmarshal((XMLEventReader) payload);
-
-      } else if (payload instanceof XMLStreamReader) {
-        jaxbObject = unmarshaller.unmarshal((XMLStreamReader) payload);
-
       } else {
         // Out of alternatives, have to throw a unknown source type exception...
-        throw new RuntimeException("Unknown sourcetype of the xml payload: " + payload.getClass().getName());
+        throw new JaxbUtilException("Unknown sourcetype of the xml payload: " + payload.getClass().getName());
       }
 
       // Unmarshal done, postprocess by replacing any JAXBElement with the actual jaxb-object, see comment in the class-doc.
@@ -241,7 +140,18 @@ public class JaxbUtil implements ServiceMarshaller {
 
       return jaxbObject;
     } catch (JAXBException e) {
-      throw new RuntimeException(e);
+      throw new JaxbUtilException(e);
+    }
+  }
+
+  public class JaxbUtilException extends RuntimeException {
+
+    public JaxbUtilException(Throwable cause) {
+      super(cause);
+    }
+
+    public JaxbUtilException(String message) {
+      super(message);
     }
   }
 

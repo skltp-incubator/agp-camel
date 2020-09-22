@@ -4,7 +4,9 @@ import static se.skltp.agp.riv.interoperability.headers.v1.StatusCodeEnum.DATA_F
 import static se.skltp.agp.riv.interoperability.headers.v1.StatusCodeEnum.DATA_FROM_CACHE_SYNCH_FAILED;
 import static se.skltp.agp.riv.interoperability.headers.v1.StatusCodeEnum.DATA_FROM_SOURCE;
 
+import java.net.SocketTimeoutException;
 import java.util.Date;
+import org.apache.cxf.binding.soap.SoapFault;
 import se.skltp.agp.riv.interoperability.headers.v1.CausingAgentEnum;
 import se.skltp.agp.riv.interoperability.headers.v1.LastUnsuccessfulSynchErrorType;
 import se.skltp.agp.riv.interoperability.headers.v1.ProcessingStatusRecordType;
@@ -13,6 +15,10 @@ import se.skltp.agp.riv.interoperability.headers.v1.StatusCodeEnum;
 public class ProcessingStatusUtil {
 
 	private static ThreadSafeSimpleDateFormat df = new ThreadSafeSimpleDateFormat("yyyyMMddHHmmss");
+
+	// Utility class
+	private ProcessingStatusUtil() {
+	}
 
 	public static ProcessingStatusRecordType createStatusRecord(String logicalAddress, StatusCodeEnum statusCode) {
 		return createStatusRecord(logicalAddress, statusCode, null);
@@ -31,7 +37,7 @@ public class ProcessingStatusUtil {
 	 * +--------------------------+---------------------+-------------------+--------------------------+-----------------------+----------------------------+
 	 * */
 	public static ProcessingStatusRecordType createStatusRecord(String logicalAddress, StatusCodeEnum statusCode,
-			Throwable throwable) {
+			Exception exception) {
 		ProcessingStatusRecordType status = new ProcessingStatusRecordType();
 
 		status.setLogicalAddress(logicalAddress);
@@ -42,10 +48,9 @@ public class ProcessingStatusUtil {
 		if (statusCode == DATA_FROM_SOURCE) {
 			status.setLastSuccessfulSynch(df.format(new Date()));
 		}
-		// TODO: DATA_FROM_CACHE/DATA_FROM_CACHE_SYNCH_FAILED: How to pickup time for last succ call from cache???
 
 		if (status.isIsResponseInSynch()) {
-			if (throwable != null) {
+			if (exception != null) {
 				throw new IllegalArgumentException("Error argument not allowed for state DATA_FROM_SOURCE and DATA_FROM_CACHE, must be null");
 			}
 
@@ -53,22 +58,29 @@ public class ProcessingStatusUtil {
 
 			// Ok, so the call failed. Fill in error info...
 			status.setLastUnsuccessfulSynch(df.format(new Date()));
-			status.setLastUnsuccessfulSynchError(createError(throwable));
+			status.setLastUnsuccessfulSynchError(createError(exception));
 		}
 		return status;
 	}
 
-	public static LastUnsuccessfulSynchErrorType createError(Throwable e){
+	public static LastUnsuccessfulSynchErrorType createError(Exception exception){
 
-		String errorText = e.getMessage();
-		if(e.getCause()!=null){
-			errorText += ", " + e.getCause().getMessage();
+		String errorText = exception.getMessage();
+		if(exception.getCause()!=null){
+			errorText += ", " + exception.getCause().getMessage();
 		}
 
 		LastUnsuccessfulSynchErrorType error = new LastUnsuccessfulSynchErrorType();
 		error.setCausingAgent(CausingAgentEnum.VIRTUALIZATION_PLATFORM);
-		// TODO What is this error code
-		//		error.setCode(Integer.toString(ep.getCode()));
+		if(exception instanceof SoapFault){
+			error.setCode(Integer.toString(((SoapFault)exception).getStatusCode()));
+		} else if( exception instanceof SocketTimeoutException ) {
+			// Gateway timeout
+			error.setCode("504");
+		}	else {
+			// This is the default for old mule AGP ( We couldn't find a definition for the code)
+			error.setCode("43000");
+		}
 		error.setText(errorText);
 		return error;
 	}

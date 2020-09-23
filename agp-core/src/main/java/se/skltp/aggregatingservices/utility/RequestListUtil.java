@@ -1,7 +1,6 @@
 package se.skltp.aggregatingservices.utility;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -19,17 +18,18 @@ public class RequestListUtil {
   }
 
   public static List<MessageContentsList> createRequestMessageContentsLists(FindContentResponseType eiResp,
-      Object originalRequest, String filterOnCareUnit) {
+      MessageContentsList originalRequest, String filterOnCareUnit) {
     Set<String> sourceSystems = getUniqueSourceSystems(eiResp, filterOnCareUnit);
 
     List<MessageContentsList> reqList = new ArrayList<>();
 
     for (String sourceSystem : sourceSystems) {
-      log.info("Calling source system using logical address {}", sourceSystem );
-      reqList.add( createRequest(sourceSystem, originalRequest ));
+      log.info("Calling source system using logical address {}", sourceSystem);
+      reqList.add(createRequest(sourceSystem, originalRequest));
     }
     return reqList;
   }
+
 
   public static Set<String> getUniqueSourceSystems(FindContentResponseType findContentResponseType, String filterOnCareUnit) {
     Set<String> sourceSystems = new HashSet<>(); // set of unique source system hsa ids
@@ -46,10 +46,12 @@ public class RequestListUtil {
     return StringUtils.isEmpty(careUnitId) || careUnitId.equals(careUnit);
   }
 
-  public static MessageContentsList createRequest(Object ...objects) {
+  public static MessageContentsList createRequest(String sourceSystem, MessageContentsList contentsList) {
     MessageContentsList requestList = new MessageContentsList();
-    Collections.addAll(requestList, objects);
+    requestList.add(sourceSystem);
+    for (int i = 1; i < contentsList.size(); i++) {
+      requestList.add(contentsList.get(i));
+    }
     return requestList;
   }
-
 }

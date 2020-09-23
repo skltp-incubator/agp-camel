@@ -4,6 +4,7 @@ import static se.skltp.agp.riv.interoperability.headers.v1.StatusCodeEnum.DATA_F
 import static se.skltp.agp.riv.interoperability.headers.v1.StatusCodeEnum.DATA_FROM_CACHE_SYNCH_FAILED;
 import static se.skltp.agp.riv.interoperability.headers.v1.StatusCodeEnum.DATA_FROM_SOURCE;
 
+import java.net.SocketTimeoutException;
 import java.util.Date;
 import org.apache.cxf.binding.soap.SoapFault;
 import se.skltp.agp.riv.interoperability.headers.v1.CausingAgentEnum;
@@ -73,8 +74,12 @@ public class ProcessingStatusUtil {
 		error.setCausingAgent(CausingAgentEnum.VIRTUALIZATION_PLATFORM);
 		if(exception instanceof SoapFault){
 			error.setCode(Integer.toString(((SoapFault)exception).getStatusCode()));
-		} else {
-			error.setCode("");
+		} else if( exception instanceof SocketTimeoutException ) {
+			// Gateway timeout
+			error.setCode("504");
+		}	else {
+			// This is the default for old mule AGP ( We couldn't find a definition for the code)
+			error.setCode("43000");
 		}
 		error.setText(errorText);
 		return error;

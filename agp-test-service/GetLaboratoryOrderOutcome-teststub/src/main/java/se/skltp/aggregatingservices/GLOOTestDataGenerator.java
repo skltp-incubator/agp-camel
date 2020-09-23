@@ -28,6 +28,7 @@ import riv.clinicalprocess.healthcond.actoutcome._4.LaboratoryOrderOutcomeType;
 import riv.clinicalprocess.healthcond.actoutcome._4.OrgUnitType;
 import riv.clinicalprocess.healthcond.actoutcome._4.PatientType;
 import riv.clinicalprocess.healthcond.actoutcome._4.PatientinformationType;
+import riv.clinicalprocess.healthcond.actoutcome._4.PersonIdType;
 import riv.clinicalprocess.healthcond.actoutcome._4.RemissType;
 import riv.clinicalprocess.healthcond.actoutcome._4.SourceType;
 import riv.clinicalprocess.healthcond.actoutcome._4.SvarsmottagareType;
@@ -91,8 +92,15 @@ public class GLOOTestDataGenerator extends TestDataGenerator {
 
 	@Override
 	public Object createRequest(String patientId, String sourceSystemHSAId) {
-		return null;
-	}
+    GetLaboratoryOrderOutcomeType getLaboratoryOrderOutcomeType = new GetLaboratoryOrderOutcomeType();
+    PersonIdType personIdType = new PersonIdType();
+    personIdType.setType("1.2.752.129.2.1.3.1");
+    personIdType.setId(patientId);
+    getLaboratoryOrderOutcomeType.setPatientId(personIdType);
+    getLaboratoryOrderOutcomeType.setSourceSystemHSAId(sourceSystemHSAId);
+    return getLaboratoryOrderOutcomeType;
+  }
+
 
 	private LaboratoryOrderOutcomeBodyType createLaboratoryOrderOutcomeBodyType() {
     LaboratoryOrderOutcomeBodyType body = new LaboratoryOrderOutcomeBodyType();

@@ -1,23 +1,24 @@
 package se.skltp.aggregatingservices.tests;
 
-import static org.junit.Assert.assertEquals;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.springframework.test.util.AssertionErrors.assertNull;
 
 import org.apache.cxf.message.MessageContentsList;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import se.skltp.aggregatingservices.api.AgpServiceFactory;
 import se.skltp.aggregatingservices.configuration.AgpServiceConfiguration;
 import se.skltp.aggregatingservices.data.TestDataGenerator;
 import se.skltp.aggregatingservices.riv.itintegration.engagementindex.findcontentresponder.v1.FindContentType;
-import se.skltp.aggregatingservices.utility.RequestListUtil;
 
 public abstract class CreateFindContentTest {
 
-  private static String patientId = "121212121212";
+  private static final String PATIENT_ID = "121212121212";
 
-  private static AgpServiceFactory agpServiceFactory;
-  private static AgpServiceConfiguration configuration;
+  protected AgpServiceFactory agpServiceFactory;
+  protected AgpServiceConfiguration configuration;
 
-  private static TestDataGenerator testDataGenerator;
+  protected TestDataGenerator testDataGenerator;
 
   public CreateFindContentTest(TestDataGenerator testDataGenerator, AgpServiceFactory agpServiceFactory, AgpServiceConfiguration configuration){
     this.testDataGenerator = testDataGenerator;
@@ -29,14 +30,22 @@ public abstract class CreateFindContentTest {
 
   @Test
   public void testCreateFindContent(){
-    MessageContentsList messageContentsList = RequestListUtil.createRequest("logiskAdress", testDataGenerator
-        .createRequest(patientId, null));
+    MessageContentsList messageContentsList = TestDataUtil.createRequest("logiskAdress", testDataGenerator
+        .createRequest(PATIENT_ID, null));
 
-    FindContentType type = agpServiceFactory.createFindContent(messageContentsList);
+    FindContentType findContentRequest = agpServiceFactory.createFindContent(messageContentsList);
 
-    assertEquals(configuration.getEiCategorization(), type.getCategorization());
-    assertEquals(configuration.getEiServiceDomain(), type.getServiceDomain());
-    assertEquals(patientId, type.getRegisteredResidentIdentification());
+    // If configuration is a list of categories the request.getCategorization should be 'null'
+    // to get all categories from EI
+    final String eiCategorization = configuration.getEiCategorization();
+    if(eiCategorization != null && eiCategorization.contains(",")){
+      assertNull("Expected category==null since it's a list of categories congfigured", findContentRequest.getCategorization());
+    } else {
+      assertEquals(eiCategorization, findContentRequest.getCategorization());
+    }
+
+    assertEquals(configuration.getEiServiceDomain(), findContentRequest.getServiceDomain());
+    assertEquals(PATIENT_ID, findContentRequest.getRegisteredResidentIdentification());
   }
 
 }

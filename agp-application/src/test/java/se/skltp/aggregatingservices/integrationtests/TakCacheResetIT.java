@@ -1,6 +1,6 @@
 package se.skltp.aggregatingservices.integrationtests;
 
-import static org.apache.camel.test.junit4.TestSupport.assertStringContains;
+import static org.apache.camel.test.junit5.TestSupport.assertStringContains;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -10,41 +10,41 @@ import static se.skltp.aggregatingservices.data.TestDataDefines.TEST_LOGICAL_ADD
 import java.util.Arrays;
 import org.apache.camel.Produce;
 import org.apache.camel.ProducerTemplate;
-import org.apache.camel.test.spring.CamelSpringBootRunner;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.apache.camel.test.spring.junit5.CamelSpringBootTest;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import se.skltp.aggregatingservices.AgpApplication;
-import se.skltp.aggregatingservices.data.BehorighetTestData;
+import se.skltp.aggregatingservices.data.VagvalsInfoTestData;
 import se.skltp.aggregatingservices.service.TakCacheService;
 import se.skltp.takcache.TakCacheLog;
 
-@RunWith(CamelSpringBootRunner.class)
-@SpringBootTest(classes = AgpApplication.class)
+@CamelSpringBootTest
+@SpringBootTest(classes = {AgpApplication.class})
 public class TakCacheResetIT {
 
   @Produce
   protected ProducerTemplate template;
 
   @Autowired
-  BehorighetTestData behorighetTestData;
+  VagvalsInfoTestData vagvalsInfoTestData;
 
   @Autowired
   TakCacheService takCacheService;
 
-  @Before
+  @BeforeEach
   public void setUp(){
     // See agp-teststub/readme.md for information about the TAK data generated.
-    behorighetTestData.resetAnropsBehorigheterResponse();
-    behorighetTestData.generateBehorighetDefaultStubData("test.namespace.1");
-    behorighetTestData.generateBehorighetDefaultStubData("test.namespace.2");
-    takCacheService.setTakContracts(Arrays.asList("test.namespace.1", "test.namespace.2"));
+    vagvalsInfoTestData.resetTestData();
+    vagvalsInfoTestData.generateDefaultTestData("test.namespace.1");
+    vagvalsInfoTestData.generateDefaultTestData("test.namespace.2");
+    takCacheService.setTakContracts(Arrays.asList("test.namespace.1","test.namespace.2"));
+
   }
 
-  @After
+  @AfterEach
   public void tearDown(){
     takCacheService.resetTakContracts();
     takCacheService.refresh();
@@ -54,20 +54,20 @@ public class TakCacheResetIT {
   public void resetCacheShouldWork() throws Exception {
 
     // Call reset cache route
-    String result =   template.requestBody("jetty://{{reset.cache.url}}", "body", String.class);
+    String result =   template.requestBody("{{reset.cache.url}}", "body", String.class);
     assertStringContains(result, "Init done, was successful: true");
 
     assertEquals( true, takCacheService.isInitalized() );
 
     TakCacheLog takCacheLog = takCacheService.getLastRefreshLog();
-    assertEquals( 26, takCacheLog.getNumberBehorigheter());
+    assertEquals( 22, takCacheLog.getNumberBehorigheter());
   }
 
   @Test
   public void testAuthorization() throws Exception {
 
     // Call reset cache route
-    String result =   template.requestBody("jetty://{{reset.cache.url}}", "body", String.class);
+    String result =   template.requestBody("{{reset.cache.url}}", "body", String.class);
 
     // See agp-teststub/readme.md for information about the TAK data generated.
     assertTrue(takCacheService.isAuthorized(SAMPLE_SENDER_ID, "test.namespace.1", TEST_LOGICAL_ADDRESS_1));

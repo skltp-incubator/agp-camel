@@ -17,4 +17,5 @@ public class VpConfig {
 	String defaultServiceURL;
 	int defaultConnectTimeout;
 	int defaultReceiveTimeout;
+	Boolean useAyncHttpConduit;
 }

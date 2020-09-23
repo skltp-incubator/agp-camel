@@ -7,9 +7,8 @@ import static se.skltp.aggregatingservices.utils.AssertLoggingUtil.assertRespOut
 import static se.skltp.aggregatingservices.utils.AssertUtil.assertExpectedProcessingStatus;
 import static se.skltp.aggregatingservices.utils.AssertUtil.assertExpectedResponse;
 
-import org.apache.camel.test.spring.CamelSpringBootRunner;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.apache.camel.test.spring.junit5.CamelSpringBootTest;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
@@ -22,7 +21,7 @@ import se.skltp.aggregatingservices.utils.ServiceResponse;
 import se.skltp.aggregatingservices.utils.TestLogAppender;
 import se.skltp.agp.riv.interoperability.headers.v1.StatusCodeEnum;
 
-@RunWith(CamelSpringBootRunner.class)
+@CamelSpringBootTest
 @SpringBootTest(classes = AgpApplication.class, properties = {
     "gloo.teststub.serviceTimeout=2000"
   , "getaggregatedlaboratoryorderoutcome.v4.receiveTimeout=3000"
@@ -41,7 +40,7 @@ public class AA_AggregateTimeoutIT {
     ExpectedResponse expectedResponse = new ExpectedResponse();
     expectedResponse.add("HSA-ID-1", 1, StatusCodeEnum.DATA_FROM_SOURCE, "");
     expectedResponse.add("HSA-ID-2", 2, StatusCodeEnum.DATA_FROM_SOURCE, "");
-    expectedResponse.add("HSA-ID-3", 0, StatusCodeEnum.NO_DATA_SYNCH_FAILED, "Unknown error");
+    expectedResponse.add("HSA-ID-3", 0, StatusCodeEnum.NO_DATA_SYNCH_FAILED, "(?s).*Unknown error.*");
 
     final ServiceResponse<GetLaboratoryOrderOutcomeResponseType> response = consumerService.callService(TEST_RR_ID_MANY_HITS);
 

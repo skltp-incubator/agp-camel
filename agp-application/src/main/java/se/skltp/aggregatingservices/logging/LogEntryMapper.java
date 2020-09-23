@@ -2,8 +2,10 @@ package se.skltp.aggregatingservices.logging;
 
 import static se.skltp.aggregatingservices.constants.AgpProperties.CORRELATION_ID;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import org.apache.cxf.ext.logging.event.DefaultLogEventMapper;
 import org.apache.cxf.message.Message;
 import org.apache.logging.log4j.ThreadContext;
@@ -21,13 +23,15 @@ public class LogEntryMapper {
 
   protected static final DefaultLogEventMapper eventMapper = new DefaultLogEventMapper();
 
+  protected static Set<String> sensitiveProtocolHeaderNames = new HashSet();
+
   // Static utility class
   private LogEntryMapper() {
   }
 
   public static LogEntry map(Message message) {
     LogEntry logEntry = new LogEntry();
-    logEntry.setLogEvent(eventMapper.map(message));
+    logEntry.setLogEvent(eventMapper.map(message, sensitiveProtocolHeaderNames));
     logEntry.setComponentId(getComponentId(message));
     logEntry.setSenderId(getHeader(AgpHeaders.X_VP_SENDER_ID, message));
     logEntry.setOriginalSenderId(getHeader(AgpHeaders.X_RIVTA_ORIGINAL_SERVICE_CONSUMER_HSA_ID, message));

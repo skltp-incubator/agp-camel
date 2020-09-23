@@ -66,6 +66,7 @@ public class MessageLogEventSender {
     write(b,"-processingStatusCountFail", msgEvent.getProcessingStatusCountFail());
     write(b,"-processingStatusCountTot", msgEvent.getProcessingStatusCountTot());
     write(b,"-headers", logEvent.getHeaders().toString());
+    write(b,"-encoding", logEvent.getEncoding());
 
     if (!StringUtils.isEmpty(logEvent.getPayload())) {
       write(b, "Payload", logEvent.getPayload());

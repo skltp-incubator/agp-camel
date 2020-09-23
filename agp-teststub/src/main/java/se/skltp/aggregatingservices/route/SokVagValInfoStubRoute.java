@@ -6,7 +6,7 @@ import org.apache.camel.component.mock.MockEndpoint;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import se.skltp.aggregatingservices.config.TestStubConfiguration;
-import se.skltp.aggregatingservices.processors.BehorighetResponseProcessor;
+import se.skltp.aggregatingservices.processors.VagvalResponseBean;
 import se.skltp.agp.riv.vagvalsinfo.v2.SokVagvalsInfoInterface;
 
 @Component
@@ -29,7 +29,7 @@ public class SokVagValInfoStubRoute extends RouteBuilder {
   MockEndpoint mock;
 
   @Autowired
-  BehorighetResponseProcessor behorighetResponseProcessor;
+  VagvalResponseBean vagvalResponseBean;
 
   @Autowired
   public SokVagValInfoStubRoute(TestStubConfiguration testStubConfiguration) {
@@ -43,9 +43,9 @@ public class SokVagValInfoStubRoute extends RouteBuilder {
         .to("mock:sokvagval:input")
         .choice()
             .when(header("operationName").isEqualTo("hamtaAllaAnropsBehorigheter"))
-                .process(behorighetResponseProcessor)
+                .bean(vagvalResponseBean, "getBehorigheter")
             .when(header("operationName").isEqualTo("hamtaAllaVirtualiseringar"))
-                .log("Not implemented!")
+                .bean(vagvalResponseBean, "getVagval")
         .end();
 
     from(faultyServiceAddress).id("Faulty.producer")

@@ -4,10 +4,8 @@ import org.apache.camel.Exchange;
 import org.apache.camel.Produce;
 import org.apache.camel.ProducerTemplate;
 import org.apache.camel.component.mock.MockEndpoint;
-import org.apache.camel.test.junit4.CamelTestSupport;
-import org.apache.camel.test.spring.CamelSpringRunner;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.info.BuildProperties;
@@ -15,10 +13,12 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import se.skltp.aggregatingservices.service.TakCacheServiceImpl;
+import org.apache.camel.test.junit5.CamelTestSupport;
 import se.skltp.takcache.TakCache;
 
-@RunWith(CamelSpringRunner.class)
+@ExtendWith({SpringExtension.class})
 @EnableAutoConfiguration
 @ContextConfiguration(classes = {GetStatusProcessor.class, TakCacheServiceImpl.class})
 @TestPropertySource("classpath:application.properties")
@@ -26,7 +26,7 @@ import se.skltp.takcache.TakCache;
 public class GetStatusProcessorTest extends CamelTestSupport {
 
   @MockBean(name = "takCache")
-  private TakCache takCacheMock;
+  private TakCache takCache;
 
   @Autowired GetStatusProcessor getStatusProcessor;
 

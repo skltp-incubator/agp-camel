@@ -11,7 +11,7 @@ import org.apache.camel.ExchangePattern;
 import org.apache.camel.Message;
 import org.apache.camel.Produce;
 import org.apache.camel.ProducerTemplate;
-import org.apache.camel.impl.DefaultExchange;
+import org.apache.camel.support.DefaultExchange;
 import org.apache.cxf.binding.soap.SoapFault;
 import org.apache.cxf.binding.soap.SoapHeader;
 import org.apache.cxf.headers.Header;
@@ -42,6 +42,12 @@ public class GLOOConsumerService implements ConsumerService {
   private static final JaxbUtil jaxbUtil = new JaxbUtil(ProcessingStatusType.class);
 
   @Override
+  public ServiceResponse callService(String logicalAddress, String patientId, Map<String, Object> additionalHeaders) {
+    final Map<String, Object> headers = prepareHeaders(SAMPLE_SENDER_ID, SAMPLE_SENDER_ID, additionalHeaders);
+    return callServiceWithHeaders(logicalAddress, patientId, prepareHeaders(logicalAddress, patientId, headers));
+  }
+
+  @Override
   public ServiceResponse callService(String patientId) {
     return callService(SAMPLE_SENDER_ID, SAMPLE_SENDER_ID, TEST_LOGICAL_ADDRESS_1, patientId);
   }
@@ -51,11 +57,11 @@ public class GLOOConsumerService implements ConsumerService {
   }
 
   public ServiceResponse callService(String senderId, String originalId, String logicalAddress, String patientId) {
-    Map<String, Object> headers = new HashMap();
+    return callServiceWithHeaders(logicalAddress, patientId, prepareHeaders(senderId, originalId, null));
+  }
 
-    headers.put(AgpHeaders.X_RIVTA_ORIGINAL_SERVICE_CONSUMER_HSA_ID, originalId);
-    headers.put(AgpHeaders.X_VP_SENDER_ID, senderId);
-    headers.put(AgpHeaders.X_SKLTP_CORRELATION_ID, "test-corr-id");
+
+  private ServiceResponse callServiceWithHeaders(String logicalAddress, String patientId, Map<String, Object> headers) {
 
     final MessageContentsList testRequest = RequestUtil.createTestMessageContentsList(logicalAddress, patientId);
 
@@ -68,11 +74,7 @@ public class GLOOConsumerService implements ConsumerService {
   }
 
   public ServiceResponse callServiceWithWrongContract() {
-    Map<String, Object> headers = new HashMap();
-
-    headers.put(AgpHeaders.X_RIVTA_ORIGINAL_SERVICE_CONSUMER_HSA_ID, "originalId");
-    headers.put(AgpHeaders.X_VP_SENDER_ID, "senderId");
-    headers.put(AgpHeaders.X_SKLTP_CORRELATION_ID, "test-corr-id");
+    Map<String, Object> headers = prepareHeaders("senderId", "originalId", null);
 
     final MessageContentsList faultyTestRequest = FindContentUtil.createRequestMessageContentsList("123456", "patientId");
 
@@ -82,6 +84,18 @@ public class GLOOConsumerService implements ConsumerService {
     exchange.setPattern(ExchangePattern.InOut);
     final Message response = template.send(getFaultyProducerAddress(), exchange).getOut();
     return createServiceResponse(response);
+  }
+
+  private Map<String, Object> prepareHeaders(String senderId, String originalId, Map<String, Object> additionalHeaders) {
+
+    Map<String, Object> headers = new HashMap();
+    headers.put(AgpHeaders.X_RIVTA_ORIGINAL_SERVICE_CONSUMER_HSA_ID, originalId);
+    headers.put(AgpHeaders.X_VP_SENDER_ID, senderId);
+    headers.put(AgpHeaders.X_SKLTP_CORRELATION_ID, "test-corr-id");
+    if (additionalHeaders != null) {
+      headers.putAll(additionalHeaders);
+    }
+    return headers;
   }
 
   private ServiceResponse createServiceResponse(Message response) {
@@ -120,6 +134,6 @@ public class GLOOConsumerService implements ConsumerService {
         , serviceConfiguration.getInboundServiceURL()
         , "/schemas/TD_ENGAGEMENTINDEX_1_0_R/interactions/FindContentInteraction/FindContentInteraction_1.0_RIVTABP21.wsdl"
         , "se.skltp.aggregatingservices.riv.itintegration.engagementindex.findcontent.v1.rivtabp21.FindContentResponderInterface"
-        );
+    );
   }
 }

@@ -14,7 +14,7 @@ import se.skltp.aggregatingservices.utility.RequestListUtil;
 @Log4j2
 public abstract class AgServiceFactoryBase<E, T> implements AgpServiceFactory<T> {
 
-  AgpServiceConfiguration agpServiceConfiguration;
+  protected AgpServiceConfiguration agpServiceConfiguration;
 
   public abstract String getPatientId(E queryObject);
 
@@ -27,6 +27,10 @@ public abstract class AgServiceFactoryBase<E, T> implements AgpServiceFactory<T>
     this.agpServiceConfiguration = agpServiceConfiguration;
   }
 
+  @Override
+  public AgpServiceConfiguration getAgpServiceConfiguration() {
+    return agpServiceConfiguration;
+  }
 
   @Override
   public FindContentType createFindContent(MessageContentsList messageContentsList) {
@@ -34,8 +38,13 @@ public abstract class AgServiceFactoryBase<E, T> implements AgpServiceFactory<T>
     E queryObject = (E) messageContentsList.get(index);
     String patientId = getPatientId(queryObject);
 
+    // If more then one categorization configured we use 'null' in FindContent to get
+    // all categories from EI. The answer will then get filtered.
+    final List<String> eiCategorizations = FindContentUtil.getEiCategorizations(agpServiceConfiguration);
+    String eiCategorization = eiCategorizations.size() != 1 ? null : eiCategorizations.get(0);
+
     return FindContentUtil.createFindContent(patientId, agpServiceConfiguration.getEiServiceDomain(),
-        agpServiceConfiguration.getEiCategorization());
+        eiCategorization);
   }
 
   @Override
@@ -47,12 +56,14 @@ public abstract class AgServiceFactoryBase<E, T> implements AgpServiceFactory<T>
     log.info("Got {} hits in the engagement index, filtering on {}...", eiResp.getEngagement().size(), filterOnCareUnit);
 
     List<MessageContentsList> reqList = RequestListUtil
-        .createRequestMessageContentsLists(eiResp, queryObject, filterOnCareUnit);
+        .createRequestMessageContentsLists(eiResp, messageContentsList, filterOnCareUnit);
 
     log.info("Calling {} source systems", reqList.size());
 
     return reqList;
   }
+
+
 
   @Override
   public T createAggregatedResponseObject(MessageContentsList originalQuery,
@@ -63,5 +74,6 @@ public abstract class AgServiceFactoryBase<E, T> implements AgpServiceFactory<T>
 
     return aggregateResponse(responseList);
   }
+
 
 }

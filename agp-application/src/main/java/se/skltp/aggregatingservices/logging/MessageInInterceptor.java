@@ -19,13 +19,13 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 @Log4j2
-public class MessageInLoggingInterceptor extends AbstractPhaseInterceptor {
+public class MessageInInterceptor extends AbstractPhaseInterceptor {
 
   private MessageLogEventSender sender;
 
   protected int limit = 49152;
 
-  public MessageInLoggingInterceptor(MessageLogEventSender sender) {
+  public MessageInInterceptor(MessageLogEventSender sender) {
     super("pre-invoke");
     this.sender = sender;
   }
@@ -43,6 +43,8 @@ public class MessageInLoggingInterceptor extends AbstractPhaseInterceptor {
 
   @Override
   public void handleMessage(Message message) {
+    changeEncodingToUTF8(message);
+
     createExchangeId(message);
     final LogEntry event = LogEntryMapper.map(message);
     Logger logger = getLogger(event.getLogEvent());
@@ -51,7 +53,15 @@ public class MessageInLoggingInterceptor extends AbstractPhaseInterceptor {
     }
     sender.send(event, logger);
   }
-  
+
+  void changeEncodingToUTF8(Message message) {
+    String encoding = (String) message.get(Message.ENCODING);
+
+    if (StringUtils.isEmpty(encoding) || !encoding.equals(StandardCharsets.UTF_8.name())) {
+      message.put(Message.ENCODING, StandardCharsets.UTF_8.name());
+    }
+  }
+
   protected Logger getLogger(final LogEvent event) {
     final String cat = "se.skltp.aggregatingservices.logging." + event.getPortTypeName().getLocalPart() + "." + event.getType();
     return LogManager.getLogger(cat);

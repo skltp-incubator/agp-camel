@@ -9,6 +9,7 @@ import java.util.List;
 import lombok.extern.log4j.Log4j2;
 import org.apache.camel.builder.RouteBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.support.GenericApplicationContext;
 import org.springframework.stereotype.Component;
 import se.skltp.aggregatingservices.AgpCxfEndpointConfigurer;
@@ -26,18 +27,25 @@ public class AgpServiceRoutes extends RouteBuilder {
   @Autowired
   VpConfig vpConfig;
 
+
+  @Value("${validate.soapAction:false}")
+  Boolean validateSoapAction;
+
   public static final String INBOUND_SERVICE_CONFIGURATION = "cxf:%s"
       + "?wsdlURL=%s"
       + "&serviceClass=%s"
       + "&beanId=%s"
       + "&properties.ComponentId=%s"
-      + "&cxfEndpointConfigurer=#%s";
+      + "&cxfConfigurer=#%s";
 
   public static final String OUTBOUND_SERVICE_CONFIGURATION = "cxf:%s"
       + "?wsdlURL=%s"
       + "&serviceClass=%s"
       + "&beanId=%s"
-      + "&cxfEndpointConfigurer=#%s";
+      + "&cxfConfigurer=#%s"
+      + "&properties.use.async.http.conduit=%s"
+      + "&properties.org.apache.cxf.transport.http.async.MAX_CONNECTIONS=10000"
+      + "&properties.org.apache.cxf.transport.http.async.MAX_PER_HOST_CONNECTIONS=2000";
 
 
   List<AgpServiceConfiguration> serviceConfigurations;
@@ -58,7 +66,42 @@ public class AgpServiceRoutes extends RouteBuilder {
   private void createServiceRoute(AgpServiceConfiguration serviceConfiguration) throws Exception {
     registerConfigurationBean(serviceConfiguration);
 
-    // Set inbound props
+    String inboundServiceAddress = getInboundServiceAddress(serviceConfiguration);
+    String outboundServiceAddress = getOutboundServiceAddress(serviceConfiguration);
+    String serviceName = serviceConfiguration.getServiceName();
+
+    AgpServiceFactory agpServiceFactory = getServiceFactory(serviceConfiguration);
+
+    log.debug("inboundServiceAddress: {}", inboundServiceAddress);
+    from(inboundServiceAddress).id(String.format("%s.in.route", serviceName)).streamCaching()
+        .setProperty(AGP_SERVICE_HANDLER).exchange(ex -> agpServiceFactory)
+        .setProperty(AGP_SERVICE_COMPONENT_ID, simple(serviceName))
+        .setProperty(AGP_TAK_CONTRACT_NAME, simple(serviceConfiguration.getTakContract()))
+        .setProperty("serviceAddress", simple(outboundServiceAddress))
+        .to("direct:agproute");
+
+    log.debug("outboundServiceAddress: {}", outboundServiceAddress);
+    from("direct:" + serviceName).id(String.format("%s.out.route", serviceName))
+        .to(outboundServiceAddress);
+
+  }
+
+  private String getOutboundServiceAddress(AgpServiceConfiguration serviceConfiguration) {
+    final String outboundServiceURL = getOutboundServiceURL(serviceConfiguration);
+    String outboundServiceAddress = String.format(OUTBOUND_SERVICE_CONFIGURATION
+        , outboundServiceURL
+        , serviceConfiguration.getOutboundServiceWsdl()
+        , serviceConfiguration.getOutboundServiceClass()
+        , serviceConfiguration.getServiceName()
+        , serviceConfiguration.getServiceName()
+        , vpConfig.getUseAyncHttpConduit());
+    if (serviceConfiguration.getOutboundPortName() != null) {
+      return outboundServiceAddress + "&portName=" + serviceConfiguration.getOutboundPortName();
+    }
+    return outboundServiceAddress;
+  }
+
+  private String getInboundServiceAddress(AgpServiceConfiguration serviceConfiguration) {
     String inboundServiceAddress = String.format(INBOUND_SERVICE_CONFIGURATION
         , serviceConfiguration.getInboundServiceURL()
         , serviceConfiguration.getInboundServiceWsdl()
@@ -66,39 +109,10 @@ public class AgpServiceRoutes extends RouteBuilder {
         , serviceConfiguration.getServiceName()
         , serviceConfiguration.getServiceName()
         , serviceConfiguration.getServiceName());
-    String inRouteName = String.format("%s.in.route", serviceConfiguration.getServiceName());
     if (serviceConfiguration.getInboundPortName() != null) {
-      inboundServiceAddress = inboundServiceAddress + "&portName=" + serviceConfiguration.getInboundPortName();
+      return inboundServiceAddress + "&portName=" + serviceConfiguration.getInboundPortName();
     }
-
-    // Set outbound props
-    final String outboundServiceURL = getOutboundServiceURL(serviceConfiguration);
-    String outboundServiceAddress = String.format(OUTBOUND_SERVICE_CONFIGURATION
-        , outboundServiceURL
-        , serviceConfiguration.getOutboundServiceWsdl()
-        , serviceConfiguration.getOutboundServiceClass()
-        , serviceConfiguration.getServiceName()
-        , serviceConfiguration.getServiceName());
-    String outRouteName = String.format("%s.out.route", serviceConfiguration.getServiceName());
-    String directRouteToProducer = serviceConfiguration.getServiceName();
-    if (serviceConfiguration.getOutboundPortName() != null) {
-      outboundServiceAddress = outboundServiceAddress + "&portName=" + serviceConfiguration.getOutboundPortName();
-    }
-
-    AgpServiceFactory agpServiceFactory = getServiceFactory(serviceConfiguration);
-
-    log.debug("inboundServiceAddress: {}", inboundServiceAddress);
-    from(inboundServiceAddress).id(inRouteName).streamCaching()
-        .setProperty(AGP_SERVICE_HANDLER).exchange(ex -> agpServiceFactory)
-        .setProperty(AGP_SERVICE_COMPONENT_ID, simple(directRouteToProducer))
-        .setProperty(AGP_TAK_CONTRACT_NAME, simple(serviceConfiguration.getTakContract()))
-        .setProperty("serviceAddress", simple(outboundServiceAddress))
-        .to("direct:agproute");
-
-    log.debug("outboundServiceAddress: {}", outboundServiceAddress);
-    from("direct:" + directRouteToProducer).id(outRouteName)
-        .to(outboundServiceAddress);
-
+    return inboundServiceAddress;
   }
 
   private String getOutboundServiceURL(AgpServiceConfiguration serviceConfiguration) {
@@ -125,7 +139,7 @@ public class AgpServiceRoutes extends RouteBuilder {
         , enableSchemaValidation, serviceConfiguration.getServiceName());
 
     applicationContext.registerBean(serviceConfiguration.getServiceName(), AgpCxfEndpointConfigurer.class,
-        () -> new AgpCxfEndpointConfigurer(receiveTimeout, connectTimeout, enableSchemaValidation));
+        () -> new AgpCxfEndpointConfigurer(receiveTimeout, connectTimeout, enableSchemaValidation, validateSoapAction));
   }
 
 }

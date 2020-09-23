@@ -1,9 +1,9 @@
 package se.skltp.aggregatingservices;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
-@SpringBootTest
+@SpringBootTest(classes = {AgpApplication.class})
 public class AgpTestApplicationTests {
 
   @Test

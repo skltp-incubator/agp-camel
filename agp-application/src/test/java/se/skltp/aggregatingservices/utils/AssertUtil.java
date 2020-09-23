@@ -54,8 +54,10 @@ public class AssertUtil {
         String errTxt = processingStatus.getLastUnsuccessfulSynchError().getText();
         String errCode = processingStatus.getLastUnsuccessfulSynchError().getCode();
 
-        assertTrue(String.format("Error txt: %s\n Does not contain:\n  %s ", errTxt, errTxtPart),
-            errTxt.contains(errTxtPart));
+        if(errTxtPart!=null && !errTxtPart.isEmpty()) {
+          assertTrue(String.format("Error txt: %s\n Does not contain:\n  %s ", errTxt, errTxtPart),
+              errTxt.matches(errTxtPart));
+        }
 
         assertNotNull("errorCode should not be null", errCode);
       }

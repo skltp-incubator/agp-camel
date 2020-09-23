@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import se.skl.tp.behorighet.BehorighetHandler;
 import se.skl.tp.behorighet.BehorighetHandlerImpl;
+import se.skl.tp.vagval.VagvalHandler;
+import se.skl.tp.vagval.VagvalHandlerImpl;
 import se.skltp.aggregatingservices.configuration.AgpServiceConfiguration;
 import se.skltp.takcache.TakCache;
 import se.skltp.takcache.TakCacheLog;
@@ -18,6 +20,8 @@ public class TakCacheServiceImpl implements TakCacheService {
   TakCache takCache;
 
   BehorighetHandler behorighetHandler;
+
+  VagvalHandler vagvalHandler;
 
   TakCacheLog takCacheLog = null;
 
@@ -32,7 +36,7 @@ public class TakCacheServiceImpl implements TakCacheService {
   public TakCacheServiceImpl(TakCache takCache, List<AgpServiceConfiguration> serviceConfigurationList) {
     this.serviceConfigurationList = serviceConfigurationList;
     this.takCache = takCache;
-    this.behorighetHandler = new BehorighetHandlerImpl(takCache);
+    initHandlers();
     resetTakContracts();
   }
 
@@ -48,11 +52,9 @@ public class TakCacheServiceImpl implements TakCacheService {
 
   @Override
   public TakCacheLog refresh() {
-    if (takContracts != null && !takContracts.isEmpty()) {
-      takCacheLog = takCache.refresh(takContracts);
-    } else {
-      takCacheLog = takCache.refresh();
-    }
+
+    takCacheLog = takCache.refresh(takContracts);
+
     lastResetDate = new Date();
     return takCacheLog;
   }
@@ -64,7 +66,8 @@ public class TakCacheServiceImpl implements TakCacheService {
 
   @Override
   public boolean isAuthorized(String senderId, String servicecontractNamespace, String receiverId) {
-    return behorighetHandler.isAuthorized(senderId, servicecontractNamespace, receiverId);
+    // it has to be authority and a guilty vagval
+    return behorighetHandler.isAuthorized(senderId, servicecontractNamespace, receiverId) && !vagvalHandler.getRoutingInfo(servicecontractNamespace, receiverId).isEmpty();
   }
 
   @Override
@@ -79,10 +82,13 @@ public class TakCacheServiceImpl implements TakCacheService {
 
   @Override
   public boolean isAuthorizedConsumer(Authority authority) {
-    return behorighetHandler.isAuthorized(authority.getSenderId(), authority.getServicecontractNamespace(), authority.receiverId)
-        ||
-        behorighetHandler
-            .isAuthorized(authority.getOriginalSenderId(), authority.getServicecontractNamespace(), authority.receiverId);
+    return isAuthorized(authority.getSenderId(),authority.getServicecontractNamespace(), authority.receiverId ) ||
+        isAuthorized(authority.getOriginalSenderId(), authority.getServicecontractNamespace(), authority.receiverId);
+  }
+
+  public void initHandlers(){
+    this.behorighetHandler = new BehorighetHandlerImpl(takCache.getBehorigeterCache());
+    this.vagvalHandler = new VagvalHandlerImpl(takCache.getVagvalCache());
   }
 
 

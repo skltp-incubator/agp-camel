@@ -13,4 +13,5 @@ public class EiConfig {
   String findContentUrl;
   int connectTimeout;
   int receiveTimeout;
+  Boolean useAyncHttpConduit;
 }

@@ -9,6 +9,7 @@ import se.skltp.aggregatingservices.riv.itintegration.engagementindex.findconten
 public interface AgpServiceFactory<T> {
 
   void setAgpServiceConfiguration(AgpServiceConfiguration agpServiceConfiguration);
+  AgpServiceConfiguration getAgpServiceConfiguration();
   FindContentType createFindContent(MessageContentsList queryObject);
   List<MessageContentsList> createRequestList(MessageContentsList queryObject, FindContentResponseType src);
   T createAggregatedResponseObject(MessageContentsList queryObject, List<MessageContentsList> aggregatedResponseList);

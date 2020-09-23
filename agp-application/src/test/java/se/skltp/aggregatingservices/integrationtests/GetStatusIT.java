@@ -4,16 +4,15 @@ import static org.junit.Assert.assertTrue;
 
 import org.apache.camel.Produce;
 import org.apache.camel.ProducerTemplate;
-import org.apache.camel.test.spring.CamelSpringBootRunner;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.apache.camel.test.spring.junit5.CamelSpringBootTest;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.info.BuildProperties;
 import org.springframework.boot.test.context.SpringBootTest;
 import se.skltp.aggregatingservices.AgpApplication;
 
-@RunWith(CamelSpringBootRunner.class)
-@SpringBootTest(classes = AgpApplication.class)
+@CamelSpringBootTest
+@SpringBootTest(classes = {AgpApplication.class})
 public class GetStatusIT {
 
   @Produce
@@ -28,7 +27,7 @@ public class GetStatusIT {
     String name = buildProperties.getName();
     String version = buildProperties.getVersion();
 
-    String statusResponse = producerTemplate.requestBody("jetty://{{agp.status.url}}", "body", String.class);
+    String statusResponse = producerTemplate.requestBody("{{agp.status.url}}", "body", String.class);
     assertTrue (statusResponse .startsWith("{") && statusResponse .endsWith("}"));
     assertTrue (statusResponse.contains("Name\" : \"" + name));
     assertTrue (statusResponse.contains("Version\" : \"" + version));

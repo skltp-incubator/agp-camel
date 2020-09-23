@@ -32,14 +32,26 @@
     <!--Apache camel-->
     <Logger name="org.apache.camel" level="WARN"/>
 
+    <!--Jetty-->
+    <Logger name="org.eclipse.jetty" level="WARN"/>
+
+
     <!-- Message logging -->
-    <Logger name="se.skltp.aggregatingservices.logging" level="DEBUG" additivity="false">
+    <Logger name="se.skltp.aggregatingservices.logging" level="INFO" additivity="false">
       <AppenderRef ref="TestLogAppender"/>
-      <AppenderRef ref="Console"/>
+<!--      <AppenderRef ref="Console"/>-->
     </Logger>
     <Logger name="se.skltp.aggregatingservices.logging.FindContentResponderInterface" level="DEBUG"  additivity="false">
       <AppenderRef ref="TestLogAppender"/>
-      <AppenderRef ref="Console"/>
+<!--      <AppenderRef ref="Console"/>-->
+    </Logger>
+    <Logger name="se.skltp.aggregatingservices.logging.GetLaboratoryOrderOutcomeResponderInterface.REQ_IN" level="DEBUG"  additivity="false">
+      <AppenderRef ref="TestLogAppender"/>
+<!--      <AppenderRef ref="Console"/>-->
+    </Logger>
+    <Logger name="se.skltp.aggregatingservices.logging.GetLaboratoryOrderOutcomeResponderInterface.RESP_OUT" level="DEBUG"  additivity="false">
+      <AppenderRef ref="TestLogAppender"/>
+<!--      <AppenderRef ref="Console"/>-->
     </Logger>
     <Logger name="se.skltp.aggregatingservices.logging.GetLaboratoryOrderOutcomeResponderInterface.REQ_OUT" level="DEBUG"  additivity="false">
       <AppenderRef ref="TestLogAppender"/>
@@ -49,8 +61,6 @@
       <AppenderRef ref="TestLogAppender"/>
 <!--      <AppenderRef ref="Console"/>-->
     </Logger>
-
-
 
 
     <Root level="WARN">
